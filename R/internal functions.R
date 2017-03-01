@@ -9,7 +9,7 @@
 #'achieved in this number of steps then a string convergence failed for X
 #'attempts" where X is the number of permitted failures.
 #'
-#' @param stanModel The file location of valid stan model
+#' @param stanModel The file location of a valid stan model
 #' @param stanData All necessary stan data stored in a named list
 #' @param stanIter The number of iterations to run when fitting the model
 #' @param stanIter The number of iterations to run when fitting the model
@@ -114,6 +114,40 @@ coresCalc <- function(stanChains = 1L, useCores = 1L){
                     stanChains, "chains per run"))
 
     return(simCores)
+  }
+}
+
+#' Checks that the user has specified a log_lik object in their stan code
+#'
+#'\code{log_likCheck} uses a regular expression to test, in a very broad way,
+#'whether the users stan model has a lok_lik object specified in the generated
+#'quantities block of the code. This is required if LOO statistics are to
+#'be calculated. If it's existence can not be confirmed users are prompted
+#'whether they wish to continue with the simulation or stop it.
+#'
+#' @param stanModel TThe file location of a valid stan model
+#' @return Either passes nothing if succesful or results in an error
+#'
+#' @export
+Log_likCheck <- function(stanModel){
+  regLoglik <- "generated quantities.*\\{.*log_lik.*\\}"
+
+  contMessage <-
+    paste(
+      "The 'log_lik' generated quantity was not found in the",
+      "provided stan model.\nThis property is required to calculate LOO",
+      "statistics.\nIf you know it is present in stanModel enter 'Y'",
+      "to continue. \nElse enter 'N' to cancel and examine the model",
+      "specification.\nsee",
+      "https://cran.r-project.org/web/packages/loo/vignettes/loo-example.html"
+    )
+
+  if(!grepl(regLoglik, stanModel)) {
+    cont <- menu(c("Y", "N"), title = contMessage)
+
+    if (cont == 2)
+      stop("Simulation Stopped as 'log_lik'
+           generated quantity could not be found")
   }
 }
 

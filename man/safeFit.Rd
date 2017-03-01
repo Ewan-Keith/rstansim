@@ -8,7 +8,7 @@ safeFit(stanModel, stanData, stanIter = 5000, stanChains = 4,
   maxRhat = 1.05, maxFailure = 5)
 }
 \arguments{
-\item{stanModel}{The file location of valid stan model}
+\item{stanModel}{The file location of a valid stan model}
 
 \item{stanData}{All necessary stan data stored in a named list}
 
