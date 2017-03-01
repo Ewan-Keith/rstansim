@@ -1,0 +1,20 @@
+Package: rstansim
+Type: Package
+Title: Tools for Running Simulation Studies With Stan And R
+Version: 0.1.0
+Authors@r: person("Ewan", "Keith", email = "ewan.keith100@gmail.com",
+    role = c("aut", "cre"))
+Maintainer: The package maintainer <yourself@somewhere.net>
+Description: Provides a wrapper function for fitting a
+    stan model to multiple data sets, then extracting and
+    combining specified estimates from all models. Allows for
+    Nested parallelism across simulation runs and stan chains.
+License: GPL (>=3) | file LICENSE
+Encoding: UTF-8
+LazyData: true
+Imports: rstan,
+    loo,
+    foreach
+Depends: R (>= 3.2.3)
+RoxygenNote: 6.0.1
+Suggests: testthat
