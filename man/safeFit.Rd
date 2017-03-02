@@ -19,8 +19,6 @@ safeFit(stanModel, stanData, stanIter = 5000, stanChains = 4,
 \item{maxRhat}{The maximum R-hat value that will be accepted for convergence}
 
 \item{maxFailure}{The maximum number of convergence failures to accept}
-
-\item{stanIter}{The number of iterations to run when fitting the model}
 }
 \value{
 Will either return a fitted stan object or the string "convergence
