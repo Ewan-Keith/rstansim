@@ -37,7 +37,7 @@ safeFit <- function(stanModel, stanData, stanIter = 5000,
                    "attempts"))
 
     fit <- rstan::stan(file = stanModel, data = stanData,
-                       iter = stanIter, chains = stanChains)
+                       iter = stanIter,chains = stanChains)
 
     max_rhat <- max(summary(fit)$summary[, "Rhat"])
 
@@ -47,74 +47,10 @@ safeFit <- function(stanModel, stanData, stanIter = 5000,
       safeFitRecurs(stanModel, stanData, stanIter,
                     stanChains, count = count + 1)
   }
+
   safeFitRecurs(stanModel, stanData, stanIter,
                 stanChains, maxRhat, maxFailure)
-}
 
-
-#' Calculate number of multi-chain models that can be fit simultaneously
-#'
-#'\code{coresCalc} Takes the number of chains to run per stan model, and the
-#'total number of cores to be used in the simulation. From these it
-#'calculates the number of instances of \code{safeFit} that can be ran
-#'concurrently.
-#'
-#' @param stanChains The number of chains to run in each stan model
-#' @param useCores The total number of cores to use in the simulation
-#' @return The number of models that can be estimated in parallel
-#' @examples
-#' coresCalc(4L, 8L)
-#'
-#' @export
-coresCalc <- function(stanChains = 1L, useCores = 1L){
-
-  ## exception handling
-  # are both numeric
-  if(!is.numeric(stanChains))
-    stop("stanChains parameter must be numeric")
-
-  if(!is.numeric(useCores))
-    stop("useCores parameter must be numeric")
-
-  # are both round
-  if(stanChains %% 1 != 0)
-    stop("stanChains parameter must be an integer value")
-
-  if(useCores %% 1 != 0)
-    stop("useCores parameter must be an integer value")
-
-  # are both positive
-  if(stanChains < 1)
-    stop("stanChains parameter must be positive")
-
-  if(useCores < 1)
-    stop("useCores parameter must be positive")
-
-  # is useCores less than detected max cores
-  if (useCores > parallel::detectCores())
-    stop(
-      paste0(
-        paste0("UseCores parameter must be less than",
-        "the number of detected cores [",
-        parallel::detectCores(),
-        "]")
-      )
-    )
-
-  ## calculate output
-  if(useCores <= stanChains) return(1)
-  else {
-    simCores <- useCores %/% stanChains
-
-    # let user know if any requested cores will be unused
-    if(simCores * stanChains < useCores)
-      message(paste(useCores - simCores * stanChains,
-                    "cores will go unused with",
-                    useCores, "cores available and",
-                    stanChains, "chains per run"))
-
-    return(simCores)
-  }
 }
 
 #' Checks that the user has specified a log_lik object in their stan code
@@ -143,7 +79,7 @@ Log_likCheck <- function(stanModel){
     )
 
   if(!grepl(regLoglik, stanModel)) {
-    cont <- utils::menu(c("Y", "N"), title = contMessage)
+    cont <- menu(c("Y", "N"), title = contMessage)
 
     if (cont == 2)
       stop("Simulation Stopped as 'log_lik'
@@ -152,4 +88,87 @@ Log_likCheck <- function(stanModel){
 }
 
 
+paramExtract <- function(params, LOO, estimates){
+  # returns a vector of selected parameters, their
+  # estimates and, if specified, calculated LOO value
+  # (the latter as an all or none deal)
+}
+
+
+
+#' Validates input for stanSim function.
+#'
+#' \code{stanSimChecker} runs several tests on input to \code{stanSim()} to check for
+#' validity early in the function.
+#' @param stanArgs A list of model parameters to be taken by the \code{stan()} function.
+#' @param simArgs A list of parameters that control how the instances of \code{stan()}
+#' are to be ran.
+#' @param returnArgs A list of the parameters and summary statistics to return from all
+#' fitted models.
+#' @return Returns nothing if valid, stops the function and returns an error if any not.
+#'
+#' @export
+stanSimChecker <- function(stanArgs, simArgs, returnArgs){
+
+  # helper 'is positive integer' function
+  isPosInt <- function(val){
+    if(is.numeric(val)){
+      val %% 1 == 0 && val > 0
+    } else FALSE
+  }
+
+  ##-------------------------------------------------
+  ## stanArgs checks
+  # stanModel must be a string (raw model or file location)
+  if(typeof(stanArgs$file) != "symbol" &&
+     typeof(stanArgs$file) != "character")
+    stop("stanArgs$file must be of type 'character' if specified")
+
+  # data must be a list or (by default) type 'language'
+  if(!is.list(stanArgs$data) &&
+     typeof(stanArgs$data) != "language")
+    stop("stanArgs$data must be of type 'list' if specified")
+
+  # iter  must be a positive integer
+  if(!isPosInt(stanArgs$iter))
+    stop("stanArgs$iter must be a positive integer")
+
+  # chains must be a positive integer
+  if(!isPosInt(stanArgs$chains))
+    stop("stanArgs$chains must be a positive integer")
+
+  ##-------------------------------------------------
+  ## simArgs checks
+  # sim data must be specified
+  #if(is.null(simArgs$simData))
+  #  stop("simArgs$simData must be specified")
+
+  # LOO must be Boolean
+  if(!is.logical(simArgs$LOO))
+    stop("simArgs$LOO must be Boolean")
+
+  # useCores must be a positive integer
+  if(!isPosInt(simArgs$useCores))
+    stop("simArgs$useCores must be a positive integer")
+
+  # is useCores less than detected max cores
+  if(simArgs$useCores > parallel::detectCores())
+    stop(paste0("UseCores parameter must be less than",
+                "the number of detected cores [",
+                parallel::detectCores(),
+                "]"))
+
+  # maxFailures must be a positive integer
+  if(!isPosInt(simArgs$maxFailures))
+    stop("simArgs$maxFailures must be a positive integer")
+
+  # maxRhat must be numeric
+  if(!is.numeric(simArgs$maxRhat))
+    stop("simArgs$maxRhat must be numeric")
+
+  # maxRhat must be >= 1
+  if(simArgs$maxRhat < 1)
+    stop("simArgs$maxRhat must be >= 1")
+
+}
 

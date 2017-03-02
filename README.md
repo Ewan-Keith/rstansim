@@ -1,6 +1,7 @@
 # rstansim
 
-[![Travis Build Status](https://travis-ci.org/Ewan-Keith/rstansim.svg?branch=master)](https://travis-ci.org/Ewan-Keith/rstansim)
+[![Travis Build Status](https://travis-ci.org/Ewan-Keith/rstansim.svg?branch=master)](https://travis-ci.org/Ewan-Keith/rstansim) [![codecov](https://codecov.io/gh/Ewan-Keith/rstansim/branch/master/graph/badge.svg)](https://codecov.io/gh/Ewan-Keith/rstansim)
+
 
 Overview
 --------
