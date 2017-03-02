@@ -172,3 +172,41 @@ stanSimChecker <- function(stanArgs, simArgs, returnArgs){
 
 }
 
+
+
+singleSim <- function(datafile, newStanArgs, newSimArgs, newReturnArgs){
+
+  ##-------------------------------------------------
+  ## setup stan data properly
+
+  # this is currently a bit of a hash that might well only apply
+  # in my BSEM case. That'll do for now, ocme back later to
+  # properly sort how data should be fed in.
+
+  suppressMessages( specific_data <- readr::read_csv(datafile) )
+
+  use_Data <- list(N = 200,
+                   P = 15,
+                   D = 3,
+                   C = 30,
+                   X = as.matrix(specific_data)
+  )
+
+  return(use_Data)
+
+  # currently working input
+  # stanSim(simArgs = list("simData" = c(".travis.yml", ".travis.yml", ".travis.yml")))
+
+  ##-------------------------------------------------
+  ## fit the model in a convergence safe manner
+
+  ##-------------------------------------------------
+  ## extract all param values
+
+  ##-------------------------------------------------
+  ## reshape extracted data in to a single row
+
+  ##-------------------------------------------------
+  ## return
+
+}

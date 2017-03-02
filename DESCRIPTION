@@ -15,7 +15,8 @@ LazyData: true
 Imports: rstan,
     loo,
     foreach,
-    doParallel
+    doParallel,
+    readr
 Depends: R (>= 3.2.3)
 RoxygenNote: 6.0.1
 Suggests: testthat

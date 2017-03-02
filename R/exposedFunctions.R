@@ -67,12 +67,12 @@ stanSim <- function(stanArgs = list(), simArgs = list(),
   `%doparal%` <- foreach::`%dopar%`
 
   # parallel loop over datasets
-  # foreach::foreach(datafile = newSimArgs$simData,
-  #                  .combine='rbind') %doparal%
-  #   return(
-  #     singleSim(datafile, newStanArgs,
-  #               newSimArgs, newReturnArgs)
-  #   )
+  foreach::foreach(datafile = newSimArgs$simData,
+                   .combine='rbind') %doparal%
+    return(
+      singleSim(datafile, newStanArgs,
+                newSimArgs, newReturnArgs)
+    )
 
 }
 
