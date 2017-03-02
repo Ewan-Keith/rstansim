@@ -36,15 +36,15 @@ stanSim <- function(stanArgs = list(), simArgs = list(),
   ##----------------------------------------------------
   ## update defaults with new values
   # update stan defaults
-  newStanArgs <- modifyList(stanSimDefaults("stanArgsDefault"), stanArgs,
+  newStanArgs <- utils::modifyList(stanSimDefaults("stanArgsDefault"), stanArgs,
                             keep.null = TRUE)
 
   # update simulation defaults
-  newSimArgs <- modifyList(stanSimDefaults("simArgsDefault"), simArgs,
+  newSimArgs <- utils::modifyList(stanSimDefaults("simArgsDefault"), simArgs,
                            keep.null = TRUE)
 
   # update return defaults
-  newReturnArgs <- modifyList(stanSimDefaults("returnArgsDefault"), simArgs,
+  newReturnArgs <- utils::modifyList(stanSimDefaults("returnArgsDefault"), simArgs,
                               keep.null = TRUE)
   # drop pars if unspecified
   if(is.null(newReturnArgs$pars)) newReturnArgs["pars"] <- NULL

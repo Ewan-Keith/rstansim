@@ -79,7 +79,7 @@ Log_likCheck <- function(stanModel){
     )
 
   if(!grepl(regLoglik, stanModel)) {
-    cont <- menu(c("Y", "N"), title = contMessage)
+    cont <- utils::menu(c("Y", "N"), title = contMessage)
 
     if (cont == 2)
       stop("Simulation Stopped as 'log_lik'
