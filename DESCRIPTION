@@ -14,7 +14,8 @@ Encoding: UTF-8
 LazyData: true
 Imports: rstan,
     loo,
-    foreach
+    foreach,
+    doParallel
 Depends: R (>= 3.2.3)
 RoxygenNote: 6.0.1
 Suggests: testthat
