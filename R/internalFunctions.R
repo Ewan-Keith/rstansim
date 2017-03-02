@@ -18,7 +18,7 @@
 #' @return Will either return a fitted stan object or the string "convergence
 #' failed for X attempts" where X is the maxFailure parameter.
 #' @examples
-#' safeFit(stanModel = "8schools.stan" stanData = schools_dat,
+#' safeFit(stanModel = "8schools.stan", stanData = schools_dat,
 #' stanIter = 1000, stainChains = 4, maxRhat = 1.05)
 #'
 #' @export
