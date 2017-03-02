@@ -12,7 +12,6 @@
 #' @param stanModel The file location of a valid stan model
 #' @param stanData All necessary stan data stored in a named list
 #' @param stanIter The number of iterations to run when fitting the model
-#' @param stanIter The number of iterations to run when fitting the model
 #' @param stanChains The number of chains to run when fitting the model
 #' @param maxRhat The maximum R-hat value that will be accepted for convergence
 #' @param maxFailure The maximum number of convergence failures to accept
@@ -37,7 +36,7 @@ safeFit <- function(stanModel, stanData, stanIter = 5000,
                    "attempts"))
 
     fit <- rstan::stan(file = stanModel, data = stanData,
-                       iter = stanIter,chains = stanChains)
+                       iter = stanIter, chains = stanChains)
 
     max_rhat <- max(summary(fit)$summary[, "Rhat"])
 
@@ -143,7 +142,7 @@ Log_likCheck <- function(stanModel){
     )
 
   if(!grepl(regLoglik, stanModel)) {
-    cont <- menu(c("Y", "N"), title = contMessage)
+    cont <- utils::menu(c("Y", "N"), title = contMessage)
 
     if (cont == 2)
       stop("Simulation Stopped as 'log_lik'
