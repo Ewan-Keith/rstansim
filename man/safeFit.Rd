@@ -35,7 +35,7 @@ achieved in this number of steps then a string convergence failed for X
 attempts" where X is the number of permitted failures.
 }
 \examples{
-safeFit(stanModel = "8schools.stan" stanData = schools_dat,
+safeFit(stanModel = "8schools.stan", stanData = schools_dat,
 stanIter = 1000, stainChains = 4, maxRhat = 1.05)
 
 }
