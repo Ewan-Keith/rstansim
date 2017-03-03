@@ -8,7 +8,7 @@ test_that(
   ),
   {
     with_mock(
-      # always return 1 on menu for regex testing
+      # always return 1 on menu for testing
       `utils::menu` = function(choices,
                                graphics = FALSE,
                                title = NULL) {
@@ -37,7 +37,7 @@ test_that(
   ),
   {
     with_mock(
-      # always return 1 on menu for regex testing
+      # always return 2 on menu for testing
       `utils::menu` = function(choices,
                                graphics = FALSE,
                                title = NULL) {
@@ -59,3 +59,35 @@ test_that(
 
   }
 )
+
+##-------------------------------------------------
+test_that(
+  paste(
+    "if LOO requested and log_likCheck returns false",
+    "stop the main functionwith the correct message"
+  ),
+  {
+
+    with_mock(
+      # always return 2 on menu for testing
+      `utils::menu` = function(choices,
+                               graphics = FALSE,
+                               title = NULL) {
+        2
+      },
+
+      bad <-
+        "generated quantities vector[P] log_lik[N]",
+
+      stanArgs <- list("file" = bad),
+      simArgs <- list("LOO" = TRUE),
+
+      # error if false and LOO requested
+      expect_error(stanSim(stanArgs, simArgs),
+                   "Simulation Stopped as 'log_lik' generated quantity could not be found")
+
+
+    )
+
+
+  })
