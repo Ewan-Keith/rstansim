@@ -66,7 +66,7 @@ safeFit <- function(stanModel, stanData, stanIter = 5000,
 #'
 #' @export
 Log_likCheck <- function(stanModel){
-  regLoglik <- "generated quantities.*\\{.*log_lik.*\\}"
+  regLoglik <- "generated quantities.*\\{.*log_lik"
 
   contMessage <-
     paste(
@@ -81,10 +81,9 @@ Log_likCheck <- function(stanModel){
   if(!grepl(regLoglik, stanModel)) {
     cont <- utils::menu(c("Y", "N"), title = contMessage)
 
-    if (cont == 2)
-      stop("Simulation Stopped as 'log_lik'
-           generated quantity could not be found")
+    if (cont == 1) return(TRUE) else return(FALSE)
   }
+  else return(TRUE)
 }
 
 

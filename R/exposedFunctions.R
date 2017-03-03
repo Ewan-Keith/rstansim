@@ -57,7 +57,10 @@ stanSim <- function(stanArgs = list(), simArgs = list(),
                  returnArgs = newReturnArgs)
 
   # if LOO requested, carry out check for log_lik param in model
-  if(newSimArgs$LOO == TRUE) Log_likCheck(newStanArgs$file)
+  if(newSimArgs$LOO == TRUE)
+    if(!Log_likCheck(newStanArgs$file))
+      stop("Simulation Stopped as 'log_lik'
+           generated quantity could not be found")
 
   ##-------------------------------------------------
   ## set up for parallel running and run over the datasets
