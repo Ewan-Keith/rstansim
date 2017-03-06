@@ -34,12 +34,12 @@ safeFit <- function(maxRhat = 1.05,
                    maxFailureInt ,
                    "attempts"))
 
-    test <- c(...)
-    print(test)
-    test['...'] <- NULL
-print(test)
+    stanInput <- c(...)
 
-    fit <- do.call(rstan::stan, test)
+    stanInput['...'] <- NULL
+
+
+    fit <- do.call(rstan::stan, stanInput)
 
     max_rhat <- max(rstan::summary(fit)$summary[, "Rhat"])
 
@@ -88,10 +88,26 @@ Log_likCheck <- function(stanModel){
 }
 
 
-paramExtract <- function(params, LOO, estimates){
-  # returns a vector of selected parameters, their
+paramExtract <- function(model, params, LOO, estimates){
+  # returns the selected parameters, their
   # estimates and, if specified, calculated LOO value
-  # (the latter as an all or none deal)
+  # (the latter as an all or none deal).
+  # returns dataframe with rows as params and cols as estimates
+
+
+  # for the first version, just allow standard summary values
+  # rather than custom percentiles, etc. To do later.
+
+  # extract values and estimates
+  model_summary <- rstan::summary(model)$summary
+
+
+
+
+  # if LOO, then calculate loo values and append
+
+  # return
+
 }
 
 
@@ -119,23 +135,23 @@ stanSimChecker <- function(stanArgs, simArgs, returnArgs){
 
   ##-------------------------------------------------
   ## stanArgs checks
-  # stanModel must be a string (raw model or file location)
-  if(typeof(stanArgs$file) != "symbol" &&
-     typeof(stanArgs$file) != "character")
-    stop("stanArgs$file must be of type 'character' if specified")
-
-  # data must be a list or (by default) type 'language'
-  if(!is.list(stanArgs$data) &&
-     typeof(stanArgs$data) != "language")
-    stop("stanArgs$data must be of type 'list' if specified")
-
-  # iter  must be a positive integer
-  if(!isPosInt(stanArgs$iter))
-    stop("stanArgs$iter must be a positive integer")
-
-  # chains must be a positive integer
-  if(!isPosInt(stanArgs$chains))
-    stop("stanArgs$chains must be a positive integer")
+  # # stanModel must be a string (raw model or file location)
+  # if(typeof(stanArgs$file) != "symbol" &&
+  #    typeof(stanArgs$file) != "character")
+  #   stop("stanArgs$file must be of type 'character' if specified")
+  #
+  # # data must be a list or (by default) type 'language'
+  # if(!is.list(stanArgs$data) &&
+  #    typeof(stanArgs$data) != "language")
+  #   stop("stanArgs$data must be of type 'list' if specified")
+  #
+  # # iter  must be a positive integer
+  # if(!isPosInt(stanArgs$iter))
+  #   stop("stanArgs$iter must be a positive integer")
+  #
+  # # chains must be a positive integer
+  # if(!isPosInt(stanArgs$chains))
+  #   stop("stanArgs$chains must be a positive integer")
 
   ##-------------------------------------------------
   ## simArgs checks
@@ -183,13 +199,12 @@ singleSim <- function(datafile, newStanArgs = list(),
 
   # Just using 8schools data. That'll do for now, come back later to
   # properly sort how data should be fed in.
-print("inside")
 
   use_data <- readRDS(datafile)
-print("read data")
+
   newStanArgs$data <- utils::modifyList(newStanArgs$data, use_data,
                     keep.null = TRUE)
-print("data updated")
+
 
 
   # suppressMessages( specific_data <- readr::read_csv(datafile) )
@@ -213,6 +228,7 @@ print("data updated")
                     maxFailure = newSimArgs$maxRhat,
                     newStanArgs)
 
+  return(fitted)
 
   ##-------------------------------------------------
   ## extract all param values

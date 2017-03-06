@@ -16,26 +16,26 @@ test_that("Invalid parameters return the correct error message", {
   ##-------------------------------------------------
   ## stanArgs checks
 
-  expect_error(stanSim(stanArgs = list("file" = 555)),
-               "stanArgs\\$file must be of type 'character' if specified")
-
-  expect_error(stanSim(stanArgs = list("data" = 555)),
-               "stanArgs\\$data must be of type 'list' if specified")
-
-  expect_error(stanSim(stanArgs = list("iter" = -1)),
-               "stanArgs\\$iter must be a positive integer")
-
-  expect_error(stanSim(stanArgs = list("iter" = 500.5)),
-               "stanArgs\\$iter must be a positive integer")
-
-  expect_error(stanSim(stanArgs = list("iter" = "test")),
-               "stanArgs\\$iter must be a positive integer")
-
-  expect_error(stanSim(stanArgs = list("chains" = -1)),
-               "stanArgs\\$chains must be a positive integer")
-
-  expect_error(stanSim(stanArgs = list("chains" = 500.5)),
-               "stanArgs\\$chains must be a positive integer")
+  # expect_error(stanSim(stanArgs = list("file" = 555)),
+  #              "stanArgs\\$file must be of type 'character' if specified")
+  #
+  # expect_error(stanSim(stanArgs = list("data" = 555)),
+  #              "stanArgs\\$data must be of type 'list' if specified")
+  #
+  # expect_error(stanSim(stanArgs = list("iter" = -1)),
+  #              "stanArgs\\$iter must be a positive integer")
+  #
+  # expect_error(stanSim(stanArgs = list("iter" = 500.5)),
+  #              "stanArgs\\$iter must be a positive integer")
+  #
+  # expect_error(stanSim(stanArgs = list("iter" = "test")),
+  #              "stanArgs\\$iter must be a positive integer")
+  #
+  # expect_error(stanSim(stanArgs = list("chains" = -1)),
+  #              "stanArgs\\$chains must be a positive integer")
+  #
+  # expect_error(stanSim(stanArgs = list("chains" = 500.5)),
+  #              "stanArgs\\$chains must be a positive integer")
 
   ##-------------------------------------------------
   ## simArgs checks

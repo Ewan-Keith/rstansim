@@ -36,9 +36,10 @@ stanSim <- function(stanArgs = list(), simArgs = list(),
   ##----------------------------------------------------
   ## update defaults with new values
   # update stan defaults
-  newStanArgs <- utils::modifyList(stanSimDefaults("stanArgsDefault"), stanArgs,
-                            keep.null = TRUE)
+  # newStanArgs <- utils::modifyList(stanSimDefaults("stanArgsDefault"), stanArgs,
+  #                           keep.null = TRUE)
 
+  newStanArgs <- stanArgs
   # update simulation defaults
   newSimArgs <- utils::modifyList(stanSimDefaults("simArgsDefault"), simArgs,
                            keep.null = TRUE)
@@ -65,17 +66,23 @@ stanSim <- function(stanArgs = list(), simArgs = list(),
   ## set up for parallel running and run over the datasets
   #doParallel::registerDoParallel(newSimArgs$useCores)
 
+  cl <- parallel::makeCluster(newSimArgs$useCores)
+  doParallel::registerDoParallel(cl)
+
   # define %dopar% alias
-  #`%doparal%` <- foreach::`%dopar%`
+  `%doparal%` <- foreach::`%dopar%`
 
   # parallel loop over datasets, default list combine used for dev
-  #foreach::foreach(datafile = newSimArgs$simData) %doparal%
-  #    singleSim(datafile, newStanArgs,
-  #              newSimArgs, newReturnArgs)
-  singleSim(newSimArgs$simData[[1]], newStanArgs,
-                          newSimArgs, newReturnArgs)
+  simEstimates <-
+    foreach::foreach(datafile = newSimArgs$simData) %doparal%
+    singleSim(datafile, newStanArgs,
+              newSimArgs, newReturnArgs)
 
-}
+  # de-register the parallel background once done
+  parallel::stopCluster(cl)
+
+  return(simEstimates)
+  }
 
 
 
