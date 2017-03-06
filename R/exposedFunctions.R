@@ -44,7 +44,7 @@ stanSim <- function(stanArgs = list(), simArgs = list(),
                            keep.null = TRUE)
 
   # update return defaults
-  newReturnArgs <- utils::modifyList(stanSimDefaults("returnArgsDefault"), simArgs,
+  newReturnArgs <- utils::modifyList(stanSimDefaults("returnArgsDefault"), returnArgs,
                               keep.null = TRUE)
   # drop pars if unspecified
   if(is.null(newReturnArgs$pars)) newReturnArgs["pars"] <- NULL
@@ -63,18 +63,17 @@ stanSim <- function(stanArgs = list(), simArgs = list(),
 
   ##-------------------------------------------------
   ## set up for parallel running and run over the datasets
-  doParallel::registerDoParallel(newSimArgs$useCores)
+  #doParallel::registerDoParallel(newSimArgs$useCores)
 
   # define %dopar% alias
-  `%doparal%` <- foreach::`%dopar%`
+  #`%doparal%` <- foreach::`%dopar%`
 
-  # parallel loop over datasets
-  foreach::foreach(datafile = newSimArgs$simData,
-                   .combine='rbind') %doparal%
-    return(
-      singleSim(datafile, newStanArgs,
-                newSimArgs, newReturnArgs)
-    )
+  # parallel loop over datasets, default list combine used for dev
+  #foreach::foreach(datafile = newSimArgs$simData) %doparal%
+  #    singleSim(datafile, newStanArgs,
+  #              newSimArgs, newReturnArgs)
+  singleSim(newSimArgs$simData[[1]], newStanArgs,
+                          newSimArgs, newReturnArgs)
 
 }
 

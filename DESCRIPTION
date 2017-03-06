@@ -17,6 +17,7 @@ Imports: rstan,
     foreach,
     doParallel,
     readr
-Depends: R (>= 3.2.3)
+Depends: R (>= 3.2.3),
+    Rcpp
 RoxygenNote: 6.0.1
 Suggests: testthat

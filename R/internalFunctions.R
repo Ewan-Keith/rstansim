@@ -23,34 +23,34 @@
 #' stanIter = 1000, stainChains = 4, maxRhat = 1.05)
 #'}
 #' @export
-safeFit <- function(stanModel, stanData, stanIter = 5000,
-                    stanChains = 4, maxRhat = 1.05,
-                    maxFailure = 5) {
+safeFit <- function(maxRhat = 1.05,
+                    maxFailure = 5, ...) {
 
-  safeFitRecurs <- function(stanModel, stanData, stanIter,
-                            stanChains, maxRhat, maxFailure,
-                            count = 1) {
+  safeFitRecurs <- function(maxRhat, maxFailureInt,
+                            count = 1, ...) {
 
-    if (count > maxFailure)
+    if (count > maxFailureInt)
       return(paste("convergence failed for",
-                   maxFailure ,
+                   maxFailureInt ,
                    "attempts"))
 
-    fit <- rstan::stan(file = stanModel, data = stanData,
-                       iter = stanIter,chains = stanChains)
+    test <- c(...)
+    print(test)
+    test['...'] <- NULL
+print(test)
+
+    fit <- do.call(rstan::stan, test)
 
     max_rhat <- max(rstan::summary(fit)$summary[, "Rhat"])
 
     if (max_rhat < maxRhat)
       return(list(fit, "attempts" = count))
     else
-      safeFitRecurs(stanModel, stanData, stanIter,
-                    stanChains, maxRhat, maxFailure,
-                    count = count + 1)
+      safeFitRecurs(maxRhat, maxFailureInt,
+                    count = count + 1, ...)
   }
 
-  safeFitRecurs(stanModel, stanData, stanIter,
-                stanChains, maxRhat, maxFailure)
+  safeFitRecurs(maxRhat = maxRhat, maxFailureInt = maxFailure, count = 1, ...)
 
 }
 
@@ -174,31 +174,45 @@ stanSimChecker <- function(stanArgs, simArgs, returnArgs){
 
 
 
-singleSim <- function(datafile, newStanArgs, newSimArgs, newReturnArgs){
+singleSim <- function(datafile, newStanArgs = list(),
+                      newSimArgs = list(),
+                      newReturnArgs = list()){
 
   ##-------------------------------------------------
   ## setup stan data properly
 
-  # this is currently a bit of a hash that might well only apply
-  # in my BSEM case. That'll do for now, ocme back later to
+  # Just using 8schools data. That'll do for now, come back later to
   # properly sort how data should be fed in.
+print("inside")
 
-  suppressMessages( specific_data <- readr::read_csv(datafile) )
+  use_data <- readRDS(datafile)
+print("read data")
+  newStanArgs$data <- utils::modifyList(newStanArgs$data, use_data,
+                    keep.null = TRUE)
+print("data updated")
 
-  use_Data <- list(N = 200,
-                   P = 15,
-                   D = 3,
-                   C = 30,
-                   X = as.matrix(specific_data)
-  )
 
-  return(use_Data)
+  # suppressMessages( specific_data <- readr::read_csv(datafile) )
+
+  # use_Data <- list(N = 200,
+  #                  P = 15,
+  #                  D = 3,
+  #                  C = 30,
+  #                  X = as.matrix(specific_data)
+  # )
+
+  #return(use_Data)
 
   # currently working input
   # stanSim(simArgs = list("simData" = c(".travis.yml", ".travis.yml", ".travis.yml")))
 
   ##-------------------------------------------------
   ## fit the model in a convergence safe manner
+
+  fitted <- safeFit(maxRhat = newSimArgs$maxRhat,
+                    maxFailure = newSimArgs$maxRhat,
+                    newStanArgs)
+
 
   ##-------------------------------------------------
   ## extract all param values
