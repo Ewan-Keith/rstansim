@@ -39,13 +39,14 @@ safeFit <- function(stanModel, stanData, stanIter = 5000,
     fit <- rstan::stan(file = stanModel, data = stanData,
                        iter = stanIter,chains = stanChains)
 
-    max_rhat <- max(summary(fit)$summary[, "Rhat"])
+    max_rhat <- max(rstan::summary(fit)$summary[, "Rhat"])
 
-    if (max_rhat < 1.05)
+    if (max_rhat < maxRhat)
       return(list(fit, "attempts" = count))
     else
       safeFitRecurs(stanModel, stanData, stanIter,
-                    stanChains, count = count + 1)
+                    stanChains, MaxRhat, maxFailure,
+                    count = count + 1)
   }
 
   safeFitRecurs(stanModel, stanData, stanIter,
