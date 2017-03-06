@@ -37,3 +37,28 @@ test_that("if converged, safeFitRecurs should return the correct list", {
 
 })
 
+##-------------------------------------------------
+test_that("if not converged, correct error should be returned", {
+  with_mock(
+    # always return a npn-converged stanfit object
+    `rstan::stan` = function(file, data,
+                             iter, chains) {
+      nonConvergedModel
+    },
+
+
+
+    expect_equal(safeFit(
+      stanModel = "test",
+      stanData = list("X" = 1),
+      stanIter = 20,
+      stanChains = 4,
+      maxRhat = 1.05,
+      maxFailure = 5
+    ), "convergence failed for 5 attempts")
+
+
+    )
+
+})
+

@@ -45,7 +45,7 @@ safeFit <- function(stanModel, stanData, stanIter = 5000,
       return(list(fit, "attempts" = count))
     else
       safeFitRecurs(stanModel, stanData, stanIter,
-                    stanChains, MaxRhat, maxFailure,
+                    stanChains, maxRhat, maxFailure,
                     count = count + 1)
   }
 

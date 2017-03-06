@@ -28,6 +28,9 @@ test_that("Invalid parameters return the correct error message", {
   expect_error(stanSim(stanArgs = list("iter" = 500.5)),
                "stanArgs\\$iter must be a positive integer")
 
+  expect_error(stanSim(stanArgs = list("iter" = "test")),
+               "stanArgs\\$iter must be a positive integer")
+
   expect_error(stanSim(stanArgs = list("chains" = -1)),
                "stanArgs\\$chains must be a positive integer")
 
