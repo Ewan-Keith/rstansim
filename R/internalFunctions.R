@@ -101,12 +101,38 @@ paramExtract <- function(model, params, LOO, estimates){
   # extract values and estimates
   model_summary <- rstan::summary(model)$summary
 
+  # at the momemnt user will have to use exact regex
+  # e.g. 'eta' below to avois also getting 'theta'
+  #params <- c("mu", "^eta")
+  regexParams <- paste(params, sep = "", collapse = "|")
+  rows <- row.names(model_summary)
 
+  paramIndex <- grepl(regexParams, rows)
 
+  selectedParams <- model_summary[paramIndex,]
+
+  ## extract all select estimates
+  # by default return 2.5%, 50%, and 97.5%
+  #params <- c("2.5%", "50%", "97.5%")
+
+  output <- selectedParams[,estimates]
+
+  ## different function that flattens matrix to properly named row
+
+  rnames <- rownames(output)
+  cnames <- colnames(output)
+  pasteU <- function(x, y) paste(x, y, sep = "_")
+  returnNames <- c(t(outer(rnames, cnames, pasteU)))
+
+  returnVals <- as.vector(t(output))
+
+  returnJoined <- setNames(returnVals, returnNames)
 
   # if LOO, then calculate loo values and append
 
   # return
+
+  returnJoined
 
 }
 

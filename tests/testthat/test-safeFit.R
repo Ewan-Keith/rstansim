@@ -1,4 +1,4 @@
-context("The convergence checker function (and it's internal recursive helper should run as expected")
+context("The convergence checker function (and it's internal recursive helper) should run as expected")
 
 convergedModel <- readRDS("convergedFit.rds")
 nonConvergedModel <- readRDS("nonConvergedFit.rds")
