@@ -88,18 +88,21 @@ Log_likCheck <- function(stanModel){
 }
 
 
-paramExtract <- function(model, params, LOO, estimates){
+paramExtract <- function(safe_fit_model, params, LOO, estimates){
   # returns the selected parameters, their
   # estimates and, if specified, calculated LOO value
   # (the latter as an all or none deal).
   # returns dataframe with rows as params and cols as estimates
 
+  # split out attempts and stanfit
+  attempts <- setNames(safe_fit_model[[2]], "fit_attempts")
+  safe_fit_model <- safe_fit_model[[1]]
 
   # for the first version, just allow standard summary values
   # rather than custom percentiles, etc. To do later.
 
   # extract values and estimates
-  model_summary <- rstan::summary(model)$summary
+  model_summary <- rstan::summary(safe_fit_model)$summary
 
   # at the momemnt user will have to use exact regex
   # e.g. 'eta' below to avois also getting 'theta'
@@ -128,7 +131,28 @@ paramExtract <- function(model, params, LOO, estimates){
 
   returnJoined <- setNames(returnVals, returnNames)
 
+  returnJoined <- c(returnJoined, attempts)
+
   # if LOO, then calculate loo values and append
+  if(LOO){
+    log_lik_1 <- loo::extract_log_lik(safe_fit_model)
+    loo_1 <- loo::loo(log_lik_1)
+
+    loo_params <-
+      c("elpd_loo",
+        "se_elpd_loo",
+        "p_loo",
+        "se_p_loo",
+        "looic",
+        "se_looic")
+
+
+    loo_vals <- as.vector(loo_1[loo_params], "numeric")
+
+    loo_output <- setNames(loo_vals, loo_params)
+
+    returnJoined <- c(returnJoined, loo_output)
+  }
 
   # return
 

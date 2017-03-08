@@ -4,9 +4,15 @@ convergedModel <- readRDS("convergedFit.rds")
 nonConvergedModel <- readRDS("nonConvergedFit.rds")
 
 # converged extracts for testing
-convergedExtract1 <- readRDS("convergedExtractTest1.rds")
+attempts <- setNames(1, "fit_attempts")
+
+convergedExtract1 <- c(readRDS("convergedExtractTest1.rds"), attempts)
 convergedExtract2 <- readRDS("convergedExtractTest2.rds")
 convergedExtract3 <- readRDS("convergedExtractTest3.rds")
+
+# loo in/output for testing
+loo_input <- readRDS("loo_input_test.rds")
+loo_output <- readRDS("loo_output_test.rds")
 
 test_that("correct output is extracted from fitted test models (LOO=FALSE)", {
 
@@ -19,5 +25,23 @@ test_that("correct output is extracted from fitted test models (LOO=FALSE)", {
   expect_equal(paramExtract(convergedModel, c("tau", "lp__"), FALSE, c("n_eff", "Rhat", "25%", "75%")),
                convergedExtract3)
 
+
+})
+
+test_that("correct output is extracted from fitted test models (LOO=TRUE)", {
+  with_mock(
+
+    # pass over the log_lik extraction (at least for now)
+    `loo::extract_log_lik` = function(...) {},
+
+    # force the return of valid loo extract (from loo vignette)
+    # https://cran.r-project.org/web/packages/loo/vignettes/loo-example.html
+    `loo::loo` = function(...) {
+      loo_input
+    },
+
+    expect_equal(paramExtract(convergedModel, c("tau", "lp__"), TRUE, c("n_eff", "Rhat", "25%", "75%")),
+                 loo_output)
+  )
 
 })
