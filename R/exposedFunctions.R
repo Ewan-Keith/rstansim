@@ -76,7 +76,7 @@ stan_sim <- function(stan_args = list(), sim_data = NULL, loo = FALSE,
   # define %dopar% alias
   `%doparal%` <- foreach::`%dopar%`
 
-  #testy
+  # define datafile locally first to avoid R CMD Check Note
   datafile <- NULL
 
   # parallel loop over datasets, default list combine used for dev
