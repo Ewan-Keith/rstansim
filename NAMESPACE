@@ -2,3 +2,4 @@
 
 export(stan_sim)
 import(Rcpp)
+importFrom("stats", "setNames")
