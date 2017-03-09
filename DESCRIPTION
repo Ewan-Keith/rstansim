@@ -16,7 +16,8 @@ Imports: rstan,
     loo,
     foreach,
     doParallel,
-    readr
+    readr,
+    Rcpp
 Depends: R (>= 3.2.3),
     Rcpp
 RoxygenNote: 6.0.1
