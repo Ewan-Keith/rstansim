@@ -1,138 +1,91 @@
-
+#-----------------------------------------------------------------
+#### stan_sim ####
 #' Fits a stan model to multiple datasets and returns estimated values
 #'
-#'\code{stanSim} fits a specified stan model across multiple datasets and
-#'collates and returns the estimated parameters for all models. The function
-#'takes three sets of parameters (each provided in a seperate list); stan
-#'modelling parameters, parameters governing the running of the multiple
-#'stan instances, and a list of values to return (stan parameters along with
-#'what summaries to include (e.g. percentiles)). The function allows for
-#'stan instances to be ran in parallel, reducing run time on multicore
-#'machines.
+#' @description \code{stan_sim} fits a specified stan model across multiple
+#' datasets and collates and returns the estimated parameters for all models.
+#' It fits the specified model to all datasets indicated and returns the
+#' specified results for each model. It provides an optional set of controls
+#' in case any fitted models do not appear to have converged, in which case
+#' model fit will be re-attempted or a string indicating lack of fit will be
+#' returned for that model. The function allows for stan instances to be
+#' ran in parallel, reducing run the time taken on multicore machines.
 #'
-#' @param stanArgs A list of model parameters to be taken by the \code{stan()} function.
-#' If not specified then this functions defaults are used.
-#' @param simArgs A list of parameters that control how the instances of \code{stan()}
-#' are to be ran.
-#' @param returnArgs A list of the parameters and summary statistics to return from all
-#' fitted models.
-#' @return A dataframe of estimated values across all datasets
+#' @param stan_args A list of model parameters to be taken by
+#' the \code{stan()} function. If not specified then the \code{stan()}
+#' function defaults are used.
+#' @param sim_data A list of strings pointing to the .csv files that
+#' contain the simulation data. Only data that varies from model to
+#' model must be specified here, data common to all models can be
+#' specified as part of \code{stan_args}.
+#' @param loo If \code{TRUE} the model will attempt to extract fit
+#' statistics using the loo package. If \code{TRUE} there must be
+#' a valid log_lik quantity specified in the generated quantities
+#' section of the stan model.
+#' @param use_cores Number of cores to use when running in parallel.
+#' Each stan model is fitted serially regardless of the number of chains
+#' ran. However as the number of available cores increases more models
+#' can be fit in parallel
+#' @param max_failures The maximum number of times that each model
+#' will attempt refitting when its greatest R-hat statstics
+#' is > \code{max_rhat}. If this number is exceeded a string will be returned
+#' indicating convergence failure, rather than model estimates.
+#' @param max_rhat A maximum cut-off for crudely assessing convergence
+#' across fitted models. If any parameters in the fitted model have an
+#' R-hat >  \code{max_rhat} then the model will either attempt re-fitting
+#' or will return a string indicating lack of convergence (depending on
+#' the number of fitting attempts made and the value of \code{max_failures}).
+#' Setting this to a large value (e.g. 1000) will
+#' efectively turn off the convergence assessment functionality.
+#' @param parameters A set of characters indicating which parameters
+#' should have estimates returned from the fitted models. Regular
+#' expressions are used to extract parameters, so care has to be taken
+#' with similarly named parameters (e.g. 'eta' and 'theta').
+#' @param estimates The estimates that should be returned for each
+#' model parameter. Currently only supports the standard 'summary'
+#' parameters c('mean', 'se_mean',  'sd', '2.5%', '25%',  '50%',
+#' '75%', '97.5%', 'n_eff', 'Rhat').
+#' @return A dataframe of estimated values across all datasets.
 #'
 #' @export
-stanSim <- function(stanArgs = list(), simArgs = list(),
-                    returnArgs = list()){
+stan_sim <- function(stan_args = list(), sim_data = NULL, loo = FALSE,
+                     use_cores = 1L, max_failures = 5, max_rhat = 1.05,
+                     parameters = ".*",
+                     estimates = c("2.5%", "50%", "97.5%")){
+
 
   ##-------------------------------------------------
-  ## all input must be lists
-  if(!is.list(stanArgs))
-    stop("stanArgs must be a list of parameters")
+  ## stan input must be a list
+  if (!is.list(stan_args))
+    stop("stan_args must be a list of stan parameters")
 
-  if(!is.list(simArgs))
-    stop("simArgs must be a list of parameters")
-
-  if(!is.list(returnArgs))
-    stop("returnArgs must be a list of parameters")
-
-  ##----------------------------------------------------
-  ## update defaults with new values
-  # update stan defaults
-  # newStanArgs <- utils::modifyList(stanSimDefaults("stanArgsDefault"), stanArgs,
-  #                           keep.null = TRUE)
-
-  newStanArgs <- stanArgs
-  # update simulation defaults
-  newSimArgs <- utils::modifyList(stanSimDefaults("simArgsDefault"), simArgs,
-                           keep.null = TRUE)
-
-  # update return defaults
-  newReturnArgs <- utils::modifyList(stanSimDefaults("returnArgsDefault"), returnArgs,
-                              keep.null = TRUE)
-  # drop pars if unspecified
-  if(is.null(newReturnArgs$pars)) newReturnArgs["pars"] <- NULL
 
   ##-------------------------------------------------
   ## error checks
   # carry out basic input validation
-  stanSimChecker(stanArgs = newStanArgs,
-                 simArgs = newSimArgs,
-                 returnArgs = newReturnArgs)
+  stan_sim_checker(sim_data, loo, use_cores, max_failures,
+                   max_rhat, parameters, estimates)
 
-  # if LOO requested, carry out check for log_lik param in model
-  if(newSimArgs$LOO == TRUE)
-    if(!Log_likCheck(newStanArgs$file))
-      stop("Simulation Stopped as 'log_lik' generated quantity could not be found")
 
   ##-------------------------------------------------
   ## set up for parallel running and run over the datasets
-  #doParallel::registerDoParallel(newSimArgs$useCores)
 
-  cl <- parallel::makeCluster(newSimArgs$useCores)
+  cl <- parallel::makeCluster(use_cores)
   doParallel::registerDoParallel(cl)
 
   # define %dopar% alias
   `%doparal%` <- foreach::`%dopar%`
 
   # parallel loop over datasets, default list combine used for dev
-  simEstimates <-
-    foreach::foreach(datafile = newSimArgs$simData,
-                     .combine='rbind') %doparal%
-    singleSim(datafile, newStanArgs,
-              newSimArgs, newReturnArgs)
+  sim_estimates <-
+    foreach::foreach(datafile = sim_data,
+                     .combine = "rbind") %doparal%
+    single_sim(datafile, stan_args, loo,
+               max_failures, max_rhat, parameters,
+               estimates)
 
   # de-register the parallel background once done
   parallel::stopCluster(cl)
 
-  return(simEstimates)
-  }
-
-
-
-#' Returns the default values for stanSim's three parameter lists
-#'
-#' \code{stanSimDefaults} is used to view the default parameters that stanSim uses if not
-#' overwritten by the user. All three lists are accessed by default or by entering
-#' "All as the one parameter value. Individual default lists can be accessed by
-#' specifying "stanArgsDefault", "simArgsDefault", or
-#' "returnArgsDefault".
-#'
-#' @param getDefault Specifies which parameter list to access, defaults to all three
-#' lists. Accepts values c("All", "stanArgsDefault", "simArgsDefault", "returnArgsDefault")
-#' @return A list of default parameter values
-#'
-#' @export
-stanSimDefaults <- function(getDefault = "All"){
-
-  ##----------------------------------------------------
-  ## set deafult lists
-  # extract defaults from rstan
-  stanArgsDefault <- formals(rstan::stan)
-
-  # set default simArgs
-  simArgsDefault <- list("simData" = NULL, "LOO" = FALSE,
-                         "useCores" = 1L, "maxFailures" = 5,
-                         "maxRhat" = 1.05)
-
-  # set default returnArgs,
-  returnArgsDefault <- list("pars" = NULL,
-                            "probs" = c(.025, .5, .975))
-
-  ##----------------------------------------------------
-  ## return default lists depending on input
-  # return three default lists as one
-  if(getDefault == "All") return(
-    list("stanArgsDefault" = stanArgsDefault,
-         "simArgsDefault" = simArgsDefault,
-         "returnArgsDefault" = returnArgsDefault))
-
-  # return stan defs
-  else if (getDefault == "stanArgsDefault") return(stanArgsDefault)
-
-  # return sim defs
-  else if (getDefault == "simArgsDefault") return(simArgsDefault)
-
-  # return return defs
-  else if (getDefault == "returnArgsDefault") return(returnArgsDefault)
-
-  # else error
-  else stop("Invalid 'getDefault' Parameter, see documentation")
+  return(sim_estimates)
 }

@@ -1,4 +1,12 @@
 
+stan_args <- list("data-raw/lin_reg_test/lin_reg_test.stan", data = list(N = 50))
+data_locations <- dir("data-raw/lin_reg_test/data", full.names = T)
+
+
+test <- stan_sim(stan_args, sim_data = data_locations, use_cores = 4)
+
+
+#########
 schools_dat <- list(J = 8,
                     y = c(28,  8, -3,  7, -1,  1, 18, 12),
                     sigma = c(15, 10, 16, 11,  9, 11, 10, 18))
