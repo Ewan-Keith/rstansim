@@ -76,6 +76,9 @@ stan_sim <- function(stan_args = list(), sim_data = NULL, loo = FALSE,
   # define %dopar% alias
   `%doparal%` <- foreach::`%dopar%`
 
+  #testy
+  datafile <- NULL
+
   # parallel loop over datasets, default list combine used for dev
   sim_estimates <-
     foreach::foreach(datafile = sim_data,
