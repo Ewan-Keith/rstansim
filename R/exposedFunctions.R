@@ -74,7 +74,8 @@ stanSim <- function(stanArgs = list(), simArgs = list(),
 
   # parallel loop over datasets, default list combine used for dev
   simEstimates <-
-    foreach::foreach(datafile = newSimArgs$simData) %doparal%
+    foreach::foreach(datafile = newSimArgs$simData,
+                     .combine='rbind') %doparal%
     singleSim(datafile, newStanArgs,
               newSimArgs, newReturnArgs)
 

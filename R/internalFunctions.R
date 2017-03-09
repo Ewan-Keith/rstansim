@@ -44,7 +44,7 @@ safeFit <- function(maxRhat = 1.05,
     max_rhat <- max(rstan::summary(fit)$summary[, "Rhat"])
 
     if (max_rhat < maxRhat)
-      return(list(fit, "attempts" = count))
+      return(c(fit, "attempts" = count))
     else
       safeFitRecurs(maxRhat, maxFailureInt,
                     count = count + 1, ...)
@@ -274,11 +274,14 @@ singleSim <- function(datafile, newStanArgs = list(),
   ##-------------------------------------------------
   ## fit the model in a convergence safe manner
 
-  fitted <- safeFit(maxRhat = newSimArgs$maxRhat,
+  fitted_stan <- safeFit(maxRhat = newSimArgs$maxRhat,
                     maxFailure = newSimArgs$maxRhat,
                     newStanArgs)
 
-  return(fitted)
+  extracted <- paramExtract(fitted_stan, newReturnArgs$pars,
+                            newSimArgs$LOO, newSimArgs$probs)
+
+  return(extracted)
 
   ##-------------------------------------------------
   ## extract all param values

@@ -1,14 +1,15 @@
 context("Parameter extraction and flatten should function correctly")
 
-convergedModel <- readRDS("convergedFit.rds")
-nonConvergedModel <- readRDS("nonConvergedFit.rds")
+attempts <- setNames(1, "fit_attempts")
+convergedModel <- c(readRDS("convergedFit.rds"), attempts)
+nonConvergedModel <- c(readRDS("nonConvergedFit.rds"), attempts)
 
 # converged extracts for testing
 attempts <- setNames(1, "fit_attempts")
 
 convergedExtract1 <- c(readRDS("convergedExtractTest1.rds"), attempts)
-convergedExtract2 <- readRDS("convergedExtractTest2.rds")
-convergedExtract3 <- readRDS("convergedExtractTest3.rds")
+convergedExtract2 <- c(readRDS("convergedExtractTest2.rds"), attempts)
+convergedExtract3 <- c(readRDS("convergedExtractTest3.rds"), attempts)
 
 # loo in/output for testing
 loo_input <- readRDS("loo_input_test.rds")
