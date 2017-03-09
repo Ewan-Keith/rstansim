@@ -13,14 +13,15 @@ test_that("if converged, safeFitRecurs should return the correct list", {
     },
 
     # can't test direct so check that s4 slots are the same
-    testList <- safeFit(
-      maxRhat = 1.05,
-      maxFailure = 5,
-      list(stanModel = "test",
-      stanData = list("X" = 1),
-      stanIter = 20,
-      stanChains = 4)
-    ),
+    testList <- safe_fit(
+      max_rhat = 1.05,
+      max_failures = 5,
+      stan_args = list(
+        stanModel = "test",
+        stanData = list("X" = 1),
+        stanIter = 20,
+        stanChains = 4)
+      ),
 
     testList[[1]] <- getSlots(is(testList[[1]])),
 
@@ -29,12 +30,10 @@ test_that("if converged, safeFitRecurs should return the correct list", {
                  list(getSlots(
                    is(convergedModel)
                  ), "attempts" = 1)
-
-
     )
   )
-
 })
+
 
 ##-------------------------------------------------
 test_that("if not converged, correct error should be returned", {
@@ -44,19 +43,15 @@ test_that("if not converged, correct error should be returned", {
       nonConvergedModel
     },
 
-
-
-    expect_equal(safeFit(
-      maxRhat = 1.05,
-      maxFailure = 5,
-      list(stanModel = "test",
-      stanData = list("X" = 1),
-      stanIter = 20,
-      stanChains = 4)
-    ), "convergence failed for 5 attempts")
-
-
+    expect_equal(safe_fit(
+      max_rhat = 1.05,
+      max_failures = 5,
+      stan_args = list(
+        stanModel = "test",
+        stanData = list("X" = 1),
+        stanIter = 20,
+        stanChains = 4)
+      ), "convergence failed for 5 attempts")
     )
-
 })
 
