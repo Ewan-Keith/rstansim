@@ -89,3 +89,5 @@ stan_sim <- function(stan_args = list(), sim_data = NULL, loo = FALSE,
 
   return(sim_estimates)
 }
+
+#' @import Rcpp
