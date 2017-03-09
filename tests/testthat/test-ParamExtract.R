@@ -1,12 +1,11 @@
 context("Parameter extraction and flatten should function correctly")
 
+
 attempts <- setNames(1, "fit_attempts")
 convergedModel <- c(readRDS("convergedFit.rds"), attempts)
 nonConvergedModel <- c(readRDS("nonConvergedFit.rds"), attempts)
 
 # converged extracts for testing
-attempts <- setNames(1, "fit_attempts")
-
 convergedExtract1 <- c(readRDS("convergedExtractTest1.rds"), attempts)
 convergedExtract2 <- c(readRDS("convergedExtractTest2.rds"), attempts)
 convergedExtract3 <- c(readRDS("convergedExtractTest3.rds"), attempts)
@@ -17,13 +16,13 @@ loo_output <- readRDS("loo_output_test.rds")
 
 test_that("correct output is extracted from fitted test models (LOO=FALSE)", {
 
-  expect_equal(paramExtract(convergedModel, c("mu", "^eta"), FALSE, c("2.5%", "50%", "97.5%")),
+  expect_equal(param_extract(convergedModel, FALSE, c("mu", "^eta"), c("2.5%", "50%", "97.5%")),
                convergedExtract1)
 
-  expect_equal(paramExtract(convergedModel, c("mu", "eta"), FALSE, c("mean", "se_mean", "sd")),
+  expect_equal(param_extract(convergedModel, FALSE, c("mu", "eta"), c("mean", "se_mean", "sd")),
                convergedExtract2)
 
-  expect_equal(paramExtract(convergedModel, c("tau", "lp__"), FALSE, c("n_eff", "Rhat", "25%", "75%")),
+  expect_equal(param_extract(convergedModel, FALSE, c("tau", "lp__"), c("n_eff", "Rhat", "25%", "75%")),
                convergedExtract3)
 
 
@@ -41,7 +40,7 @@ test_that("correct output is extracted from fitted test models (LOO=TRUE)", {
       loo_input
     },
 
-    expect_equal(paramExtract(convergedModel, c("tau", "lp__"), TRUE, c("n_eff", "Rhat", "25%", "75%")),
+    expect_equal(param_extract(convergedModel, TRUE, c("tau", "lp__"), c("n_eff", "Rhat", "25%", "75%")),
                  loo_output)
   )
 
