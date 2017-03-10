@@ -5,3 +5,4 @@
 ^8schools\.stan$
 ^devtest$
 ^tesfile\.R$
+^appveyor\.yml$
