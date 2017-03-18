@@ -6,3 +6,5 @@
 ^devtest$
 ^tesfile\.R$
 ^appveyor\.yml$
+^README\.Rmd$
+^README-.*\.png$
