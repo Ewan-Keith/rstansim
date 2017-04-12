@@ -5,8 +5,8 @@
 \title{Fits a stan model to multiple datasets and returns estimated values}
 \usage{
 stan_sim(stan_args = list(), sim_data = NULL, loo = FALSE,
-  use_cores = 1L, max_failures = 5, max_rhat = 1.05, parameters = ".*",
-  estimates = c("2.5\%", "50\%", "97.5\%"))
+  use_cores = 1L, parameters = ".*", estimates = c("2.5\%", "50\%",
+  "97.5\%"))
 }
 \arguments{
 \item{stan_args}{A list of model parameters to be taken by
@@ -28,6 +28,16 @@ Each stan model is fitted serially regardless of the number of chains
 ran. However as the number of available cores increases more models
 can be fit in parallel}
 
+\item{parameters}{A set of characters indicating which parameters
+should have estimates returned from the fitted models. Regular
+expressions are used to extract parameters, so care has to be taken
+with similarly named parameters (e.g. 'eta' and 'theta').}
+
+\item{estimates}{The estimates that should be returned for each
+model parameter. Currently only supports the standard 'summary'
+parameters c('mean', 'se_mean',  'sd', '2.5%', '25%',  '50%',
+'75%', '97.5%', 'n_eff', 'Rhat').}
+
 \item{max_failures}{The maximum number of times that each model
 will attempt refitting when its greatest R-hat statstics
 is > \code{max_rhat}. If this number is exceeded a string will be returned
@@ -40,16 +50,6 @@ or will return a string indicating lack of convergence (depending on
 the number of fitting attempts made and the value of \code{max_failures}).
 Setting this to a large value (e.g. 1000) will
 efectively turn off the convergence assessment functionality.}
-
-\item{parameters}{A set of characters indicating which parameters
-should have estimates returned from the fitted models. Regular
-expressions are used to extract parameters, so care has to be taken
-with similarly named parameters (e.g. 'eta' and 'theta').}
-
-\item{estimates}{The estimates that should be returned for each
-model parameter. Currently only supports the standard 'summary'
-parameters c('mean', 'se_mean',  'sd', '2.5\%', '25\%',  '50\%',
-'75\%', '97.5\%', 'n_eff', 'Rhat').}
 }
 \value{
 A dataframe of estimated values across all datasets.
