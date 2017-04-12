@@ -15,10 +15,12 @@ single_sim <- function(datafile, stan_args,
   ##-------------------------------------------------
   ## setup stan data properly
   # read in the data varying from model to model
-  var_data <- suppressMessages(readr::read_csv(datafile))
+  #var_data <- suppressMessages(readr::read_csv(datafile))
 
   # convert csv to a list
-  var_data_list <- as.list(var_data)
+  #var_data_list <- as.list(var_data)
+
+  var_data_list <- readRDS(datafile)
 
   # join the new varying data to the constant data
   stan_args$data <- utils::modifyList(stan_args$data, var_data_list,
