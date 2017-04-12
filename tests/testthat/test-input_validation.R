@@ -23,15 +23,4 @@ test_that("Invalid parameters return the correct error message", {
   expect_error(stan_sim(sim_data = "test_only", use_cores = 4.5),
                "use_cores must be a positive integer")
 
-  expect_error(stan_sim(sim_data = "test_only", max_failures = -1),
-               "max_failures must be a positive integer")
-
-  expect_error(stan_sim(sim_data = "test_only", max_failures = 4.5),
-               "max_failures must be a positive integer")
-
-  expect_error(stan_sim(sim_data = "test_only", max_rhat = "test"),
-               "max_rhat must be numeric")
-
-  expect_error(stan_sim(sim_data = "test_only", max_rhat = 0.8),
-               "max_rhat must be >= 1")
 })

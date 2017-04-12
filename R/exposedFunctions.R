@@ -49,8 +49,7 @@
 #'
 #' @export
 stan_sim <- function(stan_args = list(), sim_data = NULL, loo = FALSE,
-                     use_cores = 1L, max_failures = 5, max_rhat = 1.05,
-                     parameters = ".*",
+                     use_cores = 1L, parameters = ".*",
                      estimates = c("2.5%", "50%", "97.5%")){
 
 
@@ -63,8 +62,8 @@ stan_sim <- function(stan_args = list(), sim_data = NULL, loo = FALSE,
   ##-------------------------------------------------
   ## error checks
   # carry out basic input validation
-  stan_sim_checker(sim_data, loo, use_cores, max_failures,
-                   max_rhat, parameters, estimates)
+  stan_sim_checker(sim_data, loo, use_cores,
+                   parameters, estimates)
 
 
   ##-------------------------------------------------
@@ -84,8 +83,7 @@ stan_sim <- function(stan_args = list(), sim_data = NULL, loo = FALSE,
     foreach::foreach(datafile = sim_data,
                      .combine = "rbind") %doparal%
     single_sim(datafile, stan_args, loo,
-               max_failures, max_rhat, parameters,
-               estimates)
+               parameters, estimates)
 
   # de-register the parallel background once done
   parallel::stopCluster(cl)

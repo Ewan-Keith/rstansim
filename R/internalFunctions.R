@@ -8,8 +8,7 @@
 # of single_sim will be ran for every dataset provided to stan_sim
 # with the sim_data parameter.
 single_sim <- function(datafile, stan_args,
-                       loo, max_failures, max_rhat,
-                       parameters, estimates){
+                       loo, parameters, estimates){
 
 
   ##-------------------------------------------------
@@ -28,10 +27,8 @@ single_sim <- function(datafile, stan_args,
 
 
   ##-------------------------------------------------
-  ## fit the model in a convergence safe manner
-  fitted_stan <- safe_fit(max_rhat,
-                          max_failures,
-                          stan_args)
+  ## fit the model
+  fitted_stan <- do.call(rstan::stan, stan_args)
 
 
   ##-------------------------------------------------
@@ -47,63 +44,6 @@ single_sim <- function(datafile, stan_args,
 
 
 #-----------------------------------------------------------------
-#### safe_fit ####
-# safe_fit places a wrapper around rstan's stan function
-# allowing for a maximum R-hat convergence criteria to be specified.
-# If after fitting this criteria is not met by all parameters the
-# function will attempt to refit the model. A maximum number of attempts
-# is specified by the user (default = 5). If the R-hat criteria is met
-# before this limit is reached then the standard stan fit object,
-# along with the number of attempts made before convergence was achieved,
-# will be returned. If convergence is not achieved in this number of
-# attempts, then a string "convergence failed for X attempts" is
-# returned, where X is the maximum number of permitted failures.
-safe_fit <- function(max_rhat, max_failures, stan_args) {
-
-
-  ##-------------------------------------------------
-  ## recursive function loops over each time there's
-  ## a fit failure until it hits the maximum failure
-  safe_fit_recurs <- function(max_rhat, max_failures,
-                              stan_args, count = 1) {
-
-
-    ##-------------------------------------------------
-    ## if the attempt is past the maximum amount return string
-    if (count > max_failures)
-      return(paste("convergence failed for",
-                   max_failures,
-                   "attempts"))
-
-
-    ##-------------------------------------------------
-    ## fit the stan model with specified arguments
-    fit <- do.call(rstan::stan, stan_args)
-
-
-    ##-------------------------------------------------
-    ## extract greatest Rhat
-    greatest_rhat <- max(rstan::summary(fit)$summary[, "Rhat"])
-
-
-    ##-------------------------------------------------
-    ## if greatest Rhat acceptable return model with
-    ## attempt count else try again with count + 1
-    if (greatest_rhat < max_rhat)
-      return(c(fit, "attempts" = count))
-    else
-      safe_fit_recurs(max_rhat, max_failures,
-                      stan_args, count + 1)
-  }
-
-
-  ##-------------------------------------------------
-  ## call safe_fit_recurs helper function
-  safe_fit_recurs(max_rhat, max_failures, stan_args)
-}
-
-
-#-----------------------------------------------------------------
 #### param_extract ####
 # param_extract takes a fitted stan mode and returns a flattened
 # set of summary parameter estimates. The parameters and estimates
@@ -113,16 +53,6 @@ safe_fit <- function(max_rhat, max_failures, stan_args) {
 # output of loo::loo are returned in the output row.
 param_extract <- function(fitted_stan, loo,
                           parameters, estimates){
-
-
-  ##-------------------------------------------------
-  ## prep data
-  # split out attempts and stanfit
-  attempts <- setNames(fitted_stan[[2]], "fit_attempts")
-  fitted_stan <- fitted_stan[[1]]
-
-  # for the first version, just allow standard summary values
-  # rather than custom percentiles, etc. To do later.
 
 
   ##-------------------------------------------------
@@ -158,8 +88,6 @@ param_extract <- function(fitted_stan, loo,
 
   return_joined <- setNames(return_vals, return_names)
 
-  return_joined <- c(return_joined, attempts)
-
 
   ##-------------------------------------------------
   ## if loo, then calculate loo values and append
@@ -194,8 +122,8 @@ param_extract <- function(fitted_stan, loo,
 # stan_sim_checker runs several tests on input to stan_sim() to
 # check for input validity early in the function. Only basic type
 # checks are made.
-stan_sim_checker <- function(sim_data, loo, use_cores, max_failures,
-                             max_rhat, parameters, estimates){
+stan_sim_checker <- function(sim_data, loo, use_cores,
+                             parameters, estimates){
 
 
   ##-------------------------------------------------
@@ -220,16 +148,4 @@ stan_sim_checker <- function(sim_data, loo, use_cores, max_failures,
   # use_cores must be a positive integer
   if (!is_pos_int(use_cores))
     stop("use_cores must be a positive integer")
-
-  # max_failures must be a positive integer
-  if (!is_pos_int(max_failures))
-    stop("max_failures must be a positive integer")
-
-  # max_rhat must be numeric
-  if (!is.numeric(max_rhat))
-    stop("max_rhat must be numeric")
-
-  # max_rhat must be >= 1
-  if (max_rhat < 1)
-    stop("max_rhat must be >= 1")
 }
