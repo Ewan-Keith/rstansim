@@ -14,12 +14,12 @@ schools_dat <- list(J = 8,
 testStanArgs <- list(file = 'devtest/8schools.stan', data = schools_dat,
                     iter = 1000, chains = 4)
 
-testSimArgs <- list(simData = dir("devtest/data", full.names = TRUE), maxRhat = 1.05, useCores = 4)
+testSimArgs <- list(simData = dir("devtest/data", full.names = TRUE), useCores = 4)
 
 testReturnArgs <- list("pars" = c("mu", "^eta"),
                        "probs" = c("2.5%", "50%", "97.5%"))
 
-stanSim(stanArgs = testStanArgs, simArgs = testSimArgs, returnArgs = testReturnArgs)
+testout <- stan_sim(stan_args = testStanArgs, sim_data = dir("devtest/data", full.names = TRUE), use_cores = 4)
 
 
 params <- readRDS("devtest/data/schoolsdat1.rds")

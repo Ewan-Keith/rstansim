@@ -50,7 +50,7 @@
 #' @export
 stan_sim <- function(stan_args = list(), sim_data = NULL, loo = FALSE,
                      use_cores = 1L, parameters = ".*",
-                     estimates = c("2.5%", "50%", "97.5%")){
+                     estimates = c("2.5%", "50%", "97.5%", "n_eff", "Rhat")){
 
 
   ##-------------------------------------------------
