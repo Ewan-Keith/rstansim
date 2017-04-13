@@ -80,8 +80,8 @@ stan_sim <- function(stan_args = list(), sim_data = NULL, loo = FALSE,
 
   # parallel loop over datasets, default list combine used for dev
   sim_estimates <-
-    foreach::foreach(datafile = sim_data,
-                     .combine = "rbind") %doparal%
+    foreach::foreach(datafile = sim_data) %doparal% #,
+                     #.combine = "rbind") %doparal%
     single_sim(datafile, stan_args, loo,
                parameters, estimates)
 
