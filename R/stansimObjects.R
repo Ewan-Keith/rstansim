@@ -41,7 +41,14 @@ stansim <-
 
     # function for cleaning out simstan_uni elements for storage
     ind_run_clean <- function(single_list){
-      cleaned_list
+      # single_list$model_code <- NULL
+      # single_list$model_name <- NULL
+      # single_list$stan_args <- NULL
+
+      single_list$out_data <- cbind("data" = single_list$data_name, single_list$out_data)
+
+      single_list
+
     }
 
     # clean simstan_uni list
@@ -50,15 +57,25 @@ stansim <-
     # extract model name and code
     model_code <- stansim_uni_list[[1]]$model_code
     model_name <- stansim_uni_list[[1]]$model_name
+    stan_args <- stansim_uni_list[[1]]$stan_args
+
+    # extract long data into own list
+    data_list <- lapply(stansim_uni_list, function(i) i$out_data)
+
+    # bind datalist into one object
+    longer_data <- do.call(rbind, lapply(data_list, "["))
+
 
     structure(
       list(
         "sim_name" = stitle,
+        "stan_args" = stan_args,
         "start_time" = start_time,
         "end_time" = end_time,
         "model_name" = model_name,
         "model_code" = model_code,
-        "sim_seed" = stansim_seed
+        "sim_seed" = stansim_seed,
+        "data" = longer_data
       ),
       class = "stansim"
     )

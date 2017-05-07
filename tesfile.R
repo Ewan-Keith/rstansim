@@ -3,7 +3,7 @@ stan_args <- list("data-raw/lin_reg_test/lin_reg_test.stan", data = list(N = 50)
 data_locations <- dir("data-raw/lin_reg_test/data", full.names = T)
 
 
-test <- stan_sim(stan_args, sim_data = data_locations, use_cores = 4)
+test <- stan_sim(stan_args, sim_data = data_locations)
 
 
 #########
