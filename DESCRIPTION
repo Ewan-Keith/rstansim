@@ -12,11 +12,11 @@ Description: Provides a wrapper function for fitting a
 License: GPL (>=3) | file LICENSE
 Encoding: UTF-8
 LazyData: true
-Imports: rstan,
-    loo,
+Imports: loo,
     foreach,
     doParallel
 Depends: R (>= 3.2.3),
+    rstan,
     Rcpp
 RoxygenNote: 6.0.1
 Suggests: testthat
