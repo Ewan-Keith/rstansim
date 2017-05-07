@@ -21,6 +21,9 @@ single_sim <- function(datafile, stan_args,
 
   var_data_list <- readRDS(datafile)
 
+  # if no stan data specified set up empty list
+  if(is.null(stan_args$data)) stan_args$data <- list()
+
   # join the new varying data to the constant data
   stan_args$data <- utils::modifyList(stan_args$data, var_data_list,
                                       keep.null = TRUE)
