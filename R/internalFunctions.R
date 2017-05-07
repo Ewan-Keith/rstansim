@@ -28,6 +28,8 @@ single_sim <- function(datafile, stan_args,
   stan_args$data <- utils::modifyList(stan_args$data, var_data_list,
                                       keep.null = TRUE)
 
+  # fix stan's use of cores to 1
+  stan_args$cores <- 1L
 
   ##-------------------------------------------------
   ## fit the model
