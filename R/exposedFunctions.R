@@ -18,7 +18,7 @@
 #' contain the simulation data. Only data that varies from model to
 #' model must be specified here, data common to all models can be
 #' specified as part of \code{stan_args}.
-#' @param loo If \code{TRUE} the model will attempt to extract fit
+#' @param calc_loo If \code{TRUE} the model will attempt to extract fit
 #' statistics using the loo package. If \code{TRUE} there must be
 #' a valid log_lik quantity specified in the generated quantities
 #' section of the stan model.
@@ -48,7 +48,7 @@
 #' @return A dataframe of estimated values across all datasets.
 #'
 #' @export
-stan_sim <- function(stan_args = list(), sim_data = NULL, loo = FALSE,
+stan_sim <- function(stan_args = list(), sim_data = NULL, calc_loo = FALSE,
                      use_cores = 1L, parameters = ".*",
                      estimates = c("2.5%", "50%", "97.5%", "n_eff", "Rhat"),
                      stansim_seed = floor(runif(1, 1,100000)),
@@ -65,7 +65,7 @@ stan_sim <- function(stan_args = list(), sim_data = NULL, loo = FALSE,
   ##-------------------------------------------------
   ## error checks
   # carry out basic input validation
-  stan_sim_checker(sim_data, loo, use_cores,
+  stan_sim_checker(sim_data, calc_loo, use_cores,
                    parameters, estimates)
 
 
@@ -85,7 +85,7 @@ stan_sim <- function(stan_args = list(), sim_data = NULL, loo = FALSE,
   sim_estimates <-
     foreach::foreach(datafile = sim_data) %doparal% #,
                      #.combine = "rbind") %doparal%
-    single_sim(datafile, stan_args, loo,
+    single_sim(datafile, stan_args, calc_loo,
                parameters, estimates)
 
   # de-register the parallel background once done

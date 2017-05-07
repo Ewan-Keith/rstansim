@@ -8,7 +8,7 @@
 # of single_sim will be ran for every dataset provided to stan_sim
 # with the sim_data parameter.
 single_sim <- function(datafile, stan_args,
-                       loo, parameters, estimates){
+                       calc_loo, parameters, estimates){
 
 
   ##-------------------------------------------------
@@ -39,7 +39,7 @@ single_sim <- function(datafile, stan_args,
 
   ##-------------------------------------------------
   ## extract all param values
-  extracted_data <- param_extract(fitted_stan, loo,
+  extracted_data <- param_extract(fitted_stan, calc_loo,
                                   parameters, estimates, data = datafile)
 
   ##-------------------------------------------------
@@ -62,7 +62,7 @@ single_sim <- function(datafile, stan_args,
 # the user wishes to extract loo statistics for the model (requires
 # a valid log_lik quantity in the stan model). If true then the
 # output of loo::loo are returned in the output row.
-param_extract <- function(fitted_stan, loo,parameters,
+param_extract <- function(fitted_stan, calc_loo, parameters,
                           estimates, data){
 
 
@@ -109,8 +109,8 @@ param_extract <- function(fitted_stan, loo,parameters,
 
 
   ##-------------------------------------------------
-  ## if loo, then calculate loo values and append
-  if (loo){
+  ## if calc_loo, then calculate loo values and append
+  if (calc_loo){
     log_lik_1 <- loo::extract_log_lik(fitted_stan)
     loo_1 <- loo::loo(log_lik_1)
 
@@ -154,7 +154,7 @@ param_extract <- function(fitted_stan, loo,parameters,
 # stan_sim_checker runs several tests on input to stan_sim() to
 # check for input validity early in the function. Only basic type
 # checks are made.
-stan_sim_checker <- function(sim_data, loo, use_cores,
+stan_sim_checker <- function(sim_data, calc_loo, use_cores,
                              parameters, estimates){
 
 
@@ -173,9 +173,9 @@ stan_sim_checker <- function(sim_data, loo, use_cores,
   if (is.null(sim_data))
     stop("sim_data must be specified")
 
-  # loo must be Boolean
-  if (!is.logical(loo))
-    stop("loo must be of type logical")
+  # calc_loo must be Boolean
+  if (!is.logical(calc_loo))
+    stop("calc_loo must be of type logical")
 
   # use_cores must be a positive integer
   if (!is_pos_int(use_cores))
