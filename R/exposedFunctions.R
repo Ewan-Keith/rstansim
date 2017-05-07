@@ -50,9 +50,12 @@
 #' @export
 stan_sim <- function(stan_args = list(), sim_data = NULL, loo = FALSE,
                      use_cores = 1L, parameters = ".*",
-                     estimates = c("2.5%", "50%", "97.5%", "n_eff", "Rhat")){
+                     estimates = c("2.5%", "50%", "97.5%", "n_eff", "Rhat"),
+                     stansim_seed = floor(runif(1, 1,100000)),
+                     sim_name = NULL){
 
-
+  start_time <- Sys.time()
+  set.seed(stansim_seed)
   ##-------------------------------------------------
   ## stan input must be a list
   if (!is.list(stan_args))
@@ -88,5 +91,13 @@ stan_sim <- function(stan_args = list(), sim_data = NULL, loo = FALSE,
   # de-register the parallel background once done
   parallel::stopCluster(cl)
 
-  return(sim_estimates)
+  ##-------------------------------------------------
+  ## collect stansim_uni objects into stansim obj and return
+  end_time <- Sys.time()
+
+  stansim_obj <- stansim(sim_name = sim_name, stansim_uni_list = sim_estimates,
+                         start_time = start_time, end_time = end_time,
+                         stansim_seed = stansim_seed)
+
+  return(stansim_obj)
 }

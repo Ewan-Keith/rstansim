@@ -30,7 +30,7 @@ single_sim <- function(datafile, stan_args,
   ## fit the model
   start_time <- Sys.time()
   fitted_stan <- do.call(rstan::stan, stan_args)
-
+  end_time <- Sys.time()
 
   ##-------------------------------------------------
   ## extract all param values
@@ -39,7 +39,7 @@ single_sim <- function(datafile, stan_args,
 
   ##-------------------------------------------------
   ## package into internal stansim_uni object
-  return_object <- make_stansim_uni(fit = fitted_stan, data_name = datafile,
+  return_object <- stansim_uni(fit = fitted_stan, data_name = datafile,
                                     ran_at = start_time,
                                     long_data = extracted_data)
 
