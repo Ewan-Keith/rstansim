@@ -8,7 +8,8 @@
 # of single_sim will be ran for every dataset provided to stan_sim
 # with the sim_data parameter.
 single_sim <- function(datafile, stan_args,
-                       calc_loo, parameters, estimates){
+                       calc_loo, parameters, estimates,
+                       stan_warnings){
 
 
   ##-------------------------------------------------
@@ -32,9 +33,35 @@ single_sim <- function(datafile, stan_args,
   stan_args$cores <- 1L
 
   ##-------------------------------------------------
+  ## set up call handler functions
+
+  # warning handler to catch warnings in fitting
+  # parsing is done in stansim constructor
+  if(stan_warnings %in% c("catch", "parse")){
+    wHandler <- function(w) {
+      myWarnings <<- c(myWarnings, list(w))
+      invokeRestart("muffleWarning")
+    }
+  } else if(stan_warnings == "suppress"){
+    wHandler <- function(w) {
+      invokeRestart("muffleWarning")
+    }
+  } else if(stan_warnings == "print"){
+    wHandler <- function(w) {}
+  }
+
+  # init warning store
+  myWarnings <- NULL
+
+  ##-------------------------------------------------
   ## fit the model
   start_time <- Sys.time()
-  fitted_stan <- do.call(rstan::stan, stan_args)
+
+  fitted_stan <- withCallingHandlers(
+    do.call(rstan::stan, stan_args),
+    warning = wHandler
+  )
+
   end_time <- Sys.time()
 
   ##-------------------------------------------------
@@ -46,7 +73,8 @@ single_sim <- function(datafile, stan_args,
   ## package into internal stansim_uni object
   return_object <- stansim_uni(fit = fitted_stan, data_name = datafile,
                                     ran_at = start_time,
-                                    long_data = extracted_data)
+                                    long_data = extracted_data,
+                                    stan_warnings = myWarnings)
 
   ##-------------------------------------------------
   ## return
@@ -155,7 +183,7 @@ param_extract <- function(fitted_stan, calc_loo, parameters,
 # check for input validity early in the function. Only basic type
 # checks are made.
 stan_sim_checker <- function(sim_data, calc_loo, use_cores,
-                             parameters, estimates){
+                             parameters, estimates, stan_args){
 
 
   ##-------------------------------------------------
@@ -180,4 +208,52 @@ stan_sim_checker <- function(sim_data, calc_loo, use_cores,
   # use_cores must be a positive integer
   if (!is_pos_int(use_cores))
     stop("use_cores must be a positive integer")
+
+  # stan input must be a list
+  if (!is.list(stan_args))
+    stop("stan_args must be a list of stan parameters")
+
+  # stan_args$cores will just be overwritten
+  # if specified warn user
+  if("cores" %in% names(stan_args))
+    warning("stan_sim is parallel across stan instances, not within. stan_arg$cores is fixed to 1")
 }
+
+#-----------------------------------------------------------------
+#### warning_parse ####
+# warning_parse takes warning messages from the stan fit process
+# and parses them in to an easily explorable and traceable format
+# for later use. Simply a set of regexes that spit results in to
+# a dataframe. Should be lappy()'d to a list of warnings/
+warning_parse <- function(warning_string){
+
+  ## divergent transition warning regex
+  div_trans_regex <- "divergent transitions after warmup\\. Increasing adapt_delta"
+
+  ## if divergent transition
+  if(grepl(div_trans_regex, warning_string)){
+    warning_type <- "divergent transitions"
+
+    count <- as.numeric(regmatches(warning_string, gregexpr(
+      '(?<=There were ).*?(?= divergent transitions)',
+      warning_string, perl=T))[[1]])
+
+    chain <- NA
+
+    raw_unmatched <- NA
+
+    ## if no matches return raw unmatched warning
+    } else {
+
+    warning_type <- NA
+    count <- NA
+    chain <- NA
+    raw_unmatched <- warning_string
+    }
+
+  cbind(warning_type, count, chain, raw_unmatched)
+}
+
+
+
+

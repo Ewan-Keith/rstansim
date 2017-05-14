@@ -30,7 +30,7 @@ fit <- stan(file = 'devtest/8schools.stan', data = params,
             iter = 1000, chains = 4)
 
 fit2 <- do.call(stan, list(file = 'devtest/8schools.stan', data = params,
-                       iter = 1000, chains = 4))
+                       iter = 1000, chains = 4, cores = 4))
 
 # extract testing, test is a stanfit object
 

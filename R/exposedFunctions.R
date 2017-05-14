@@ -51,22 +51,18 @@
 stan_sim <- function(stan_args = list(), sim_data = NULL, calc_loo = FALSE,
                      use_cores = 1L, parameters = ".*",
                      estimates = c("2.5%", "50%", "97.5%", "n_eff", "Rhat"),
-                     stansim_seed = floor(runif(1, 1,100000)),
-                     sim_name = NULL){
+                     stan_warnings = "catch", # options should be print, catch, parse, suppress
+                     stansim_seed = floor(runif(1, 1, 100000)),
+                     sim_name = paste0("Stansim_", start_time)){
 
   start_time <- Sys.time()
   set.seed(stansim_seed)
-  ##-------------------------------------------------
-  ## stan input must be a list
-  if (!is.list(stan_args))
-    stop("stan_args must be a list of stan parameters")
-
 
   ##-------------------------------------------------
   ## error checks
   # carry out basic input validation
   stan_sim_checker(sim_data, calc_loo, use_cores,
-                   parameters, estimates)
+                   parameters, estimates, stan_args)
 
 
   ##-------------------------------------------------
@@ -82,11 +78,11 @@ stan_sim <- function(stan_args = list(), sim_data = NULL, calc_loo = FALSE,
   datafile <- NULL
 
   # parallel loop over datasets, default list combine used for dev
+
   sim_estimates <-
-    foreach::foreach(datafile = sim_data) %doparal% #,
-                     #.combine = "rbind") %doparal%
+    foreach::foreach(datafile = sim_data) %doparal%
     single_sim(datafile, stan_args, calc_loo,
-               parameters, estimates)
+               parameters, estimates, stan_warnings)
 
   # de-register the parallel background once done
   parallel::stopCluster(cl)
@@ -97,7 +93,8 @@ stan_sim <- function(stan_args = list(), sim_data = NULL, calc_loo = FALSE,
 
   stansim_obj <- stansim(sim_name = sim_name, stansim_uni_list = sim_estimates,
                          start_time = start_time, end_time = end_time,
-                         stansim_seed = stansim_seed)
+                         stansim_seed = stansim_seed,
+                         stan_warnings = stan_warnings)
 
   return(stansim_obj)
 }
