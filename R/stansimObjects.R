@@ -3,7 +3,7 @@
 # constructor for internal object that is returned by each parallel
 # run of foreach. Only for internal use and will be combined into
 # stansim object before being returned.
-stansim_uni <- function(fit, data_name, ran_at, long_data) {
+stansim_uni <- function(fit, data_name, ran_at, long_data, stan_warnings) {
 
   structure(
     list(
@@ -15,7 +15,8 @@ stansim_uni <- function(fit, data_name, ran_at, long_data) {
       "seed" = rstan::get_seed(fit),
       "out_data" = long_data,
       "model_name" = fit@model_name,
-      "model_code" = fit@stanmodel@model_code
+      "model_code" = fit@stanmodel@model_code,
+      "warnings" = stan_warnings
     ),
     class = "stansim_uni"
   )
@@ -30,34 +31,26 @@ stansim_uni <- function(fit, data_name, ran_at, long_data) {
 
 stansim <-
   function(sim_name, stansim_uni_list, start_time,
-           end_time, stansim_seed) {
+           end_time, stansim_seed, stan_warnings) {
 
-    # set simulation name to date if none specified
-    stitle <- if (is.null(sim_name)) {
-      paste0("Stansim_", as.Date(start_time))
-    } else {
-      sim_name
-    }
-
+    ## extract all individual stan instance level data
     # function for cleaning out simstan_uni elements for storage
     ind_run_clean <- function(single_list){
-      # single_list$model_code <- NULL
-      # single_list$model_name <- NULL
-      # single_list$stan_args <- NULL
+      single_list$model_code <- NULL
+      single_list$model_name <- NULL
+      single_list$out_data <- NULL
 
-      single_list$out_data <- cbind("data" = single_list$data_name, single_list$out_data)
-
-      single_list
-
+      unclass(single_list)
     }
 
     # clean simstan_uni list
     ind_runs <- lapply(stansim_uni_list, ind_run_clean)
 
+    ## extract all simulation level data
     # extract model name and code
-    model_code <- stansim_uni_list[[1]]$model_code
+    model_code <- stansim_uni_list[[1]]$model_code[[1]]
     model_name <- stansim_uni_list[[1]]$model_name
-    stan_args <- stansim_uni_list[[1]]$stan_args
+    stan_args <- stansim_uni_list[[1]]$stan_args ## to be redundant once ind sims are stored
 
     # extract long data into own list
     data_list <- lapply(stansim_uni_list, function(i) i$out_data)
@@ -65,16 +58,16 @@ stansim <-
     # bind datalist into one object
     longer_data <- do.call(rbind, lapply(data_list, "["))
 
-
+    # create s3 object
     structure(
       list(
-        "sim_name" = stitle,
-        "stan_args" = stan_args,
+        "sim_name" = sim_name,
         "start_time" = start_time,
         "end_time" = end_time,
         "model_name" = model_name,
         "model_code" = model_code,
         "sim_seed" = stansim_seed,
+        "instances" = ind_runs,
         "data" = longer_data
       ),
       class = "stansim"
