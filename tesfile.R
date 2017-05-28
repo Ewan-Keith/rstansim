@@ -11,7 +11,7 @@ schools_dat <- list(J = 8,
                     y = c(28,  8, -3,  7, -1,  1, 18, 12),
                     sigma = c(15, 10, 16, 11,  9, 11, 10, 18))
 
-testStanArgs <- list(file = 'devtest/8schools.stan', data = schools_dat,
+testStanArgs <- list(file = 'data-raw/8schools.stan', data = schools_dat,
                     iter = 1000, chains = 4)
 
 testSimArgs <- list(simData = dir("devtest/data", full.names = TRUE), useCores = 4)

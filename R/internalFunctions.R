@@ -11,14 +11,12 @@ single_sim <- function(datafile, stan_args,
                        calc_loo, parameters, estimates,
                        stan_warnings){
 
+  # garbage collect on start
+  gc()
 
   ##-------------------------------------------------
   ## setup stan data properly
   # read in the data varying from model to model
-  #var_data <- suppressMessages(readr::read_csv(datafile))
-
-  # convert csv to a list
-  #var_data_list <- as.list(var_data)
 
   var_data_list <- readRDS(datafile)
 
@@ -64,21 +62,29 @@ single_sim <- function(datafile, stan_args,
 
   end_time <- Sys.time()
 
+  # garbage collect after model fitting
+  rm(stan_args)
+  gc()
+
   ##-------------------------------------------------
   ## extract all param values
   extracted_data <- param_extract(fitted_stan, calc_loo,
                                   parameters, estimates, data = datafile)
 
-  ##-------------------------------------------------
-  ## package into internal stansim_uni object
-  return_object <- stansim_uni(fit = fitted_stan, data_name = datafile,
-                                    ran_at = start_time,
-                                    long_data = extracted_data,
-                                    stan_warnings = myWarnings)
+  # garbage collect after para, extraction
+  rm(calc_loo, parameters, estimates)
+  gc()
 
   ##-------------------------------------------------
-  ## return
-  return(return_object)
+  ## package into internal stansim_uni object
+  stansim_uni(
+    fit = fitted_stan,
+    data_name = datafile,
+    ran_at = start_time,
+    long_data = extracted_data,
+    stan_warnings = myWarnings
+  )
+
 }
 
 
@@ -165,15 +171,11 @@ param_extract <- function(fitted_stan, calc_loo, parameters,
 
   ##-------------------------------------------------
   ## add an indicator for dataset and sort rows
-
   indicator_data <- cbind("data" = data, long_output)
 
-  return_data <-
-    indicator_data[with(indicator_data, order(parameter, estimate)),]
+  # return
+  indicator_data[with(indicator_data, order(parameter, estimate)),]
 
-  ##-------------------------------------------------
-  ## return
-  return(return_data)
 }
 
 
