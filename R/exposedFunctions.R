@@ -67,8 +67,11 @@ stan_sim <- function(stan_args = list(), sim_data = NULL, calc_loo = FALSE,
 
   ##-------------------------------------------------
   ## set up for parallel running and run over the datasets
+  workers <- rep("localhost", use_cores)
+  cl <- future::makeClusterPSOCK(workers, revtunnel = TRUE, outfile = "", verbose = TRUE,
+                                 master=nsl(Sys.info()['nodename']))
 
-  cl <- parallel::makeCluster(use_cores)
+  #cl <- parallel::makeCluster(use_cores)
   doParallel::registerDoParallel(cl)
 
   # define %dopar% alias
