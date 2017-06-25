@@ -52,6 +52,7 @@ stan_sim <- function(stan_args = list(), sim_data = NULL, calc_loo = FALSE,
                      use_cores = 1L, parameters = ".*",
                      estimates = c("2.5%", "50%", "97.5%", "n_eff", "Rhat"),
                      stan_warnings = "catch", # options should be print, catch, parse, suppress
+                     cache = TRUE,
                      stansim_seed = floor(runif(1, 1, 100000)),
                      sim_name = paste0("Stansim_", start_time)){
 
@@ -66,7 +67,7 @@ stan_sim <- function(stan_args = list(), sim_data = NULL, calc_loo = FALSE,
 
 
   ##-------------------------------------------------
-  ## set up for parallel running and run over the datasets
+  ## set up for parallel running
   workers <- rep("localhost", use_cores)
   cl <- future::makeClusterPSOCK(workers, revtunnel = TRUE, outfile = "", verbose = TRUE,
                                  master=nsl(Sys.info()['nodename']))
@@ -80,15 +81,42 @@ stan_sim <- function(stan_args = list(), sim_data = NULL, calc_loo = FALSE,
   # define datafile locally first to avoid R CMD Check Note
   datafile <- NULL
 
-  # parallel loop over datasets, default list combine used for dev
+  ##-------------------------------------------------
+  ## cache results set up and handling
+  if(cache){
+    if(dir.exists(".cache/") &
+       length(dir(".cache/", full.names = TRUE)) != 0){
 
+      # remove already ran cached data from datafile
+      cache_files <- dir(".cache", full.names = TRUE)
+      clean_cache_files <- sub("_cached.rds", "", sub("\\.cache/", "", cache_files))
+
+      cache_match <-
+        sub(".rds", "", sub("(.*)/", "", sim_data)) %in% clean_cache_files
+
+      sim_data <- sim_data[!cache_match]
+
+    } else if(!dir.exists(".cache/")) {
+      dir.create(".cache/")
+    }
+  }
+
+  ##-------------------------------------------------
+  ## run over the datasets
+
+  # parallel loop over datasets, default list combine used for dev
   sim_estimates <-
     foreach::foreach(datafile = sim_data) %doparal%
     single_sim(datafile, stan_args, calc_loo,
-               parameters, estimates, stan_warnings)
+               parameters, estimates, stan_warnings, cache)
 
   # de-register the parallel background once done
   parallel::stopCluster(cl)
+
+  ##-------------------------------------------------
+  ## if using the cache, use cached results instead
+  if(cache)
+    sim_estimates <- lapply(dir(".cache/", full.names = TRUE), function (x) readRDS(x))
 
   ##-------------------------------------------------
   ## collect stansim_uni objects into stansim obj and return
@@ -98,6 +126,10 @@ stan_sim <- function(stan_args = list(), sim_data = NULL, calc_loo = FALSE,
                          start_time = start_time, end_time = end_time,
                          stansim_seed = stansim_seed,
                          stan_warnings = stan_warnings)
+
+  # if using cache delete folder
+  if(cache)
+    unlink(".cache/", recursive = TRUE)
 
   return(stansim_obj)
 }

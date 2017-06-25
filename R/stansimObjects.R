@@ -3,7 +3,8 @@
 # constructor for internal object that is returned by each parallel
 # run of foreach. Only for internal use and will be combined into
 # stansim object before being returned.
-stansim_uni <- function(fit, data_name, ran_at, long_data, stan_warnings) {
+stansim_uni <- function(fit, data_name, ran_at, long_data, stan_warnings,
+                        cache) {
 
   structure(
     list(

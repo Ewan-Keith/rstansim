@@ -26,10 +26,10 @@ params <- readRDS("devtest/data/schoolsdat1.rds")
 
 library(rstan)
 
-fit <- stan(file = 'devtest/8schools.stan', data = params,
+fit <- stan(file = 'data-raw/8schools.stan', data = params,
             iter = 1000, chains = 4)
 
-fit2 <- do.call(stan, list(file = 'devtest/8schools.stan', data = params,
+fit2 <- do.call(stan, list(file = 'data-raw/8schools.stan', data = params,
                        iter = 1000, chains = 4, cores = 4))
 
 # extract testing, test is a stanfit object

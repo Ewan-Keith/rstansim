@@ -9,7 +9,7 @@
 # with the sim_data parameter.
 single_sim <- function(datafile, stan_args,
                        calc_loo, parameters, estimates,
-                       stan_warnings){
+                       stan_warnings, cache){
 
   # garbage collect on start
   gc()
@@ -77,13 +77,24 @@ single_sim <- function(datafile, stan_args,
 
   ##-------------------------------------------------
   ## package into internal stansim_uni object
-  stansim_uni(
+  single_out <- stansim_uni(
     fit = fitted_stan,
     data_name = datafile,
     ran_at = start_time,
     long_data = extracted_data,
     stan_warnings = myWarnings
   )
+
+  ##-------------------------------------------------
+  ## if cache is true then write to .sim_cache folder, cleaning datafile first
+  if(cache){
+    cleaned_datafile <- sub(".rds", "", sub("(.*)/", "", datafile))
+    saveRDS(single_out, paste0(".cache/", cleaned_datafile, "_cached.rds"))
+    }
+
+  ##-------------------------------------------------
+  ## return object
+  single_out
 
 }
 
