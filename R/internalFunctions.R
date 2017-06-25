@@ -21,7 +21,7 @@ single_sim <- function(datafile, stan_args,
   var_data_list <- readRDS(datafile)
 
   # if no stan data specified set up empty list
-  if(is.null(stan_args$data)) stan_args$data <- list()
+  if (is.null(stan_args$data)) stan_args$data <- list()
 
   # join the new varying data to the constant data
   stan_args$data <- utils::modifyList(stan_args$data, var_data_list,
@@ -35,21 +35,21 @@ single_sim <- function(datafile, stan_args,
 
   # warning handler to catch warnings in fitting
   # parsing is done in stansim constructor
-  if(stan_warnings %in% c("catch", "parse")){
-    wHandler <- function(w) {
-      myWarnings <<- c(myWarnings, list(w))
+  if (stan_warnings == "catch"){
+    w_handler <- function(w) {
+      my_warnings <<- c(my_warnings, list(w))
       invokeRestart("muffleWarning")
     }
-  } else if(stan_warnings == "suppress"){
-    wHandler <- function(w) {
+  } else if (stan_warnings == "suppress"){
+    w_handler <- function(w) {
       invokeRestart("muffleWarning")
     }
-  } else if(stan_warnings == "print"){
-    wHandler <- function(w) {}
+  } else if (stan_warnings == "print"){
+    w_handler <- function(w) NULL
   }
 
   # init warning store
-  myWarnings <- NULL
+  my_warnings <- NULL
 
   ##-------------------------------------------------
   ## fit the model
@@ -57,10 +57,8 @@ single_sim <- function(datafile, stan_args,
 
   fitted_stan <- withCallingHandlers(
     do.call(rstan::stan, stan_args),
-    warning = wHandler
+    warning = w_handler
   )
-
-  end_time <- Sys.time()
 
   # garbage collect after model fitting
   rm(stan_args)
@@ -82,12 +80,12 @@ single_sim <- function(datafile, stan_args,
     data_name = datafile,
     ran_at = start_time,
     long_data = extracted_data,
-    stan_warnings = myWarnings
+    stan_warnings = my_warnings
   )
 
   ##-------------------------------------------------
   ## if cache is true then write to .sim_cache folder, cleaning datafile first
-  if(cache){
+  if (cache){
     cleaned_datafile <- sub(".rds", "", sub("(.*)/", "", datafile))
     saveRDS(single_out, paste0(".cache/", cleaned_datafile, "_cached.rds"))
     }
@@ -185,7 +183,7 @@ param_extract <- function(fitted_stan, calc_loo, parameters,
   indicator_data <- cbind("data" = data, long_output)
 
   # return
-  indicator_data[with(indicator_data, order(parameter, estimate)),]
+  indicator_data[with(indicator_data, order(parameter, estimate)), ]
 
 }
 
@@ -228,8 +226,9 @@ stan_sim_checker <- function(sim_data, calc_loo, use_cores,
 
   # stan_args$cores will just be overwritten
   # if specified warn user
-  if("cores" %in% names(stan_args))
-    warning("stan_sim is parallel across stan instances, not within. stan_arg$cores is fixed to 1")
+  if ("cores" %in% names(stan_args))
+    warning(paste0("stan_sim is parallel across stan instances,",
+                   "not within. stan_arg$cores is fixed to 1"))
 }
 
 #-----------------------------------------------------------------
@@ -241,15 +240,16 @@ stan_sim_checker <- function(sim_data, calc_loo, use_cores,
 warning_parse <- function(warning_string){
 
   ## divergent transition warning regex
-  div_trans_regex <- "divergent transitions after warmup\\. Increasing adapt_delta"
+  div_trans_regex <- paste0("divergent transitions after warmup\\.",
+                            " Increasing adapt_delta")
 
   ## if divergent transition
-  if(grepl(div_trans_regex, warning_string)){
+  if (grepl(div_trans_regex, warning_string)){
     warning_type <- "divergent transitions"
 
     count <- as.numeric(regmatches(warning_string, gregexpr(
-      '(?<=There were ).*?(?= divergent transitions)',
-      warning_string, perl=T))[[1]])
+      "(?<=There were ).*?(?= divergent transitions)",
+      warning_string, perl = T))[[1]])
 
     chain <- NA
 
@@ -266,7 +266,3 @@ warning_parse <- function(warning_string){
 
   cbind(warning_type, count, chain, raw_unmatched)
 }
-
-
-
-

@@ -51,7 +51,7 @@
 stan_sim <- function(stan_args = list(), sim_data = NULL, calc_loo = FALSE,
                      use_cores = 1L, parameters = ".*",
                      estimates = c("2.5%", "50%", "97.5%", "n_eff", "Rhat"),
-                     stan_warnings = "catch", # options should be print, catch, parse, suppress
+                     stan_warnings = "catch", # options print, catch, suppress
                      cache = TRUE,
                      stansim_seed = floor(runif(1, 1, 100000)),
                      sim_name = paste0("Stansim_", start_time)){
@@ -59,14 +59,14 @@ stan_sim <- function(stan_args = list(), sim_data = NULL, calc_loo = FALSE,
   start_time <- Sys.time()
   set.seed(stansim_seed)
 
-  ##-------------------------------------------------
+  ## -------------------------------------------------
   ## error checks
   # carry out basic input validation
   stan_sim_checker(sim_data, calc_loo, use_cores,
                    parameters, estimates, stan_args)
 
 
-  ##-------------------------------------------------
+  ## -------------------------------------------------
   ## set up for parallel running
   cl <- parallel::makeCluster(use_cores)
   doParallel::registerDoParallel(cl)
@@ -79,20 +79,21 @@ stan_sim <- function(stan_args = list(), sim_data = NULL, calc_loo = FALSE,
 
   ##-------------------------------------------------
   ## cache results set up and handling
-  if(cache){
-    if(dir.exists(".cache/") &
+  if (cache){
+    if (dir.exists(".cache/") &
        length(dir(".cache/", full.names = TRUE)) != 0){
 
       # remove already ran cached data from datafile
       cache_files <- dir(".cache", full.names = TRUE)
-      clean_cache_files <- sub("_cached.rds", "", sub("\\.cache/", "", cache_files))
+      clean_cache_files <-
+        sub("_cached.rds", "", sub("\\.cache/", "", cache_files))
 
       cache_match <-
         sub(".rds", "", sub("(.*)/", "", sim_data)) %in% clean_cache_files
 
       sim_data <- sim_data[!cache_match]
 
-    } else if(!dir.exists(".cache/")) {
+    } else if (!dir.exists(".cache/")) {
       dir.create(".cache/")
     }
   }
@@ -111,8 +112,9 @@ stan_sim <- function(stan_args = list(), sim_data = NULL, calc_loo = FALSE,
 
   ##-------------------------------------------------
   ## if using the cache, use cached results instead
-  if(cache)
-    sim_estimates <- lapply(dir(".cache/", full.names = TRUE), function (x) readRDS(x))
+  if (cache)
+    sim_estimates <- lapply(dir(".cache/", full.names = TRUE),
+                            function (x) readRDS(x))
 
   ##-------------------------------------------------
   ## collect stansim_uni objects into stansim obj and return
@@ -124,7 +126,7 @@ stan_sim <- function(stan_args = list(), sim_data = NULL, calc_loo = FALSE,
                          stan_warnings = stan_warnings)
 
   # if using cache delete folder
-  if(cache)
+  if (cache)
     unlink(".cache/", recursive = TRUE)
 
   return(stansim_obj)

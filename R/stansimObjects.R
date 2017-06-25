@@ -51,7 +51,6 @@ stansim <-
     # extract model name and code
     model_code <- stansim_uni_list[[1]]$model_code[[1]]
     model_name <- stansim_uni_list[[1]]$model_name
-    stan_args <- stansim_uni_list[[1]]$stan_args ## to be redundant once ind sims are stored
 
     # extract long data into own list
     data_list <- lapply(stansim_uni_list, function(i) i$out_data)
@@ -75,24 +74,3 @@ stansim <-
     )
 
 }
-
-
-
-
-# stansim is class for single run of stan_sim containing:
-## date/time of first run
-## date/time at end of run
-## calculated duration (using above)
-## model code
-## full param list submitted to stan_sim
-## a global seed (setable in stan_sim params)
-## full estimated data (Seperate slots for datafile names and parameters)
-#
-# for each run
-##
-
-## dataset ran on #
-## start/end time date
-## duration
-## full stan object stan_args
-## full stan objct inits
