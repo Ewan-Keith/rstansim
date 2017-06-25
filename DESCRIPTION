@@ -14,8 +14,7 @@ Encoding: UTF-8
 LazyData: true
 Imports: loo,
     foreach,
-    doParallel,
-    future
+    doParallel
 Depends: R (>= 3.2.3),
     rstan,
     Rcpp
