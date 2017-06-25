@@ -72,5 +72,27 @@ stansim <-
       ),
       class = "stansim"
     )
+  }
 
+
+#-----------------------------------------------------------------
+#### print() method ####
+# print generic for summarising simulation
+
+print.stansim <- function(x){
+
+  paramaters <- unique(as.character(testout$data$parameter))
+
+  cat("Stan Simulation Title: ", x$sim_name, "\n")
+  cat("Model Name: ", x$model_name, "\n")
+  cat("Started Running at: ", format(x$start_time), "\n")
+  cat("Finished Running at: ", format(x$end_time), "\n\n")
+
+  cat("Summary Information\n")
+  cat("Number of Models Fitted: ", length(x$instances), "\n\n")
+
+  cat("Parameter Estimates Recorded [", length(paramaters), "] (first 20 shown)\n")
+  cat(paramaters)
 }
+
+
