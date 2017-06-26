@@ -81,7 +81,7 @@ stan_sim <- function(stan_args = list(), sim_data = NULL, calc_loo = FALSE,
   ## cache results set up and handling
   if (cache){
     if (dir.exists(".cache/") &
-       length(dir(".cache/", full.names = TRUE)) != 0){
+       length(dir(".cache/")) != 0){
 
       # remove already ran cached data from datafile
       cache_files <- dir(".cache", full.names = TRUE)

@@ -4,9 +4,11 @@
 \alias{stan_sim}
 \title{Fits a stan model to multiple datasets and returns estimated values}
 \usage{
-stan_sim(stan_args = list(), sim_data = NULL, loo = FALSE,
+stan_sim(stan_args = list(), sim_data = NULL, calc_loo = FALSE,
   use_cores = 1L, parameters = ".*", estimates = c("2.5\%", "50\%",
-  "97.5\%"))
+  "97.5\%", "n_eff", "Rhat"), stan_warnings = "catch", cache = TRUE,
+  stansim_seed = floor(runif(1, 1, 1e+05)), sim_name = paste0("Stansim_",
+  start_time))
 }
 \arguments{
 \item{stan_args}{A list of model parameters to be taken by
@@ -18,7 +20,7 @@ contain the simulation data. Only data that varies from model to
 model must be specified here, data common to all models can be
 specified as part of \code{stan_args}.}
 
-\item{loo}{If \code{TRUE} the model will attempt to extract fit
+\item{calc_loo}{If \code{TRUE} the model will attempt to extract fit
 statistics using the loo package. If \code{TRUE} there must be
 a valid log_lik quantity specified in the generated quantities
 section of the stan model.}

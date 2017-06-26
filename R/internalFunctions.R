@@ -222,12 +222,12 @@ stan_sim_checker <- function(sim_data, calc_loo, use_cores,
 
   # stan input must be a list
   if (!is.list(stan_args))
-    stop("stan_args must be a list of stan parameters")
+    stop("stan_args must be of type list")
 
   # stan_args$cores will just be overwritten
   # if specified warn user
   if ("cores" %in% names(stan_args))
-    warning(paste0("stan_sim is parallel across stan instances,",
+    warning(paste("stan_sim is parallel across stan instances,",
                    "not within. stan_arg$cores is fixed to 1"))
 }
 

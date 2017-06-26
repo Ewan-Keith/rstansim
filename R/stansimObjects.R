@@ -76,23 +76,110 @@ stansim <-
 
 
 #-----------------------------------------------------------------
-#### print() method ####
-# print generic for summarising simulation
-
+#### print.stansim method ####
+#' Print a summary for a stansim simulation object
+#'
+#' @description Print basic  information regarding a stansim simulation object,
+#' including simulation title, time/date ran, number of models fitted, and parameters
+#' and estimates recorded.
+#'
+#' @param x An object of S3 class stansim.
+#'
+#' @export
 print.stansim <- function(x){
 
-  paramaters <- unique(as.character(testout$data$parameter))
+  # helper method for clean matrix printing
+  print.matrix <- function(m){
 
-  cat("Stan Simulation Title: ", x$sim_name, "\n")
-  cat("Model Name: ", x$model_name, "\n")
-  cat("Started Running at: ", format(x$start_time), "\n")
-  cat("Finished Running at: ", format(x$end_time), "\n\n")
+    m <- m[rowSums(is.na(m))!=ncol(m), , drop = FALSE]
 
-  cat("Summary Information\n")
-  cat("Number of Models Fitted: ", length(x$instances), "\n\n")
+    m[is.na(m)] <- ""
 
-  cat("Parameter Estimates Recorded [", length(paramaters), "] (first 20 shown)\n")
-  cat(paramaters)
+    write.table(format(m, justify="left"),
+                row.names=F, col.names=F, quote=F)
+  }
+
+  # stored parameters
+  paramaters <- unique(as.character(x$data$parameter))
+
+  # stored estimates
+  estimates <- unique(as.character(x$data$estimate))
+
+  cat("Stan Simulation Title:", x$sim_name, "\n")
+  cat("Model Name:", x$model_name, "\n\n")
+  cat("Started Running at:", format(x$start_time), "\n")
+  cat("Finished Running at:", format(x$end_time), "\n\n")
+
+  cat("Number of Models Fitted:", length(x$instances), "\n\n")
+
+  if (length(paramaters) > 50) {
+    cat("Parameter Estimates Recorded:",
+        length(paramaters),
+        "(first 50 shown)\n")
+  } else {
+    cat("Parameter Estimates Recorded:",
+        length(paramaters),
+        "\n")
+  }
+  print.matrix(matrix(paramaters[1:50], ncol = 5, byrow = TRUE))
+
+  if(length(estimates) > 50) {
+    cat("\nEstimates Recorded:",
+        length (estimates),
+        "(first 50 shown)\n")
+  } else {
+    cat("\nEstimates Recorded:",
+        length (estimates),
+        "\n")
+  }
+  print.matrix(matrix(estimates[1:50], ncol = 5, byrow = TRUE))
+
 }
+
+#-----------------------------------------------------------------
+#### extract_data generic method ####
+#' Extract data from rstansim objects
+#'
+#' @description Generic functin for extracting data from rstansim objects.
+#' Default arguments will return full data as a dataframe, otherwise
+#' rows will be filtered based on provided arguments. DONT FORGET TO ADD USAGE CASES FOR DOC
+#'
+#' @param x An object of S3 class stansim.
+#'
+#' @export
+extract_data <- function (object, ...) {
+  UseMethod("extract_data", object)
+}
+
+#-----------------------------------------------------------------
+#### extract_data.stansim method ####
+# method to extract data from a stansim object based on string filtering
+# of the fields
+#' Extract data from a stansim object
+#'
+#' @description get data out of a single stansim object
+#'
+#' @param x An object of S3 class stansim.
+#'
+#' @export
+extract_data.stansim <- function(object, dataset = "all", parameter = "all",
+                         estimate = "all", value = NULL, ...) {
+
+  ## carry out basic input validation
+  if(!is.function(value) & !is.null(value))
+    stop("value argument must be NULL or a function")
+print(dataset)
+  if(!is.character(dataset))
+    stop("dataset argument must be of type character")
+
+  if(!is.character(parameter))
+    stop("parameter argument must be of type character")
+
+  if(!is.character(estimate))
+    stop("estimate argument must be of type character")
+
+}
+
+
 
 
