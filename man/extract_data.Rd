@@ -4,7 +4,7 @@
 \alias{extract_data}
 \title{Extract data from rstansim objects}
 \usage{
-extract_data(x, ...)
+extract_data(object, ...)
 }
 \arguments{
 \item{x}{An object of S3 class stansim.}

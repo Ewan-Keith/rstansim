@@ -3,54 +3,69 @@
 #' Fits a stan model to multiple datasets and returns estimated values
 #'
 #' @description \code{stan_sim} fits a specified stan model across multiple
-#' datasets and collates and returns the estimated parameters for all models.
-#' It fits the specified model to all datasets indicated and returns the
-#' specified results for each model. It provides an optional set of controls
-#' in case any fitted models do not appear to have converged, in which case
-#' model fit will be re-attempted or a string indicating lack of fit will be
-#' returned for that model. The function allows for stan instances to be
-#' ran in parallel, reducing run the time taken on multicore machines.
+#' datasets,  collates, and returns summary information and data for all
+#' models as a \code{stansim} object. All fitted models will have basic
+#' reproducability information recorded; such as parameter inits and seeds,
+#' along with parameter estimates, and simulation info such as time and date
+#' ran.
 #'
-#' @param stan_args A list of model parameters to be taken by
-#' the \code{stan()} function. If not specified then the \code{stan()}
-#' function defaults are used.
-#' @param sim_data A list of strings pointing to the .csv files that
-#' contain the simulation data. Only data that varies from model to
-#' model must be specified here, data common to all models can be
-#' specified as part of \code{stan_args}.
-#' @param calc_loo If \code{TRUE} the model will attempt to extract fit
-#' statistics using the loo package. If \code{TRUE} there must be
+#' Raw stan posterior samples are not returned, rather the user specifies the
+#' estimates they wish to record (e.g. posterior percentiles, Rhat, etc.)
+#' and the parameters for which they wish to record these estimates.
+#' All data is collated into a single long-format dataframe for further
+#' analysis.
+#'
+#' By default the function caches completed runs as it progresses, so that
+#' progress is not lost in the case of function failure. When the function
+#' terminates as expected this cache is removed.
+#'
+#' @param stan_args A list of function arguments to be used by
+#' the internal \code{stan()} function when fitting the models.
+#' If not specified then the \code{stan()} function defaults are used.
+#' @param sim_data A list of strings pointing to the location of
+#' .rds files containing the simulation data. See the vignette on
+#' producing simulation data for details on the formatting of these datasets.
+#' @param calc_loo If \code{TRUE} then model fit statsics will be
+#' calculated using the \code{loo} package. If \code{TRUE} there must be
 #' a valid log_lik quantity specified in the generated quantities
-#' section of the stan model.
+#' section of the provided stan model.
 #' @param use_cores Number of cores to use when running in parallel.
 #' Each stan model is fitted serially regardless of the number of chains
-#' ran. However as the number of available cores increases more models
-#' can be fit in parallel
-#' @param max_failures The maximum number of times that each model
-#' will attempt refitting when its greatest R-hat statstics
-#' is > \code{max_rhat}. If this number is exceeded a string will be returned
-#' indicating convergence failure, rather than model estimates.
-#' @param max_rhat A maximum cut-off for crudely assessing convergence
-#' across fitted models. If any parameters in the fitted model have an
-#' R-hat >  \code{max_rhat} then the model will either attempt re-fitting
-#' or will return a string indicating lack of convergence (depending on
-#' the number of fitting attempts made and the value of \code{max_failures}).
-#' Setting this to a large value (e.g. 1000) will
-#' efectively turn off the convergence assessment functionality.
-#' @param parameters A set of characters indicating which parameters
-#' should have estimates returned from the fitted models. Regular
-#' expressions are used to extract parameters, so care has to be taken
-#' with similarly named parameters (e.g. 'eta' and 'theta').
-#' @param estimates The estimates that should be returned for each
+#' ran as parallelisation across models is more flexible than within.
+#' @param parameters A character vector indicating which parameters
+#' should have estimates returned and stored from the fitted models.
+#' Regular expressions are used to extract parameters, so care has
+#' to be taken with similarly named parameters (e.g. 'eta' and 'theta').
+#' This simplifies specification of multi-dimensional parameters.
+#' @param estimates A list of estimates to be calculated and returned for each
 #' model parameter. Currently only supports the standard 'summary'
 #' parameters c('mean', 'se_mean',  'sd', '2.5%', '25%',  '50%',
 #' '75%', '97.5%', 'n_eff', 'Rhat').
-#' @return A dataframe of estimated values across all datasets.
+#' @param stan_warnings How warnings returned by individual \code{stan()}
+#' instances should be handled. \code{"catch"} records all warnings in the
+#' returned object alongside other instance level data, \code{"print"} simply
+#' prints warnings to the console as the models are fit (default \code{stan()}
+#' behaviour), and \code{"suppress"} suppressess all warnings without
+#' recording them.
+#' @param cache If \code{TRUE} then the results for each instance are
+#' written to a local, temporary file so that data is not lost should the
+#' function not terminate properly. This temporary data is removed upon the
+#' model terminating as expected. if \code{FALSE} no data is written and
+#' results are only returned upon the correct termination of the whole
+#' function. The default value of \code{TRUE} is recommended unless there
+#' are relevant write-permission restrictions.
+#' @param stansim_seed Set a seed for the \code{stan_sim} function.
+#' @param sim_name A name attached to the \code{stansim} object to help
+#' identify it. It is strongly recomended that an informative name is
+#' assigned, especially if \code{stansim} objects are to be combined in
+#' to a \code{stansim_collection} object.
+#' @return An S3 object of class \code{stansim} recording relevant
+#' simulation data.
 #'
 #' @export
 stan_sim <- function(stan_args = list(), sim_data = NULL, calc_loo = FALSE,
                      use_cores = 1L, parameters = ".*",
-                     estimates = c("2.5%", "50%", "97.5%", "n_eff", "Rhat"),
+                     estimates = c("2.5%", "50%", "97.5%", "n_eff", "Rhat"), # to be listed
                      stan_warnings = "catch", # options print, catch, suppress
                      cache = TRUE,
                      stansim_seed = floor(runif(1, 1, 100000)),
@@ -63,7 +78,13 @@ stan_sim <- function(stan_args = list(), sim_data = NULL, calc_loo = FALSE,
   ## error checks
   # carry out basic input validation
   stan_sim_checker(sim_data, calc_loo, use_cores,
-                   parameters, estimates, stan_args)
+                   parameters, estimates, stan_args,
+                   stan_warnings, cache, stansim_seed,
+                   sim_name)
+
+  # coerce sim_name to character if need be
+  if(!is.character(sim_name))
+    sim_name <- as.character(sim_name)
 
 
   ## -------------------------------------------------

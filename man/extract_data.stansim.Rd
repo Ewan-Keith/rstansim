@@ -5,7 +5,7 @@
 \title{Extract data from a stansim object}
 \usage{
 \method{extract_data}{stansim}(object, dataset = "all", parameter = "all",
-  estimate = "all", value = NULL)
+  estimate = "all", value = NULL, ...)
 }
 \arguments{
 \item{x}{An object of S3 class stansim.}

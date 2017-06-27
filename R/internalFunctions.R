@@ -108,9 +108,58 @@ single_sim <- function(datafile, stan_args,
 param_extract <- function(fitted_stan, calc_loo, parameters,
                           estimates, data){
 
+  ##-------------------------------------------------
+  ## Extract all estimates that use rstan::summary()
+  use_summary <- estimates %in%
+    c("Rhat", "n_eff", "mean", "se_mean", "sd")
+
+  if(sum(use_summary) > 0){
+
+    summary_ests <- unlist(estimates[use_summary])
+
+    model_summary <-
+      rstan::summary(fitted_stan)$summary[,summary_ests]
+  }
 
   ##-------------------------------------------------
-  ## fit model
+  ## Extract and calculate percentile estimates
+
+  ## convert "55%" format to .55
+  # index this format in estimates
+  regexcellent <-
+    "^\\d{1,2}%$|^100%$|^\\d{1,2}\\.\\d*%$|^100\\.0*%$|^\\.\\d*%$"
+
+  string_perc_ind <- grepl(regexcellent, estimates)
+
+  # reformat to numeric decimal
+  estimates[string_perc_ind] <-
+    as.numeric(substr(
+      estimates[string_perc_ind],
+      1,
+      nchar(
+        estimates[string_perc_ind]
+        ) - 1)
+      ) / 100
+
+  ## extract quintiles
+  percentiles <-
+    as.numeric(unlist(
+      lapply(estimates, function(x) x[is.numeric(x)])
+      ))
+
+  first_cut <- monitor(as.array(fit),
+                       digits_summary = 7,
+                       probs = percentiles,
+                       print = F)
+
+  ## subsetting of parameters should ignore dimensions
+  # e.g. cut of evveryhing after '[' (inclusive). then
+  # keep string name estimates if they were specified.
+
+
+
+  ##-------------------------------------------------
+  ## fit model MAYBE REMOVE EVENTUALLY ONCE NEW APPROACH WORKING
   # extract values and estimates
   model_summary <- rstan::summary(fitted_stan)$summary
 
@@ -194,7 +243,9 @@ param_extract <- function(fitted_stan, calc_loo, parameters,
 # check for input validity early in the function. Only basic type
 # checks are made.
 stan_sim_checker <- function(sim_data, calc_loo, use_cores,
-                             parameters, estimates, stan_args){
+                             parameters, estimates, stan_args,
+                             stan_warnings, cache, stansim_seed,
+                             sim_name){
 
 
   ##-------------------------------------------------
@@ -229,6 +280,55 @@ stan_sim_checker <- function(sim_data, calc_loo, use_cores,
   if ("cores" %in% names(stan_args))
     warning(paste("stan_sim is parallel across stan instances,",
                    "not within. stan_arg$cores is fixed to 1"))
+
+  # stan_warnings must be one of print, catch, suppress
+  if (!(stan_warnings %in% c("print", "catch", "suppress")))
+    stop(
+      "stan_warnings must be one of \"print\", \"catch\", or \"suppress\""
+      )
+
+  # only a single stan_warnings argument must be provided
+  if (length(stan_warnings) > 1)
+    stop("Only a single stan_warnings value should be provided")
+
+  # cache must be Boolean
+  if (!is.logical(cache))
+    stop("cache must be of type logical")
+
+  # stansim_seed must be numeric
+  if (!is.numeric(stansim_seed))
+    stop("stansim_seed must be numeric")
+
+  # warn if sim_name is overwritten
+  if (!is.character(sim_name))
+    warning("sim_name corced to character")
+
+  ##-------------------------------------------------
+  ## check that all estimates values are valid
+  estimate_validate <- function(estimate){
+
+    regexcellent <-
+      "^\\d{1,2}%$|^100%$|^\\d{1,2}\\.\\d*%$|^100\\.0*%$|^\\.\\d*%$"
+
+    # valid if numeric between 0 and 1
+    if (is.numeric(estimate) & estimate >= 0 & estimate <=1){
+      NULL
+    # valid if an approved string
+    } else if (estimate %in% c("Rhat", "n_eff", "mean",
+                               "se_mean", "sd")){
+      NULL
+    # valid if correct % format between 0 and 100
+    } else if (grepl(regexcellent, estimate)){
+      NULL
+    } else {
+      stop("The estimate arguments must all be:
+           - A decimal number between 0 and 1.
+           - A percentage in string format, e.g. \"85%\".
+           - One of \"Rhat\", \"n_eff\", \"mean\", \"se_mean\", or \"sd\".")
+    }
+  }
+  lapply(estimates, estimate_validate)
+
 }
 
 #-----------------------------------------------------------------
