@@ -8,8 +8,8 @@
 # of single_sim will be ran for every dataset provided to stan_sim
 # with the sim_data parameter.
 single_sim <- function(datafile, stan_args,
-                       calc_loo, parameters, estimates,
-                       stan_warnings, cache){
+                       calc_loo, parameters, probs,
+                       estimates, stan_warnings, cache){
 
   # garbage collect on start
   gc()
@@ -67,10 +67,11 @@ single_sim <- function(datafile, stan_args,
   ##-------------------------------------------------
   ## extract all param values
   extracted_data <- param_extract(fitted_stan, calc_loo,
-                                  parameters, estimates, data = datafile)
+                                  parameters, probs, estimates,
+                                  data = datafile)
 
   # garbage collect after para, extraction
-  rm(calc_loo, parameters, estimates)
+  rm(calc_loo, parameters, probs, estimates)
   gc()
 
   ##-------------------------------------------------
@@ -106,78 +107,41 @@ single_sim <- function(datafile, stan_args,
 # a valid log_lik quantity in the stan model). If true then the
 # output of loo::loo are returned in the output row.
 param_extract <- function(fitted_stan, calc_loo, parameters,
-                          estimates, data){
+                          probs, estimates, data){
 
   ##-------------------------------------------------
-  ## Extract all estimates that use rstan::summary()
-  use_summary <- estimates %in%
-    c("Rhat", "n_eff", "mean", "se_mean", "sd")
+  ## extract specified parameter quantiles and all string estimates
 
-  if(sum(use_summary) > 0){
-
-    summary_ests <- unlist(estimates[use_summary])
-
-    model_summary <-
-      rstan::summary(fitted_stan)$summary[,summary_ests]
+  if(parameters == "All"){
+    parameters <- fitted_stan@model_pars
+  } else if (sum(parameters %in% fitted_stan@model_pars) == 0){
+    stop(paste(
+      "None of the provided parameters were identified in the model,",
+         "check your stan code and arguments."))
+  } else if (sum(parameters %in% fitted_stan@model_pars) <
+             length(parameters)){
+    stop(paste0("Following parameter(s) could not be found in the model, ",
+               "check your stan code and arguments.\n[",
+               paste(parameters[!(parameters %in% fitted_stan@model_pars)],
+                     collapse = ", "), "]"
+               )
+         )
   }
 
-  ##-------------------------------------------------
-  ## Extract and calculate percentile estimates
-
-  ## convert "55%" format to .55
-  # index this format in estimates
-  regexcellent <-
-    "^\\d{1,2}%$|^100%$|^\\d{1,2}\\.\\d*%$|^100\\.0*%$|^\\.\\d*%$"
-
-  string_perc_ind <- grepl(regexcellent, estimates)
-
-  # reformat to numeric decimal
-  estimates[string_perc_ind] <-
-    as.numeric(substr(
-      estimates[string_perc_ind],
-      1,
-      nchar(
-        estimates[string_perc_ind]
-        ) - 1)
-      ) / 100
-
-  ## extract quintiles
-  percentiles <-
-    as.numeric(unlist(
-      lapply(estimates, function(x) x[is.numeric(x)])
-      ))
-
-  first_cut <- monitor(as.array(fit),
-                       digits_summary = 7,
-                       probs = percentiles,
-                       print = F)
-
-  ## subsetting of parameters should ignore dimensions
-  # e.g. cut of evveryhing after '[' (inclusive). then
-  # keep string name estimates if they were specified.
-
-
+  all_param_estimates <- rstan::summary(fitted_stan,
+                                        probs = probs,
+                                        pars = parameters)$summary
 
   ##-------------------------------------------------
-  ## fit model MAYBE REMOVE EVENTUALLY ONCE NEW APPROACH WORKING
-  # extract values and estimates
-  model_summary <- rstan::summary(fitted_stan)$summary
+  ## remove any non-requested string estimates
+  estimates_vect <- unlist(estimates)
 
+  estimates_to_drop <- setdiff(c("Rhat", "n_eff", "mean",
+                                 "se_mean", "sd"), estimates_vect)
 
-  ##-------------------------------------------------
-  ## extract parameters
-  # at the momemnt user will have to use exact regex
-  # e.g. 'eta' below to avoid also getting 'theta'
-  #params <- c("mu", "^eta")
-  regex_parameters <- paste(parameters, sep = "", collapse = "|")
-  all_params <- row.names(model_summary)
-
-  parameter_index <- grepl(regex_parameters, all_params)
-
-  selected_parameters <- model_summary[parameter_index, ]
-
-  ## extract all selected estimates
-  output <- selected_parameters[, estimates]
+  output <-
+    all_param_estimates[, !colnames(all_param_estimates) %in%
+                          estimates_to_drop]
 
   ##-------------------------------------------------
   ## reshape to long format
@@ -243,7 +207,7 @@ param_extract <- function(fitted_stan, calc_loo, parameters,
 # check for input validity early in the function. Only basic type
 # checks are made.
 stan_sim_checker <- function(sim_data, calc_loo, use_cores,
-                             parameters, estimates, stan_args,
+                             parameters, probs, estimates, stan_args,
                              stan_warnings, cache, stansim_seed,
                              sim_name){
 
@@ -275,6 +239,10 @@ stan_sim_checker <- function(sim_data, calc_loo, use_cores,
   if (!is.list(stan_args))
     stop("stan_args must be of type list")
 
+  # parameters must be character
+  if(!is.character(parameters))
+    stop("parameters must be of type character")
+
   # stan_args$cores will just be overwritten
   # if specified warn user
   if ("cores" %in% names(stan_args))
@@ -303,31 +271,33 @@ stan_sim_checker <- function(sim_data, calc_loo, use_cores,
   if (!is.character(sim_name))
     warning("sim_name corced to character")
 
-  ##-------------------------------------------------
-  ## check that all estimates values are valid
-  estimate_validate <- function(estimate){
-
-    regexcellent <-
-      "^\\d{1,2}%$|^100%$|^\\d{1,2}\\.\\d*%$|^100\\.0*%$|^\\.\\d*%$"
-
-    # valid if numeric between 0 and 1
-    if (is.numeric(estimate) & estimate >= 0 & estimate <=1){
-      NULL
-    # valid if an approved string
-    } else if (estimate %in% c("Rhat", "n_eff", "mean",
-                               "se_mean", "sd")){
-      NULL
-    # valid if correct % format between 0 and 100
-    } else if (grepl(regexcellent, estimate)){
+  # probs must be numeric between 0 and 1
+  probs_validate <- function(prob) {
+    if (is.numeric(prob) & prob >= 0 & prob <= 1) {
       NULL
     } else {
-      stop("The estimate arguments must all be:
-           - A decimal number between 0 and 1.
-           - A percentage in string format, e.g. \"85%\".
-           - One of \"Rhat\", \"n_eff\", \"mean\", \"se_mean\", or \"sd\".")
+      stop("all probs arguments must be numbers between 0 and 1")
     }
   }
-  lapply(estimates, estimate_validate)
+  sapply(probs, probs_validate)
+
+
+  ##-------------------------------------------------
+  ## check that all estimates values are valid
+  estimate_validate <- function(estimate) {
+    # valid if numeric between 0 and 1
+    if (estimate %in%
+        c("Rhat", "n_eff", "mean",
+          "se_mean", "sd")) {
+      NULL
+    } else {
+      stop(
+        paste("estimate arguments must be one of \"Rhat\",",
+              "\"n_eff\", \"mean\", \"se_mean\", or \"sd\".")
+      )
+    }
+  }
+  sapply(estimates, estimate_validate)
 
 }
 

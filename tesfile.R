@@ -29,6 +29,9 @@ library(rstan)
 fit <- stan(file = 'data-raw/8schools.stan', data = params,
             iter = 1000, chains = 4)
 
+fitwarm <- stan(file = 'data-raw/8schools.stan', data = params,
+                iter = 1000, chains = 4, warmup = 0)
+
 fit2 <- do.call(stan, list(file = 'data-raw/8schools.stan', data = params,
                        iter = 1000, chains = 4, cores = 4))
 

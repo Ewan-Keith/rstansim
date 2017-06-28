@@ -34,13 +34,14 @@
 #' ran as parallelisation across models is more flexible than within.
 #' @param parameters A character vector indicating which parameters
 #' should have estimates returned and stored from the fitted models.
-#' Regular expressions are used to extract parameters, so care has
-#' to be taken with similarly named parameters (e.g. 'eta' and 'theta').
-#' This simplifies specification of multi-dimensional parameters.
-#' @param estimates A list of estimates to be calculated and returned for each
-#' model parameter. Currently only supports the standard 'summary'
-#' parameters c('mean', 'se_mean',  'sd', '2.5%', '25%',  '50%',
-#' '75%', '97.5%', 'n_eff', 'Rhat').
+#' By default all parameters are returned, for non-scalar parameters
+#' you cannot select subsets of the parameter (e.g. must request
+#' \code{theta} rather than \code{theta[1]}).
+#' @param probs A numeric vector of values between 0 and 1. Corresponding
+#' quantiles will be estimated and returned for all fitted models.
+#' @param estimates A character vector of non-quantile estimates to be
+#' returned for each model parameter. Argument must be some subset of the
+#' default character vector.
 #' @param stan_warnings How warnings returned by individual \code{stan()}
 #' instances should be handled. \code{"catch"} records all warnings in the
 #' returned object alongside other instance level data, \code{"print"} simply
@@ -64,8 +65,9 @@
 #'
 #' @export
 stan_sim <- function(stan_args = list(), sim_data = NULL, calc_loo = FALSE,
-                     use_cores = 1L, parameters = ".*",
-                     estimates = c("2.5%", "50%", "97.5%", "n_eff", "Rhat"), # to be listed
+                     use_cores = 1L, parameters = "All",
+                     probs = c(.025, .25, .5, .75, .975),
+                     estimates = c("mean", "se_mean", "sd", "n_eff", "Rhat"),
                      stan_warnings = "catch", # options print, catch, suppress
                      cache = TRUE,
                      stansim_seed = floor(runif(1, 1, 100000)),
@@ -78,7 +80,7 @@ stan_sim <- function(stan_args = list(), sim_data = NULL, calc_loo = FALSE,
   ## error checks
   # carry out basic input validation
   stan_sim_checker(sim_data, calc_loo, use_cores,
-                   parameters, estimates, stan_args,
+                   parameters, probs, estimates, stan_args,
                    stan_warnings, cache, stansim_seed,
                    sim_name)
 
@@ -126,7 +128,7 @@ stan_sim <- function(stan_args = list(), sim_data = NULL, calc_loo = FALSE,
   sim_estimates <-
     foreach::foreach(datafile = sim_data) %doparal%
     single_sim(datafile, stan_args, calc_loo,
-               parameters, estimates, stan_warnings, cache)
+               parameters, probs, estimates, stan_warnings, cache)
 
   # de-register the parallel background once done
   parallel::stopCluster(cl)
@@ -148,7 +150,16 @@ stan_sim <- function(stan_args = list(), sim_data = NULL, calc_loo = FALSE,
 
   # if using cache delete folder
   if (cache)
-    unlink(".cache/", recursive = TRUE)
+    unlink(".cache", recursive = TRUE)
 
   return(stansim_obj)
 }
+
+### don't forget to add the rerun function
+# something like rerun(testout, datafiles_to_rerun)
+# and with a default to rerun all, but with a warning
+# and request for confirmation if the user tries this
+# (warning can be turned off but default is on)
+
+
+

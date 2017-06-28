@@ -5,10 +5,10 @@
 \title{Fits a stan model to multiple datasets and returns estimated values}
 \usage{
 stan_sim(stan_args = list(), sim_data = NULL, calc_loo = FALSE,
-  use_cores = 1L, parameters = ".*", estimates = c("2.5\%", "50\%",
-  "97.5\%", "n_eff", "Rhat"), stan_warnings = "catch", cache = TRUE,
-  stansim_seed = floor(runif(1, 1, 1e+05)), sim_name = paste0("Stansim_",
-  start_time))
+  use_cores = 1L, parameters = "All", probs = c(0.025, 0.25, 0.5, 0.75,
+  0.975), estimates = c("mean", "se_mean", "sd", "n_eff", "Rhat"),
+  stan_warnings = "catch", cache = TRUE, stansim_seed = floor(runif(1, 1,
+  1e+05)), sim_name = paste0("Stansim_", start_time))
 }
 \arguments{
 \item{stan_args}{A list of function arguments to be used by
@@ -28,16 +28,18 @@ section of the provided stan model.}
 Each stan model is fitted serially regardless of the number of chains
 ran as parallelisation across models is more flexible than within.}
 
-\item{parameters}{A set of characters indicating which parameters
+\item{parameters}{A character vector indicating which parameters
 should have estimates returned and stored from the fitted models.
-Regular expressions are used to extract parameters, so care has
-to be taken with similarly named parameters (e.g. 'eta' and 'theta').
-This simplifies specification of multi-dimensional parameters.}
+By default all parameters are returned, for non-scalar parameters
+you cannot select subsets of the parameter (e.g. must request
+\code{theta} rather than \code{theta[1]}).}
 
-\item{estimates}{The estimates to be calculated and returned for each
-model parameter. Currently only supports the standard 'summary'
-parameters c('mean', 'se_mean',  'sd', '2.5%', '25%',  '50%',
-'75%', '97.5%', 'n_eff', 'Rhat').}
+\item{probs}{A numeric vector of values between 0 and 1. Corresponding
+quantiles will be estimated and returned for all fitted models.}
+
+\item{estimates}{A character vector of non-quantile estimates to be
+returned for each model parameter. Argument must be some subset of the
+default character vector.}
 
 \item{stan_warnings}{How warnings returned by individual \code{stan()}
 instances should be handled. \code{"catch"} records all warnings in the
