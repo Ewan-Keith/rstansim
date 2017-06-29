@@ -18,14 +18,7 @@ single_sim <- function(datafile, stan_args,
   ## setup stan data properly
   # read in the data varying from model to model
 
-  var_data_list <- readRDS(datafile)
-
-  # if no stan data specified set up empty list
-  if (is.null(stan_args$data)) stan_args$data <- list()
-
-  # join the new varying data to the constant data
-  stan_args$data <- utils::modifyList(stan_args$data, var_data_list,
-                                      keep.null = TRUE)
+  stan_args$data <- readRDS(datafile)
 
   # fix stan's use of cores to 1
   stan_args$cores <- 1L
@@ -231,11 +224,15 @@ stan_sim_checker <- function(sim_data, calc_loo, use_cores,
   if (!is.logical(calc_loo))
     stop("calc_loo must be of type logical")
 
+  # calc_loo cant be missing
+  if (is.na(calc_loo))
+    stop("calc_loo cannot be NA")
+
   # use_cores must be a positive integer
   if (!is_pos_int(use_cores))
     stop("use_cores must be a positive integer")
 
-  # stan input must be a list
+  # stan args must be a list
   if (!is.list(stan_args))
     stop("stan_args must be of type list")
 
@@ -255,9 +252,11 @@ stan_sim_checker <- function(sim_data, calc_loo, use_cores,
       "stan_warnings must be one of \"print\", \"catch\", or \"suppress\""
       )
 
-  # only a single stan_warnings argument must be provided
-  if (length(stan_warnings) > 1)
-    stop("Only a single stan_warnings value should be provided")
+  ### TESTS WRITTEN STOP HERE, PICK UP HERE
+  # stan_args$data must not be provided
+  if (!is.null(stan_args$data))
+    stop(paste("stan_args$data cannot be directly specified, sim_data should be the",
+         "source of all stan data"))
 
   # cache must be Boolean
   if (!is.logical(cache))
