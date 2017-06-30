@@ -95,6 +95,12 @@ test_that("Invalid parameters return the correct error message", {
   expect_error(stan_sim(sim_data = "test_only", use_cores = 4.5),
                "use_cores must be a positive integer")
 
+  # stan_args$data must not be provided
+  expect_error(stan_sim(sim_data = "test_only", stan_args = list("data" = "test")),
+               "stan_args$data cannot be directly specified, sim_data should be used")
+
+
+
 })
 
 test_that("where args are ignored return the correct warning message", {

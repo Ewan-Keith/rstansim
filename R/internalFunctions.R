@@ -252,12 +252,12 @@ stan_sim_checker <- function(sim_data, calc_loo, use_cores,
       "stan_warnings must be one of \"print\", \"catch\", or \"suppress\""
       )
 
-  ### TESTS WRITTEN STOP HERE, PICK UP HERE
+
   # stan_args$data must not be provided
   if (!is.null(stan_args$data))
-    stop(paste("stan_args$data cannot be directly specified, sim_data should be the",
-         "source of all stan data"))
+    stop("stan_args$data cannot be directly specified, sim_data should be used")
 
+  ### TESTS WRITTEN STOP HERE, PICK UP HERE
   # cache must be Boolean
   if (!is.logical(cache))
     stop("cache must be of type logical")
