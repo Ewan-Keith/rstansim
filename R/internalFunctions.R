@@ -257,11 +257,12 @@ stan_sim_checker <- function(sim_data, calc_loo, use_cores,
   if (!is.null(stan_args$data))
     stop("stan_args$data cannot be directly specified, sim_data should be used")
 
-  ### TESTS WRITTEN STOP HERE, PICK UP HERE
+
   # cache must be Boolean
   if (!is.logical(cache))
     stop("cache must be of type logical")
 
+  ### TESTS WRITTEN STOP HERE, PICK UP HERE
   # stansim_seed must be numeric
   if (!is.numeric(stansim_seed))
     stop("stansim_seed must be numeric")

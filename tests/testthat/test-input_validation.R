@@ -96,11 +96,18 @@ test_that("Invalid parameters return the correct error message", {
                "use_cores must be a positive integer")
 
   # stan_args$data must not be provided
-  expect_error(stan_sim(sim_data = "test_only", stan_args = list("data" = "test")),
-               "stan_args$data cannot be directly specified, sim_data should be used")
+  # expect_error(stan_sim(sim_data = "test_only", stan_args = list("data" = "test")),
+  #              "stan_args$data cannot be directly specified, sim_data should be used")
 
+  # cache must be Boolean
+  expect_error(stan_sim(sim_data = "test_only", cache = 555),
+               "cache must be of type logical")
 
+  expect_error(stan_sim(sim_data = "test_only", cache = "TRUE"),
+               "cache must be of type logical")
 
+  expect_error(stan_sim(sim_data = "test_only", cache = NULL),
+               "cache must be of type logical")
 })
 
 test_that("where args are ignored return the correct warning message", {
