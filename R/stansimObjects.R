@@ -162,21 +162,88 @@ extract_data <- function (object, ...) {
 #' @param x An object of S3 class stansim.
 #'
 #' @export
-extract_data.stansim <- function(object, dataset = "all", parameter = "all",
-                         estimate = "all", value = NULL, ...) {
+extract_data.stansim <- function(object, datasets = "all", parameters = "all",
+                         estimates = "all", values = NULL,
+                         param_expand = TRUE, ...) {
 
   ## carry out basic input validation
-  if(!is.function(value) & !is.null(value))
+  if(!is.function(values) & !is.null(values))
     stop("value argument must be NULL or a function")
-print(dataset)
-  if(!is.character(dataset))
+
+  if(!is.character(datasets))
     stop("dataset argument must be of type character")
 
-  if(!is.character(parameter))
+  if(!is.character(parameters))
     stop("parameter argument must be of type character")
 
-  if(!is.character(estimate))
+  if(!is.character(estimates))
     stop("estimate argument must be of type character")
+
+  ## if param_expand is on extract all dimensions for given param
+  if(param_expand){
+    all_params <- as.character(unique(object$data$parameter))
+
+    dim_removed_params <- gsub("\\[\\d*\\]$", "", all_params)
+
+    # function to expand matching functions
+    param_expansion <- function(single_parameter, all_params, dim_removed_params){
+
+      match_index <- dim_removed_params %in% single_parameter
+
+      all_params[match_index]
+
+    }
+
+    parameters <- unique(c(parameters,
+                           unlist(
+                             sapply(
+                               parameters,
+                               param_expansion,
+                               dim_removed_params = dim_removed_params,
+                               all_params = all_params,
+                               USE.NAMES = FALSE
+                             )
+                           )))
+
+  }
+
+  ## extract data
+  data_extract <- object$data
+
+
+  ## filter on dataset
+  if ("all" %in% datasets) {
+    if (length(datasets) > 1) {
+      stop("if datasets argument contains \"any\", length(datasets) must be 1")
+    }
+  } else {
+    data_extract <- data_extract[data_extract$data %in% datasets,]
+  }
+
+  # filter on parameter
+  if ("all" %in% parameters) {
+    if (length(parameters) > 1) {
+      stop("if parameters argument contains \"any\", length(parameters) must be 1")
+    }
+  } else {
+    data_extract <- data_extract[data_extract$parameter %in% parameters,]
+  }
+
+  # filter on estimate
+  if ("all" %in% estimates) {
+    if (length(estimates) > 1) {
+      stop("if estimates argument contains \"any\", length(estimates) must be 1")
+    }
+  } else {
+    data_extract <- data_extract[data_extract$estimate %in% estimates,]
+  }
+
+  # filter on value function
+  if(!is.null(values))
+    data_extract <- data_extract[values(data_extract$value), ]
+
+  # return data
+  data_extract
 
 }
 

@@ -1,37 +1,13 @@
-## code that produces a converged and un-converged stan model for unit testing
-# produced data is stored in the tests/testthat folder along with tests
+#### code that produces various objects (usually stan and stansim obs)
+## to be used in unit testing
 
-schools_dat <- list(J = 8,
-                    y = c(28,  8, -3,  7, -1,  1, 18, 12),
-                    sigma = c(15, 10, 16, 11,  9, 11, 10, 18))
+library(rstansim)
 
-##-------------------------------------------------
-## converged model
+## small scale 8schools example for basic stansim methods testing
 
-set.seed(1234)
+test_stan_args <- list(file = 'data-raw/8schools.stan',
+                     iter = 1000, chains = 4)
 
-fitConverged <- stan(file = 'data-raw/8schools.stan', data = schools_dat,
-            iter = 600, chains = 4)
+test_stansim <- stan_sim(stan_args = test_stan_args, sim_data = dir("data-raw/data", full.names = TRUE), use_cores = 4)
 
-## check that rhat is sufficient
-# > max(summary(fitConverged)$summary[, "Rhat"])
-# [1] 1.015001
-
-saveRDS(fitConverged,
-        "tests/testthat/convergedFit.rds")
-
-##-------------------------------------------------
-## non-converged model
-
-
-set.seed(1234)
-
-fitNonConverged <- stan(file = 'data-raw/8schools.stan', data = schools_dat,
-                     iter = 20, chains = 4)
-
-## check that rhat is not sufficient
-# > max(summary(fitNonConverged)$summary[, "Rhat"])
-# [1] 2.329573
-
-saveRDS(fitNonConverged,
-        "tests/testthat/nonConvergedFit.rds")
+# saveRDS(test_stansim, "tests/testthat/objects/test_stansim.rds")

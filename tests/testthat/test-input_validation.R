@@ -86,7 +86,7 @@ test_that("Invalid parameters return the correct error message", {
 
 
 
-  expect_error(stan_sim(sim_data = "test_only", loo = 55),
+  expect_error(stan_sim(sim_data = "test_only", calc_loo = 55),
                "loo must be of type logical")
 
   expect_error(stan_sim(sim_data = "test_only", use_cores = -1),
@@ -108,14 +108,60 @@ test_that("Invalid parameters return the correct error message", {
 
   expect_error(stan_sim(sim_data = "test_only", cache = NULL),
                "cache must be of type logical")
+
+  # probs must be numeric between 0 and 1
+  expect_error(stan_sim(sim_data = "test_only", probs = 1.1),
+               "all probs arguments must be numbers between 0 and 1")
+
+  expect_error(stan_sim(sim_data = "test_only", probs = -.5),
+               "all probs arguments must be numbers between 0 and 1")
+
+  expect_error(stan_sim(sim_data = "test_only", probs = "test"),
+               "all probs arguments must be numbers between 0 and 1")
+
+  expect_error(stan_sim(sim_data = "test_only", probs = c(.5, "test")),
+               "all probs arguments must be numbers between 0 and 1")
+
+  # estimates have to be one of the presepcified values
+  expect_error(
+    stan_sim(sim_data = "test_only", estimates = "median"),
+    paste(
+      "estimate arguments must be one of \"Rhat\",",
+      "\"n_eff\", \"mean\", \"se_mean\", or \"sd\"."
+    )
+  )
+
+  expect_error(
+    stan_sim(sim_data = "test_only", estimates = 555),
+    paste(
+      "estimate arguments must be one of \"Rhat\",",
+      "\"n_eff\", \"mean\", \"se_mean\", or \"sd\"."
+    )
+  )
+
+  expect_error(
+    stan_sim(sim_data = "test_only", estimates = c("mean", "n_eff", "test")),
+    paste(
+      "estimate arguments must be one of \"Rhat\",",
+      "\"n_eff\", \"mean\", \"se_mean\", or \"sd\"."
+    )
+  )
+
+
+
 })
 
 test_that("where args are ignored return the correct warning message", {
 
-  ##-------------------------------------------------
-  ## stan args must be of type list
-  # expect_error(stan_sim(stan_args = "1"),
-  #              "stan_args must be a list of stan parameters")
+  # stan_args$cores will just be overwritten, cache error used
+  # to terminate the test in a controlled way
+  expect_error(
+  expect_warning(
+    stan_sim(sim_data = "test_only", stan_args = list("cores" = 5),
+             paste("stan_sim is parallel across stan instances,",
+                   "not within. stan_arg$cores is fixed to 1")
+             )
+    ), "calc_loo must be of type logical")
 
 
 })

@@ -262,11 +262,6 @@ stan_sim_checker <- function(sim_data, calc_loo, use_cores,
   if (!is.logical(cache))
     stop("cache must be of type logical")
 
-  ### TESTS WRITTEN STOP HERE, PICK UP HERE
-  # stansim_seed must be numeric
-  if (!is.numeric(stansim_seed))
-    stop("stansim_seed must be numeric")
-
   # warn if sim_name is overwritten
   if (!is.character(sim_name))
     warning("sim_name corced to character")
