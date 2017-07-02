@@ -136,6 +136,20 @@ test_that("extract_data.stansim function should return expected results", {
   ),
   c(157, 4))
 
+  expect_equal(dim(
+    extract_data(extract_test_data,
+                 estimates = "Rhat",
+                 values = function(x) x > 1.1)
+  ),
+  c(0, 4))
+
+  expect_equal(dim(
+    extract_data(extract_test_data,
+                 estimates = "Rhat",
+                 values = function(x) x < 1.1 & x > 1)
+  ),
+  c(42, 4))
+
   ## extract should return a dataframe
   expect_true(is.data.frame(extract_data(extract_test_data)))
 
