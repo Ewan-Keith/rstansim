@@ -22,7 +22,7 @@ testReturnArgs <- list("pars" = c("mu", "^eta"),
 testout <- stan_sim(stan_args = testStanArgs, sim_data = dir("data-raw/data", full.names = TRUE), use_cores = 4)
 
 
-params <- readRDS("devtest/data/schoolsdat1.rds")
+params <- readRDS("data-raw/data/schoolsdat1.rds")
 
 library(rstan)
 
@@ -34,6 +34,11 @@ fitwarm <- stan(file = 'data-raw/8schools.stan', data = params,
 
 fit2 <- do.call(stan, list(file = 'data-raw/8schools.stan', data = params,
                        iter = 1000, chains = 4, cores = 4))
+
+### testing precompiling
+testpc <- stan_model(file = 'data-raw/8schools.stan')
+
+testpc_samp <- sampling(testpc, data = params, iter = 1000, chains = 4)
 
 # extract testing, test is a stanfit object
 
