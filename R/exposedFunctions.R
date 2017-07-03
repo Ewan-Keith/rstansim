@@ -71,7 +71,7 @@ stan_sim <- function(stan_args = list(), sim_data = NULL, calc_loo = FALSE,
                      estimates = c("mean", "se_mean", "sd", "n_eff", "Rhat"),
                      stan_warnings = "catch", # options print, catch, suppress
                      cache = TRUE,
-                     stansim_seed = floor(runif(1, 1, 100000)),
+                     stansim_seed = floor(stats::runif(1, 1, 100000)),
                      sim_name = paste0("Stansim_", start_time)){
 
   start_time <- Sys.time()

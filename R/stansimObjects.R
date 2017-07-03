@@ -96,7 +96,7 @@ print.stansim <- function(x, ...){
 
     m[is.na(m)] <- ""
 
-    write.table(format(m, justify="left"),
+    utils::write.table(format(m, justify="left"),
                 row.names=F, col.names=F, quote=F)
   }
 
