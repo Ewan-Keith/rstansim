@@ -16,7 +16,7 @@ Imports: loo (>= 1.0.0),
     foreach (>= 1.4.3),
     doParallel (>= 1.0.10),
     rstan (>= 2.14.1)
-Depends: R (>= 3.0.2),
+Depends: R (>= 3.2.3),
     Rcpp (>= 0.12.0)
 RoxygenNote: 6.0.1
 Suggests: testthat
