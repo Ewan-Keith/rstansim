@@ -4,12 +4,44 @@
 \alias{extract_data.stansim}
 \title{Extract data from a stansim object}
 \usage{
-\method{extract_data}{stansim}(object, dataset = "all", parameter = "all",
-  estimate = "all", value = NULL, ...)
+\method{extract_data}{stansim}(object, datasets = "all", parameters = "all",
+  estimates = "all", values = NULL, param_expand = TRUE, ...)
 }
 \arguments{
-\item{x}{An object of S3 class stansim.}
+\item{object}{An object of S3 class stansim.}
+
+\item{datasets}{Either a character vector containing the names of datasets
+(as provided to the original \code{stan_sim()} call) fitted, or the string
+\code{"all"}. The former will only return values for the corresponding
+datasets, the latter applies no filtering on stansim datasets.}
+
+\item{parameters}{Either a character vector containing the names of stan
+model parameters present in the fitted stan model, or the string
+\code{"all"}. The former will only return values for the corresponding
+parameters, the latter applies no filtering on parameters. See also
+the effect of the \code{param_expand} argument.}
+
+\item{estimates}{Either a character vector containing the names of parameter
+estimates (as provided to the original \code{stan_sim()} call) calculated,
+or the string \code{"all"}. The former will only return values for the
+corresponding estimates, the latter applies no filtering on estimates}
+
+\item{values}{Either a function taking a single numeric
+argument that returns a Boolean value, or \code{NULL}. The former will
+only return values for which the provided function evaluates as
+\code{TRUE}, the latter applies no filtering on values.}
+
+\item{param_expand}{If \code{TRUE} then any provided \code{parameters}
+arguments, without specified dimension, will be exapnded to capture all
+dimensions of that parameter. For example, \code{"eta"} becomes
+\code{c("eta[1]", "eta[2]", "eta[3]", ...)}. Expansion isn't carried out
+if a parameters dimension is specified (e.g. \code{parameters = "eta[1]"})
+or if \code{param_expand = FALSE}.}
+
+\item{...}{other arguments not used by this method}
 }
 \description{
-get data out of a single stansim object
+Applied to an object of type stansim, \code{extract_data}
+will return the objects simulation data as a dataframe, subject to the
+filtering specified by the function arguments.
 }

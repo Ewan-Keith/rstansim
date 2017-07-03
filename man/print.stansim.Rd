@@ -4,10 +4,12 @@
 \alias{print.stansim}
 \title{Print a summary for a stansim simulation object}
 \usage{
-\method{print}{stansim}(x)
+\method{print}{stansim}(x, ...)
 }
 \arguments{
 \item{x}{An object of S3 class stansim.}
+
+\item{...}{other arguments not used by this method}
 }
 \description{
 Print basic  information regarding a stansim simulation object,

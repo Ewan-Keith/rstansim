@@ -62,6 +62,7 @@
 #' to a \code{stansim_collection} object.
 #' @return An S3 object of class \code{stansim} recording relevant
 #' simulation data.
+#' @import Rcpp
 #'
 #' @export
 stan_sim <- function(stan_args = list(), sim_data = NULL, calc_loo = FALSE,

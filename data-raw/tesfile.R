@@ -19,7 +19,7 @@ testSimArgs <- list(simData = dir("devtest/data", full.names = TRUE), useCores =
 testReturnArgs <- list("pars" = c("mu", "^eta"),
                        "probs" = c("2.5%", "50%", "97.5%"))
 
-testout <- stan_sim(stan_args = testStanArgs, sim_data = dir("devtest/data", full.names = TRUE), use_cores = 4)
+testout <- stan_sim(stan_args = testStanArgs, sim_data = dir("data-raw/data", full.names = TRUE), use_cores = 4)
 
 
 params <- readRDS("devtest/data/schoolsdat1.rds")
