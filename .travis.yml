@@ -1,44 +1,39 @@
 language: r
+sudo: false
+r: devel
 cache: packages
-r:
-#  - oldrel
-  - release
-  - devel
+
+latex: true
+r_build_args: '--no-build-vignettes'
+r_check_args: '--ignore-vignettes --no-examples'
+
+r_github_packages:
+  - jimhester/covr
 
 env:
-  global:
-    - STAN_BRANCH=master
-    - STAN_MATH_BRANCH=master
   matrix:
-    - CXX_OLEVEL=2 RCPP_VER=cran CXX=clang++
+    - CXX_OLEVEL=2 CXX=clang++
 
-before_script:
-  - Rscript -e "install.packages(c('inline', 'Rcpp', 'coda', 'BH', 'RcppEigen', 'RInside', 'RUnit', 'ggplot2', 'gridExtra', 'knitr', 'rmarkdown'), repos='http://cran.rstudio.com')"
-  - git config -f .gitmodules submodule.stan.branch ${STAN_BRANCH}
-  - git config -f .gitmodules submodule.StanHeaders/inst/include/mathlib.branch ${STAN_MATH_BRANCH}
-  - git submodule update --remote
-  - R CMD build StanHeaders/
-  - R CMD INSTALL `find StanHeaders*.tar.gz`
-  - if [[ $TRAVIS_OS_NAME = 'osx' ]] ; then sudo tlmgr update --self; fi
-  - if [[ $TRAVIS_OS_NAME = 'osx' ]] ; then sudo tlmgr install verbatimbox readarray ifnextok multirow fancyvrb url titlesec booktabs; fi
-  - if [[ $TRAVIS_OS_NAME != 'osx' ]] ; then tlmgr install verbatimbox readarray ifnextok; fi
-  - if [[ $TRAVIS_OS_NAME = "osx" ]] ; then  brew install ccache; brew link ccache; fi
-  - echo "CXX = `R CMD config CXX`" >> ./rstan/R_Makevars
-  - echo "CXXFLAGS = `R CMD config CXXFLAGS` -pedantic -g0" >> ./rstan/R_Makevars
+before_install:
+  - mkdir -p ~/.R/
+  - echo "CXX = `R CMD config CXX`" >> ~/.R/Makevars
+  - echo "CXXFLAGS = `R CMD config CXXFLAGS` -pedantic -g0" >> ~/.R/Makevars
   - export CLANG_EXTRA_ARG=""
   - if [[ $CXX = "clang++" ]] ;  then export CLANG_EXTRA_ARG=" -Qunused-arguments -fcolor-diagnostics " ; fi
-  - if [[ $RCPP_VER = 'github' ]]; then R -q -e "options(repos = getCRANmirrors()[1,'URL']); library(devtools); install_github('Rcpp', 'Rcppcore')"; fi
-  - echo ${CXX}
-  - echo ${CLANG_EXTRA_ARG}
-  - sed -i.bak "s/ g++/ ${CXX}${CLANG_EXTRA_ARG}/" ./rstan/R_Makevars
-  - sed -i.bak "s/O[0-3]/O$CXX_OLEVEL/" ./rstan/R_Makevars
-  - rm ./rstan/R_Makevars.bak
-  - more ./rstan/R_Makevars
-  - mkdir -p ~/.R/; cat ./rstan/R_Makevars > ~/.R/Makevars
-  - more ~/.R/Makevars
+  - sed -i.bak "s/ g++/ ${CXX}${CLANG_EXTRA_ARG}/" ~/.R/Makevars
+  - sed -i.bak "s/O[0-3]/O$CXX_OLEVEL/" ~/.R/Makevars
 
-r_packages:
-  - covr
+script:
+  - |
+    travis_wait R CMD build .
+    travis_wait 42 R CMD check rstanarm*tar.gz
+after_script:
+  - tar -ztvf rstanarm_*.tar.gz
+  - echo ${NOT_CRAN}
 
 after_success:
-  - Rscript -e 'library(covr); codecov()'
+  - travis_wait 40 tar -C .. -xf $PKG_TARBALL
+  - travis_wait 40 Rscript -e 'covr::codecov()'
+
+after_failure:
+  - cat rstanarm.Rcheck/00*
