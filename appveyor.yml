@@ -15,8 +15,10 @@ install:
 build_script:
   - travis-tool.sh install_deps
 
+environment:
   matrix:
   - R_VERSION: devel
+
   - R_VERSION: release
 
 test_script:
