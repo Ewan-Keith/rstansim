@@ -14,5 +14,5 @@ extract_data(object, ...)
 \description{
 Generic function for extracting data from rstansim objects.
 Default arguments will return full data as a dataframe, otherwise
-rows will be filtered based on provided arguments. DONT FORGET TO ADD USAGE CASES FOR DOC
+rows will be filtered based on provided arguments.
 }
