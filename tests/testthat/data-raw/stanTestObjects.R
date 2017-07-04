@@ -34,10 +34,13 @@ url <- "http://stat.columbia.edu/~gelman/arm/examples/arsenic/wells.dat"
 wells <- read.table(url)
 wells$dist100 <- with(wells, dist / 100)
 X <- model.matrix(~ dist100 + arsenic, wells)
-# small_X <- X[sample(nrow(X),size=30,replace=FALSE),] # not needed
-standata <- list(y = wells$switch, X = X, N = nrow(X), P = ncol(X))
+
+row_nums <- sample(nrow(X), size=50, replace=FALSE)
+small_X <- X[row_nums, ]
+
+standata <- list(y = wells$switch[row_nums], X = small_X, N = nrow(small_X), P = ncol(small_X))
 
 # Fit model
-fit_loo <- stan("tests/testthat/data-raw/logistic.stan", data = standata, iter = 1000)
+fit_loo <- stan("tests/testthat/data-raw/logistic.stan", data = standata, iter = 500)
 
 # saveRDS(fit_loo, "tests/testthat/objects/test_stanfit_loo.rds")
