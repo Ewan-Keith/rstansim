@@ -5,14 +5,36 @@ context("basic runs to test that stan manages to sample at all, small and fast")
 
 test_that("stan_sim returns a valid stansim object", {
 
-  ## basic s3 class check
+  ## setup and run tiny example
   testStanArgs <- list(file = 'tests/testthat/data-raw/8schools.stan',
                        iter = 1, chains = 1)
 
-  expect_s3_class(stan_sim(
+  output <- stan_sim(
     stan_args = testStanArgs,
     sim_data = dir("tests/testthat/data-raw/data", full.names = TRUE)[1],
     use_cores = 1
-  ), "stansim")
+  )
+
+  # basic s3 class check
+  expect_s3_class(output, "stansim")
+
+  # check s3 slots
+  expect_equal(names(output), c("sim_name", "start_time", "end_time",
+                               "model_name", "model_code", "sim_seed",
+                               "instances", "data"))
+
+  # check data dimensions
+  expect_equal(dim(output$data), c(190, 4))
+
+  ## instance checks
+  # instance names
+  expect_equal(names(output$instances[[1]]),
+               c("data_name", "ran_at", "elapsed_time", "stan_inits",
+                 "stan_args", "seed", "warnings"))
+
+  # stan_args  names
+  expect_equal(names(unlist(output$instances[[1]]$stan_args)),
+               c("chain_id", "iter", "thin", "seed", "warmup", "init",
+                 "algorithm", "check_unknown_args", "method" ))
 
 })
