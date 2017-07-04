@@ -4,7 +4,7 @@
 library(rstansim)
 library(rstan)
 
-## small scale 8schools example for basic stansim methods testing
+#### small scale 8schools example for basic stansim methods testing ####
 
 test_stan_args <- list(file = "tests/testthat/data-raw/8schools.stan",
                      iter = 1000, chains = 4)
@@ -15,7 +15,7 @@ test_stansim <- stan_sim(stan_args = test_stan_args,
 
 # saveRDS(test_stansim, "tests/testthat/objects/test_stansim.rds")
 
-## small scale 8schools example for testing that needs a stanfit object
+#### small scale 8schools example for testing that needs a stanfit object ####
 
 test_stan_args <- list(file = "tests/testthat/data-raw/8schools.stan",
                        iter = 1000, chains = 4,
@@ -25,3 +25,19 @@ test_stan_args <- list(file = "tests/testthat/data-raw/8schools.stan",
 test_stanfit <- do.call(stan, test_stan_args)
 
 # saveRDS(test_stanfit, "tests/testthat/objects/test_stanfit.rds")
+
+
+#### loo friendly small stanfit for extraction testing ####
+
+# Prepare data
+url <- "http://stat.columbia.edu/~gelman/arm/examples/arsenic/wells.dat"
+wells <- read.table(url)
+wells$dist100 <- with(wells, dist / 100)
+X <- model.matrix(~ dist100 + arsenic, wells)
+# small_X <- X[sample(nrow(X),size=30,replace=FALSE),] # not needed
+standata <- list(y = wells$switch, X = X, N = nrow(X), P = ncol(X))
+
+# Fit model
+fit_loo <- stan("tests/testthat/data-raw/logistic.stan", data = standata, iter = 1000)
+
+# saveRDS(fit_loo, "tests/testthat/objects/test_stanfit_loo.rds")

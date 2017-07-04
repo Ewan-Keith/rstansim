@@ -1,5 +1,9 @@
 context("test internal, non-exposed functions")
 
+# rstan needs loaded for loo
+suppressMessages(library(rstan))
+
+
 # read in prepared stanfit object
 test_stanfit <- readRDS("objects/test_stanfit.rds")
 
@@ -189,5 +193,48 @@ test_that("param_extract should return a correct dataframe", {
 
   ## efilter3 dimensions should be as expected
   expect_equal(dim(test_param_efilter_extract3), c(95, 4))
+
+})
+
+test_that("param_extract with LOO mocked should return correct data", {
+
+  test_stanfit_loo <- readRDS("objects/test_stanfit_loo.rds")
+
+  loo_extract <- param_extract(
+    test_stanfit_loo,
+    calc_loo = TRUE,
+    parameters = c("beta"),
+    probs = def_probs,
+    estimates = def_estimates,
+    data = "datafile location.rds"
+  )
+
+  ## param_extract should return a dataframe
+  expect_true(is.data.frame(loo_extract))
+
+  ## param_extract dimensions should be as expected
+  expect_equal(dim(loo_extract), c(36, 4))
+
+  ## colnames should be as expected
+  expect_equal(colnames(loo_extract),
+               c("data", "parameter", "estimate", "value"))
+
+  # column types should be as expected
+  expect_equal(sapply(loo_extract, typeof),
+               c("data" = "character",
+                 "parameter" = "character",
+                 "estimate" = "character",
+                 "value" = "double"))
+
+  # only betas and loo params should be present
+  expect_equal(unique(loo_extract$parameter),
+               c("beta[1]", "beta[2]", "beta[3]",
+                 "elpd_loo", "looic", "p_loo"))
+
+  # estimate and se should both be estimates from loo
+
+  expect_true("se" %in% unique(loo_extract$estimate) &
+                "estimate" %in% unique(loo_extract$estimate))
+
 
 })
