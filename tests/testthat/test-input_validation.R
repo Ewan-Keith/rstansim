@@ -1,6 +1,6 @@
 context("stan_sim input exceptions should be handled correctly")
 
-test_that("Invalid parameters return the correct error message", {
+test_that("stan_sim fails correctly with invalid parameters", {
 
   # sim_data must be provided
   expect_error(stan_sim(),
@@ -71,6 +71,13 @@ test_that("Invalid parameters return the correct error message", {
   expect_error(stan_sim(sim_data = "test", parameters =  TRUE),
                "parameters must be of type character")
 
+  # if "all" provided to parameters it must be alone
+  expect_error(
+    stan_sim(sim_data = "test", parameters =  c("all",
+                                                "eta")),
+    "if parameters argument contains \"any\", length\\(parameters\\) must be 1"
+  )
+
   # stan_warnings must be one of print, catch, suppress
   expect_error(stan_sim(sim_data = "test", stan_warnings = TRUE),
                paste0("stan_warnings must be one of \"print\", ",
@@ -96,8 +103,10 @@ test_that("Invalid parameters return the correct error message", {
                "use_cores must be a positive integer")
 
   # stan_args$data must not be provided
-  # expect_error(stan_sim(sim_data = "test_only", stan_args = list("data" = "test")),
-  #              "stan_args$data cannot be directly specified, sim_data should be used")
+  expect_error(stan_sim(sim_data = "test_only",
+                        stan_args = list("data" = "test")),
+               paste("stan_args\\$data cannot be directly specified,",
+                     "sim_data should be used"))
 
   # cache must be Boolean
   expect_error(stan_sim(sim_data = "test_only", cache = 555),
@@ -108,6 +117,10 @@ test_that("Invalid parameters return the correct error message", {
 
   expect_error(stan_sim(sim_data = "test_only", cache = NULL),
                "cache must be of type logical")
+
+  # sample_file must be NULL
+  expect_error(stan_sim(sim_data = "test_only", stan_args =
+                          list("sample_file" = "test.txt")))
 
   # probs must be numeric between 0 and 1
   expect_error(stan_sim(sim_data = "test_only", probs = 1.1),

@@ -86,7 +86,7 @@ stan_sim <- function(stan_args = list(), sim_data = NULL, calc_loo = FALSE,
                    sim_name)
 
   # coerce sim_name to character if need be
-  if(!is.character(sim_name))
+  if (!is.character(sim_name))
     sim_name <- as.character(sim_name)
 
 

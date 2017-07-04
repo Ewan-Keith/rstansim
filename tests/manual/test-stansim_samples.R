@@ -6,11 +6,11 @@ context("basic runs to test that stan manages to sample at all, small and fast")
 test_that("stan_sim returns a valid stansim object", {
 
   ## setup and run tiny example
-  testStanArgs <- list(file = 'tests/testthat/data-raw/8schools.stan',
+  test_stan_args <- list(file = "tests/testthat/data-raw/8schools.stan",
                        iter = 1, chains = 1)
 
   output <- stan_sim(
-    stan_args = testStanArgs,
+    stan_args = test_stan_args,
     sim_data = dir("tests/testthat/data-raw/data", full.names = TRUE)[1],
     use_cores = 1
   )

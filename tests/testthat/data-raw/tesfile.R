@@ -1,5 +1,6 @@
 
-stan_args <- list("data-raw/lin_reg_test/lin_reg_test.stan", data = list(N = 50))
+stan_args <- list("data-raw/lin_reg_test/lin_reg_test.stan",
+                  data = list(N = 50))
 data_locations <- dir("data-raw/lin_reg_test/data", full.names = T)
 
 

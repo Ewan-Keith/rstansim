@@ -105,7 +105,7 @@ param_extract <- function(fitted_stan, calc_loo, parameters,
   ##-------------------------------------------------
   ## extract specified parameter quantiles and all string estimates
 
-  if(parameters == "All"){
+  if ("all" %in% parameters){
     parameters <- fitted_stan@model_pars
   } else if (sum(parameters %in% fitted_stan@model_pars) == 0){
     stop(paste(
@@ -188,8 +188,22 @@ param_extract <- function(fitted_stan, calc_loo, parameters,
   ## add an indicator for dataset and sort rows
   indicator_data <- cbind("data" = data, long_output)
 
-  # return
-  indicator_data[with(indicator_data, order(parameter, estimate)), ]
+  # order output
+  ordered_data <-
+    indicator_data[with(indicator_data, order(parameter, estimate)), ]
+
+  ##-------------------------------------------------
+  ## remove rownames and format columns
+  rownames(ordered_data) <- NULL
+
+  factor_index <- sapply(ordered_data, is.factor)
+
+  ordered_data[factor_index] <-
+    lapply(ordered_data[factor_index], as.character)
+
+  # if present drop 'value' estimate, appears if probs = NA
+  # then return
+  ordered_data[ordered_data$estimate != "value", ]
 
 }
 
@@ -237,8 +251,18 @@ stan_sim_checker <- function(sim_data, calc_loo, use_cores,
     stop("stan_args must be of type list")
 
   # parameters must be character
-  if(!is.character(parameters))
+  if (!is.character(parameters))
     stop("parameters must be of type character")
+
+  # if one parameter is all length must be 1
+  if ("all" %in% parameters) {
+    if (length(parameters) > 1) {
+      stop(
+        paste0("if parameters argument contains \"any\", ",
+               "length(parameters) must be 1")
+        )
+    }
+  }
 
   # stan_args$cores will just be overwritten
   # if specified warn user
@@ -261,6 +285,10 @@ stan_sim_checker <- function(sim_data, calc_loo, use_cores,
   # cache must be Boolean
   if (!is.logical(cache))
     stop("cache must be of type logical")
+
+  # sample_file must be NULL
+  if (!is.null(stan_args$sample_file))
+    stop("stan_args$sample_file must be NULL to prevent write conflicts")
 
   # warn if sim_name is overwritten
   if (!is.character(sim_name))

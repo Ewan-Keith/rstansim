@@ -92,12 +92,12 @@ print.stansim <- function(x, ...){
   # helper method for clean matrix printing
   print.matrix <- function(m){
 
-    m <- m[rowSums(is.na(m))!=ncol(m), , drop = FALSE]
+    m <- m[rowSums(is.na(m)) != ncol(m), , drop = FALSE]
 
     m[is.na(m)] <- ""
 
-    utils::write.table(format(m, justify="left"),
-                row.names=F, col.names=F, quote=F)
+    utils::write.table(format(m, justify = "left"),
+                row.names = F, col.names = F, quote = F)
   }
 
   # stored parameters
@@ -124,7 +124,7 @@ print.stansim <- function(x, ...){
   }
   print.matrix(matrix(paramaters[1:50], ncol = 5, byrow = TRUE))
 
-  if(length(estimates) > 50) {
+  if (length(estimates) > 50) {
     cat("\nEstimates Recorded:",
         length (estimates),
         "(first 50 shown)\n")
@@ -195,26 +195,27 @@ extract_data.stansim <- function(object, datasets = "all", parameters = "all",
                          param_expand = TRUE, ...) {
 
   ## carry out basic input validation
-  if(!is.function(values) & !is.null(values))
+  if (!is.function(values) & !is.null(values))
     stop("value argument must be NULL or a function")
 
-  if(!is.character(datasets))
+  if (!is.character(datasets))
     stop("dataset argument must be of type character")
 
-  if(!is.character(parameters))
+  if (!is.character(parameters))
     stop("parameter argument must be of type character")
 
-  if(!is.character(estimates))
+  if (!is.character(estimates))
     stop("estimate argument must be of type character")
 
   ## if param_expand is on extract all dimensions for given param
-  if(param_expand){
+  if (param_expand){
     all_params <- as.character(unique(object$data$parameter))
 
     dim_removed_params <- gsub("\\[\\d*\\]$", "", all_params)
 
     # function to expand matching functions
-    param_expansion <- function(single_parameter, all_params, dim_removed_params){
+    param_expansion <- function(single_parameter,
+                                all_params, dim_removed_params){
 
       match_index <- dim_removed_params %in% single_parameter
 
@@ -245,29 +246,33 @@ extract_data.stansim <- function(object, datasets = "all", parameters = "all",
       stop("if datasets argument contains \"any\", length(datasets) must be 1")
     }
   } else {
-    data_extract <- data_extract[data_extract$data %in% datasets,]
+    data_extract <- data_extract[data_extract$data %in% datasets, ]
   }
 
   # filter on parameter
   if ("all" %in% parameters) {
     if (length(parameters) > 1) {
-      stop("if parameters argument contains \"any\", length(parameters) must be 1")
+      stop(
+        paste("if parameters argument contains \"any\",",
+              "length(parameters) must be 1"))
     }
   } else {
-    data_extract <- data_extract[data_extract$parameter %in% parameters,]
+    data_extract <- data_extract[data_extract$parameter %in% parameters, ]
   }
 
   # filter on estimate
   if ("all" %in% estimates) {
     if (length(estimates) > 1) {
-      stop("if estimates argument contains \"any\", length(estimates) must be 1")
+      stop(
+        paste("if estimates argument contains \"any\",",
+              "length(estimates) must be 1"))
     }
   } else {
     data_extract <- data_extract[data_extract$estimate %in% estimates,]
   }
 
   # filter on value function
-  if(!is.null(values))
+  if (!is.null(values))
     data_extract <- data_extract[values(data_extract$value), ]
 
   # return data
