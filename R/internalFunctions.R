@@ -17,7 +17,6 @@ single_sim <- function(datafile, stan_args,
   ##-------------------------------------------------
   ## setup stan data properly
   # read in the data varying from model to model
-
   stan_args$data <- readRDS(datafile)
 
   # fix stan's use of cores to 1
@@ -48,13 +47,10 @@ single_sim <- function(datafile, stan_args,
   ## fit the model
   start_time <- Sys.time()
 
-  fitted_stan <- withCallingHandlers(
-    do.call(rstan::stan, stan_args),
-    warning = w_handler
-  )
+  fitted_stan <- fit_stan_warnings(stan_args, w_handler)
 
   # garbage collect after model fitting
-  rm(stan_args)
+  rm(stan_args, w_handler)
   gc()
 
   ##-------------------------------------------------
@@ -348,37 +344,14 @@ stan_sim_checker <- function(sim_data, calc_loo, use_cores,
 }
 
 #-----------------------------------------------------------------
-#### warning_parse ####
-# warning_parse takes warning messages from the stan fit process
-# and parses them in to an easily explorable and traceable format
-# for later use. Simply a set of regexes that spit results in to
-# a dataframe. Should be lappy()'d to a list of warnings/
-warning_parse <- function(warning_string){
+#### fit_stan_warnings ####
+# fits a stan model whilst treating any warnings appropriately.
+# Mostly seperated out for testing purposes. NOTE, stan seems
+# not to properly spit out warnings when ran interactively with
+# core = 1.
+fit_stan_warnings <- function(stan_args, w_handler){
 
-  ## divergent transition warning regex
-  div_trans_regex <- paste0("divergent transitions after warmup\\.",
-                            " Increasing adapt_delta")
+  withCallingHandlers(do.call(rstan::stan, stan_args),
+                      warning = w_handler)
 
-  ## if divergent transition
-  if (grepl(div_trans_regex, warning_string)){
-    warning_type <- "divergent transitions"
-
-    count <- as.numeric(regmatches(warning_string, gregexpr(
-      "(?<=There were ).*?(?= divergent transitions)",
-      warning_string, perl = T))[[1]])
-
-    chain <- NA
-
-    raw_unmatched <- NA
-
-    ## if no matches return raw unmatched warning
-    } else {
-
-    warning_type <- NA
-    count <- NA
-    chain <- NA
-    raw_unmatched <- warning_string
-    }
-
-  cbind(warning_type, count, chain, raw_unmatched)
 }

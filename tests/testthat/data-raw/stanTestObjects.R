@@ -51,12 +51,17 @@ fit_loo <- stan("tests/testthat/data-raw/logistic.stan", data = standata, iter =
 #### output of fit_stan_warnings with warnings treated in three ways
 
 test_stan_args <- list(file = "tests/testthat/data-raw/8schools.stan",
-                       iter = 100, chains = 4,
+                       iter = 300, chains = 4,
                        data = readRDS(dir("tests/testthat/data-raw/data",
-                                          full.names = TRUE)[1]))
+                                          full.names = TRUE)[1]),
+                       cores = 2)
 
-do.call(rstan::stan, test_stan_args)
+w_handler_catch <- function(w) {
+  my_warnings <<- c(my_warnings, list(w))
+  invokeRestart("muffleWarning")
+}
 
+start_warn <- NULL
 
 fit_stan_warnings_catch <-
   rstansim:::fit_stan_warnings(test_stan_args, w_handler_catch)
