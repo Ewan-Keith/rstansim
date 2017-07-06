@@ -1,7 +1,7 @@
 library(rstansim)
 library(testthat)
 
-context("basic runs to test that stan manages to sample at all, small and fast")
+context("manual tests checking that stan manages to sample at all")
 
 test_that("stan_sim returns a valid stansim object", {
 

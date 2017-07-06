@@ -66,7 +66,7 @@
 #'
 #' @export
 stan_sim <- function(stan_args = list(), sim_data = NULL, calc_loo = FALSE,
-                     use_cores = 1L, parameters = "All",
+                     use_cores = 1L, parameters = "all",
                      probs = c(.025, .25, .5, .75, .975),
                      estimates = c("mean", "se_mean", "sd", "n_eff", "Rhat"),
                      stan_warnings = "catch", # options print, catch, suppress

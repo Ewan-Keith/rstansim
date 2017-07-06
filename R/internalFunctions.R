@@ -234,6 +234,30 @@ stan_sim_checker <- function(sim_data, calc_loo, use_cores,
   if (is.null(sim_data))
     stop("sim_data must be specified")
 
+  if(length(sim_data) < 1)
+    stop("sim_data must have length > 0")
+
+  # all sim_data locations must exist
+  # sim_data must be .rds file
+  sim_data_checks <- function(each_sim_data){
+    if(!file.exists(each_sim_data))
+      stop(paste0("sim_data arg \"",
+                  each_sim_data,
+                  "\" could not be found"))
+
+    if (tolower(
+      substr(each_sim_data,
+             nchar(each_sim_data) - 3 + 1,
+             nchar(each_sim_data))
+      ) != "rds") {
+      stop(paste0("sim_data arg \"",
+                  each_sim_data,
+                  "\" is not a .rds file"))
+    }
+  }
+
+  lapply(sim_data, sim_data_checks)
+
   # calc_loo must be Boolean
   if (!is.logical(calc_loo))
     stop("calc_loo must be of type logical")
@@ -280,7 +304,6 @@ stan_sim_checker <- function(sim_data, calc_loo, use_cores,
   # stan_args$data must not be provided
   if (!is.null(stan_args$data))
     stop("stan_args$data cannot be directly specified, sim_data should be used")
-
 
   # cache must be Boolean
   if (!is.logical(cache))

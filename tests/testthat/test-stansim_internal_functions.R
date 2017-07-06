@@ -1,7 +1,7 @@
 context("test internal, non-exposed functions")
 
 # rstan needs loaded for loo
-suppressMessages(library(rstan))
+suppressPackageStartupMessages(library(rstan))
 
 
 # read in prepared stanfit object
@@ -11,7 +11,8 @@ test_stanfit <- readRDS("objects/test_stanfit.rds")
 def_probs <- c(.025, .25, .5, .75, .975)
 def_estimates <- c("mean", "se_mean", "sd", "n_eff", "Rhat")
 
-
+#-----------------------------------------------------------------
+#### param_extract failing tests ####
 test_that("param_extract should fail correctly with bad input", {
 
   # when no params recognised fail immediately and tell user
@@ -62,6 +63,8 @@ test_that("param_extract should fail correctly with bad input", {
 
 })
 
+#-----------------------------------------------------------------
+#### param_extract correct testing (LOO=F) ####
 test_that("param_extract should return a correct dataframe", {
 
   # prepare default param_extract output
@@ -196,6 +199,8 @@ test_that("param_extract should return a correct dataframe", {
 
 })
 
+#-----------------------------------------------------------------
+#### loo extract testing ####
 test_that("param_extract with LOO mocked should return correct data", {
 
   test_stanfit_loo <- readRDS("objects/test_stanfit_loo.rds")
@@ -236,5 +241,48 @@ test_that("param_extract with LOO mocked should return correct data", {
   expect_true("se" %in% unique(loo_extract$estimate) &
                 "estimate" %in% unique(loo_extract$estimate))
 
+})
+
+#-----------------------------------------------------------------
+#### single_sim testing ####
+test_that("single_sim should return correct object (mocked stan fit)", {
+
+  with_mock(
+    `rstansim:::fit_stan_warnings` = function(...) {
+      warnings <<- 5
+      test_stanfit
+    },
+
+    test_stan_args <-
+      list(
+        file = "data-raw/8schools.stan",
+        iter = 500,
+        chains = 4,
+        data = readRDS(dir(
+          "data-raw/data",
+          full.names = TRUE
+        )[1])
+      )
+
+
+
+
+  )
+
+  catch_out <- rstansim:::single_sim(
+    datafile = dir("tests/testthat/data-raw/data",
+                   full.names = TRUE)[1],
+    stan_args = test_stan_args,
+    calc_loo = F,
+    parameters = "all",
+    probs = c(.025, .25, .5, .75, .975),
+    estimates = c("mean", "se_mean",
+                  "sd", "n_eff", "Rhat"),
+    stan_warnings = "catch",
+    cache = F
+  )
 
 })
+
+
+

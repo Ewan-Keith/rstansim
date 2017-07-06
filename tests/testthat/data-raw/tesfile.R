@@ -12,15 +12,11 @@ schools_dat <- list(J = 8,
                     y = c(28,  8, -3,  7, -1,  1, 18, 12),
                     sigma = c(15, 10, 16, 11,  9, 11, 10, 18))
 
-testStanArgs <- list(file = 'data-raw/8schools.stan',
+testStanArgs <- list(file = 'tests/testthat/data-raw/8schools.stan',
                     iter = 1000, chains = 4)
 
-testSimArgs <- list(simData = dir("devtest/data", full.names = TRUE), useCores = 4)
 
-testReturnArgs <- list("pars" = c("mu", "^eta"),
-                       "probs" = c("2.5%", "50%", "97.5%"))
-
-testout <- stan_sim(stan_args = testStanArgs, sim_data = dir("data-raw/data", full.names = TRUE), use_cores = 4)
+testout <- stan_sim(stan_args = testStanArgs, sim_data = dir("tests/testthat/data-raw/data", full.names = TRUE), use_cores = 4)
 
 
 params <- readRDS("data-raw/data/schoolsdat1.rds")
