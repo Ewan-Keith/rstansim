@@ -37,7 +37,10 @@ single_sim <- function(datafile, stan_args,
       invokeRestart("muffleWarning")
     }
   } else if (stan_warnings == "print"){
-    w_handler <- function(w) NULL
+    w_handler <- function(w) {
+      print(w)
+      invokeRestart("muffleWarning")
+      }
   }
 
   # init warning store

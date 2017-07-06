@@ -376,7 +376,65 @@ test_that("single_sim should return correct object (mocked stan fit)", {
     expect_type(catch_out$model_code, "character"),
 
     # warnings NULL due to mocking
-    expect_null(catch_out$warnings)
+    expect_null(catch_out$warnings),
+
+    # just test that alternative warning values do run correctly
+    print_out <- rstansim:::single_sim(
+      datafile = dir("data-raw/data",
+                     full.names = TRUE)[1],
+      stan_args = test_stan_args,
+      calc_loo = F,
+      parameters = "all",
+      probs = c(.025, .25, .5, .75, .975),
+      estimates = c("mean", "se_mean",
+                    "sd", "n_eff", "Rhat"),
+      stan_warnings = "print",
+      cache = F
+    ),
+
+    # should be list
+    expect_type(print_out, "list"),
+
+    # should be class stansim_uni
+    expect_s3_class(print_out, "stansim_uni"),
+
+    # should have ten items
+    expect_equal(length(print_out), 10),
+
+    # check list item names are correct
+    expect_equal(names(print_out),
+                 c("data_name", "ran_at", "elapsed_time", "stan_inits",
+                   "stan_args", "seed", "out_data", "model_name",
+                   "model_code", "warnings")),
+
+    # just test that alternative warning values do run correctly
+    suppress_out <- rstansim:::single_sim(
+      datafile = dir("data-raw/data",
+                     full.names = TRUE)[1],
+      stan_args = test_stan_args,
+      calc_loo = F,
+      parameters = "all",
+      probs = c(.025, .25, .5, .75, .975),
+      estimates = c("mean", "se_mean",
+                    "sd", "n_eff", "Rhat"),
+      stan_warnings = "suppress",
+      cache = F
+    ),
+
+    # should be list
+    expect_type(suppress_out, "list"),
+
+    # should be class stansim_uni
+    expect_s3_class(suppress_out, "stansim_uni"),
+
+    # should have ten items
+    expect_equal(length(suppress_out), 10),
+
+    # check list item names are correct
+    expect_equal(names(suppress_out),
+                 c("data_name", "ran_at", "elapsed_time", "stan_inits",
+                   "stan_args", "seed", "out_data", "model_name",
+                   "model_code", "warnings"))
 
   )
 })
