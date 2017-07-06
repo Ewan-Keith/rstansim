@@ -47,7 +47,8 @@ single_sim <- function(datafile, stan_args,
   ## fit the model
   start_time <- Sys.time()
 
-  fitted_stan <- fit_stan_warnings(stan_args, w_handler)
+  fitted_stan <- withCallingHandlers(do.call(rstan::stan, stan_args),
+                                     warning = w_handler)
 
   # garbage collect after model fitting
   rm(stan_args, w_handler)
@@ -157,7 +158,7 @@ param_extract <- function(fitted_stan, calc_loo, parameters,
   ## if calc_loo, then calculate loo values and append
   if (calc_loo){
     log_lik_1 <- loo::extract_log_lik(fitted_stan)
-    loo_1 <- loo::loo(log_lik_1)
+    loo_1 <- loo::loo(log_lik_1, cores = 1)
 
     loo_params <-
       c("elpd_loo",
@@ -340,18 +341,5 @@ stan_sim_checker <- function(sim_data, calc_loo, use_cores,
     }
   }
   sapply(estimates, estimate_validate)
-
-}
-
-#-----------------------------------------------------------------
-#### fit_stan_warnings ####
-# fits a stan model whilst treating any warnings appropriately.
-# Mostly seperated out for testing purposes. NOTE, stan seems
-# not to properly spit out warnings when ran interactively with
-# core = 1.
-fit_stan_warnings <- function(stan_args, w_handler){
-
-  withCallingHandlers(do.call(rstan::stan, stan_args),
-                      warning = w_handler)
 
 }
