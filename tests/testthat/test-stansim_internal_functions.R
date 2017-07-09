@@ -248,7 +248,8 @@ test_that("param_extract with LOO mocked should return correct data", {
 test_that("single_sim should return correct object (mocked stan fit)", {
 
   with_mock(
-    withCallingHandlers = function(...) {
+    `rstan::stan` = function(...) {
+      warning("suppressed warning test")
       test_stanfit
     },
 
@@ -268,7 +269,7 @@ test_that("single_sim should return correct object (mocked stan fit)", {
       probs = c(.025, .25, .5, .75, .975),
       estimates = c("mean", "se_mean",
                     "sd", "n_eff", "Rhat"),
-      stan_warnings = "catch",
+      stan_warnings = "suppress",
       cache = F
     ),
 
@@ -439,5 +440,63 @@ test_that("single_sim should return correct object (mocked stan fit)", {
   )
 })
 
+#-----------------------------------------------------------------
+#### single_sim catch warning testing ####
+test_that("single_sim warnings behave as expectated", {
+
+  with_mock(
+    `rstan::stan` = function(...) {
+      warning("test warning 1")
+      warning("test warning 2")
+      test_stanfit
+    },
+
+    test_stan_args <-
+      list(
+        file = "data-raw/8schools.stan",
+        iter = 500,
+        chains = 4
+      ),
+
+    catch_out <- rstansim:::single_sim(
+      datafile = dir("data-raw/data",
+                     full.names = TRUE)[1],
+      stan_args = test_stan_args,
+      calc_loo = F,
+      parameters = "all",
+      probs = c(.025, .25, .5, .75, .975),
+      estimates = c("mean", "se_mean",
+                    "sd", "n_eff", "Rhat"),
+      stan_warnings = "catch",
+      cache = F
+    ),
+
+    # warnings caught should be list
+    expect_type(catch_out$warnings, "list"),
+
+    # warnings should be length 2
+    expect_length(catch_out$warnings, 2),
+
+    # both list items should have correct class
+    for (i in 1:2) {
+      expect_s3_class(catch_out$warnings[[i]],
+                      c("simpleWarning", "warning", "condition"))
+    },
+
+    # both messages should be correct
+    for (i in 1:2){
+      expect_equal(catch_out$warnings[[i]]$message,
+                   paste("test warning", i))
+    },
+
+    # both calls should be of type language
+    for (i in 1:2){
+      expect_type(catch_out$warnings[[i]]$call,
+                   "language")
+    }
+
+
+    )
+})
 
 

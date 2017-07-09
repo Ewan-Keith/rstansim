@@ -46,6 +46,7 @@ single_sim <- function(datafile, stan_args,
   # init warning store
   my_warnings <- NULL
 
+
   ##-------------------------------------------------
   ## fit the model
   start_time <- Sys.time()
