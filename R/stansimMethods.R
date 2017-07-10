@@ -29,32 +29,32 @@ print.stansim_single <- function(x, ...){
   # stored estimates
   estimates <- unique(as.character(x$data$estimate))
 
-  cat("Stan Simulation Title:", x$sim_name, "\n")
-  cat("Model Name:", x$model_name, "\n\n")
-  cat("Started Running at:", format(x$start_time), "\n")
-  cat("Finished Running at:", format(x$end_time), "\n\n")
+  cat(paste0("Stan Simulation Title: ", x$sim_name, "\n"))
+  cat(paste0("Model Name: ", x$model_name, "\n\n"))
+  cat(paste0("Started Running at: ", format(x$start_time), "\n"))
+  cat(paste0("Finished Running at: ", format(x$end_time), "\n\n"))
 
-  cat("Number of Models Fitted:", length(x$instances), "\n\n")
+  cat(paste0("Number of Models Fitted: ", length(x$instances), "\n\n"))
 
   if (length(paramaters) > 50) {
-    cat("Parameter Estimates Recorded:",
+    cat(paste0("Parameters Recorded: ",
         length(paramaters),
-        "(first 50 shown)\n")
+        "(first 50 shown)\n"))
   } else {
-    cat("Parameter Estimates Recorded:",
+    cat(paste0("Parameters Recorded: ",
         length(paramaters),
-        "\n")
+        "\n"))
   }
   print.matrix(matrix(paramaters[1:50], ncol = 5, byrow = TRUE))
 
   if (length(estimates) > 50) {
-    cat("\nEstimates Recorded:",
+    cat(paste0("\nEstimates Recorded: ",
         length (estimates),
-        "(first 50 shown)\n")
+        "(first 50 shown)\n"))
   } else {
-    cat("\nEstimates Recorded:",
+    cat(paste0("\nEstimates Recorded: ",
         length (estimates),
-        "\n")
+        "\n"))
   }
   print.matrix(matrix(estimates[1:50], ncol = 5, byrow = TRUE))
 

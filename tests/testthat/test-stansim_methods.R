@@ -170,6 +170,60 @@ test_that(paste("extract_data.stansim_single function should return",
   ## extract should return a dataframe
   expect_true(is.data.frame(extract_data(extract_test_data)))
 
+})
 
+test_that(paste(
+  "print.stansim_single function should print",
+  "expected output"), {
 
+    ## read in test stansim_single obj to print
+    extract_test_data <- readRDS("objects/test_stansim.rds")
+
+    caught_print <- utils::capture.output(print(extract_test_data))
+
+    expect_true(grepl("Stan Simulation Title: .*", caught_print[1]))
+
+    expect_true(grepl("Model Name: .*", caught_print[2]))
+
+    expect_true(grepl("", caught_print[3]))
+
+    expect_true(grepl("Started Running at: .*", caught_print[4]))
+
+    expect_true(grepl("Finished Running at: .*", caught_print[5]))
+
+    expect_true(grepl("", caught_print[6]))
+
+    expect_true(grepl("Number of Models Fitted: \\d*", caught_print[7]))
+
+    expect_true(grepl("", caught_print[8]))
+
+    expect_true(grepl("Parameters Recorded: \\d*", caught_print[9]))
+
+    expect_true(grepl(
+      "eta\\[1\\]   eta\\[2\\]   eta\\[3\\]   eta\\[4\\]   eta\\[5\\]  ",
+      caught_print[10]))
+
+    expect_true(grepl(
+      "eta\\[6\\]   eta\\[7\\]   eta\\[8\\]   lp__     mu      ",
+      caught_print[11]))
+
+    expect_true(grepl(
+      "tau      theta\\[1\\] theta\\[2\\] theta\\[3\\] theta\\[4\\]",
+      caught_print[12]))
+
+    expect_true(grepl(
+      "theta\\[5\\] theta\\[6\\] theta\\[7\\] theta\\[8\\]         ",
+      caught_print[13]))
+
+    expect_true(grepl("", caught_print[14]))
+
+    expect_true(grepl("Estimates Recorded: \\d*", caught_print[15]))
+
+    expect_true(grepl(
+      "2.5%    25%     50%     75%     97.5%  ",
+      caught_print[16]))
+
+    expect_true(grepl(
+      "mean    n_eff   Rhat    sd      se_mean",
+      caught_print[17]))
 })
