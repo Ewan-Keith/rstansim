@@ -235,13 +235,13 @@ stansim_checker <- function(sim_data, calc_loo, use_cores,
   if (is.null(sim_data))
     stop("sim_data must be specified")
 
-  if(length(sim_data) < 1)
+  if (length(sim_data) < 1)
     stop("sim_data must have length > 0")
 
   # all sim_data locations must exist
   # sim_data must be .rds file
   sim_data_checks <- function(each_sim_data){
-    if(!file.exists(each_sim_data))
+    if (!file.exists(each_sim_data))
       stop(paste0("sim_data arg \"",
                   each_sim_data,
                   "\" could not be found"))

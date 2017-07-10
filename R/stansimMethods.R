@@ -39,7 +39,7 @@ print.stansim_single <- function(x, ...){
   if (length(paramaters) > 50) {
     cat(paste0("Parameters Recorded: ",
         length(paramaters),
-        "(first 50 shown)\n"))
+        " (first 50 shown)\n"))
   } else {
     cat(paste0("Parameters Recorded: ",
         length(paramaters),
@@ -50,7 +50,7 @@ print.stansim_single <- function(x, ...){
   if (length(estimates) > 50) {
     cat(paste0("\nEstimates Recorded: ",
         length (estimates),
-        "(first 50 shown)\n"))
+        " (first 50 shown)\n"))
   } else {
     cat(paste0("\nEstimates Recorded: ",
         length (estimates),
@@ -170,10 +170,11 @@ extract_data.stansim_single <-
     ## filter on dataset
     if ("all" %in% datasets) {
       if (length(datasets) > 1) {
-        stop("if datasets argument contains \"any\", length(datasets) must be 1")
+        stop(paste("if datasets argument contains \"any\",",
+                   "length(datasets) must be 1"))
       }
     } else {
-      data_extract <- data_extract[data_extract$data %in% datasets,]
+      data_extract <- data_extract[data_extract$data %in% datasets, ]
     }
 
     # filter on parameter
@@ -188,7 +189,7 @@ extract_data.stansim_single <-
       }
     } else {
       data_extract <-
-        data_extract[data_extract$parameter %in% parameters,]
+        data_extract[data_extract$parameter %in% parameters, ]
     }
 
     # filter on estimate
@@ -205,7 +206,7 @@ extract_data.stansim_single <-
 
     # filter on value function
     if (!is.null(values))
-      data_extract <- data_extract[values(data_extract$value),]
+      data_extract <- data_extract[values(data_extract$value), ]
 
     # return data
     data_extract

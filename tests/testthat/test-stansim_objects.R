@@ -47,7 +47,7 @@ test_that("stan_sim_uni object constructor returns correct values", {
   # check that ran at is date format
   is_date <- function(mydate, date.format = "%d/%m/%y") {
     tryCatch(!is.na(as.Date(mydate, date.format, tz = "UTC")),
-             error = function(err) {FALSE})
+             error = function(err) FALSE)
   }
   expect_true(is_date(test_stansim_uni$ran_at))
 
@@ -76,9 +76,9 @@ test_that("stan_sim_uni object constructor returns correct values", {
     args <- c(...)
     if (length(args) > 2L) {
       #  recursively call ident()
-      out <- c(identical(args[1] , args[2]) , ident(args[-1]))
+      out <- c(identical(args[1], args[2]), ident(args[-1]))
     } else{
-      out <- identical(args[1] , args[2])
+      out <- identical(args[1], args[2])
     }
     return(all(out))
   }
@@ -175,7 +175,7 @@ test_that("stansim_single object constructor returns correct values", {
   # start and end time should be of type date
   is_date <- function(mydate, date.format = "%d/%m/%y") {
     tryCatch(!is.na(as.Date(mydate, date.format, tz = "UTC")),
-             error = function(err) {FALSE})
+             error = function(err) FALSE)
   }
   expect_true(is_date(stansim_single_test$start_time))
   expect_true(is_date(stansim_single_test$end_time))
@@ -226,9 +226,9 @@ test_that("stansim_single object constructor returns correct values", {
       args <- c(...)
       if (length(args) > 2L) {
         #  recursively call ident()
-        out <- c(identical(args[1] , args[2]) , ident(args[-1]))
+        out <- c(identical(args[1], args[2]), ident(args[-1]))
       } else{
-        out <- identical(args[1] , args[2])
+        out <- identical(args[1], args[2])
       }
       return(all(out))
     }

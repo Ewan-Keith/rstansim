@@ -56,7 +56,7 @@ test_that("single_sim should return correct object (mocked stan fit)", {
 
     is_date <- function(mydate, date.format = "%d/%m/%y") {
       tryCatch(!is.na(as.Date(mydate, date.format, tz = "UTC")),
-               error = function(err) {FALSE})
+               error = function(err) FALSE)
     },
 
     # ran at should be date
@@ -77,15 +77,15 @@ test_that("single_sim should return correct object (mocked stan fit)", {
     expect_equal(length(catch_out$stan_inits), 4),
 
     # stan args that should be same across chains are
-    ident <- function(...){
+    ident <- function(...) {
       args <- c(...)
-      if( length( args ) > 2L ){
+      if (length(args) > 2L) {
         #  recursively call ident()
-        out <- c( identical( args[1] , args[2] ) , ident(args[-1]))
-      }else{
-        out <- identical( args[1] , args[2] )
+        out <- c(identical(args[1], args[2]), ident(args[-1]))
+      } else{
+        out <- identical(args[1], args[2])
       }
-      return( all( out ) )
+      return(all(out))
     },
 
     # iter same
@@ -321,7 +321,7 @@ test_that("written cache folder and files are correct", {
 
     is_date <- function(mydate, date.format = "%d/%m/%y") {
       tryCatch(!is.na(as.Date(mydate, date.format, tz = "UTC")),
-               error = function(err) {FALSE})
+               error = function(err) FALSE)
     },
 
     # ran at should be date
@@ -342,15 +342,15 @@ test_that("written cache folder and files are correct", {
     expect_equal(length(cached_output$stan_inits), 4),
 
     # stan args that should be same across chains are
-    ident <- function(...){
+    ident <- function(...) {
       args <- c(...)
-      if( length( args ) > 2L ){
+      if (length(args) > 2L) {
         #  recursively call ident()
-        out <- c( identical( args[1] , args[2] ) , ident(args[-1]))
-      }else{
-        out <- identical( args[1] , args[2] )
+        out <- c(identical(args[1], args[2]), ident(args[-1]))
+      } else{
+        out <- identical(args[1], args[2])
       }
-      return( all( out ) )
+      return(all(out))
     },
 
     # iter same
