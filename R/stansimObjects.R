@@ -2,7 +2,7 @@
 #### stansim_uni ####
 # constructor for internal object that is returned by each parallel
 # run of foreach. Only for internal use and will be combined into
-# stansim object before being returned.
+# stansim_single object before being returned.
 stansim_uni <- function(fit, data_name, ran_at, long_data, stan_warnings,
                         cache) {
 
@@ -25,14 +25,32 @@ stansim_uni <- function(fit, data_name, ran_at, long_data, stan_warnings,
 }
 
 #-----------------------------------------------------------------
-#### stansim ####
-# method for constructing stansim objects by merging together
-# stansim_uni objects stored in a list with other global args.
-# It is this object that will be returned to the user.
-
-stansim <-
+#### stansim_single ####
+#' Construct an S3 object of type stansim_single
+#'
+#' @description A constructor function for creating S3 Objects of
+#' type \code{stansim_single}. \code{stansim_single} objects are the basic
+#' unit of output from calls to the \code{stansim} function and collects
+#' the specified data for all stan models fitted.
+#'
+#' @param sim_name The name to be given to the simulation represented
+#' by the \code{stansim_single} object.
+#' @param stansim_uni_list A list of objects with S3 class
+#' \code{stan_sim_uni}. This is an unexported class used to store the
+#' outcomes of individual simulation runs internal to the \code{stansim}
+#' function.
+#' @param start_time System time when \code{stansim} was called.
+#' @param end_time System time when the results from \code{stansim}
+#' were returned.
+#' @param stansim_seed The global seed for the \code{stansim} call.
+#'
+#' @return An S3 object of class \code{stansim_single} recording relevant
+#' simulation data.
+#'
+#' @export
+stansim_single <-
   function(sim_name, stansim_uni_list, start_time,
-           end_time, stansim_seed, stan_warnings) {
+           end_time, stansim_seed) {
 
     ## extract all individual stan instance level data
     # function for cleaning out simstan_uni elements for storage
@@ -70,7 +88,7 @@ stansim <-
         "instances" = ind_runs,
         "data" = longer_data
       ),
-      class = "stansim"
+      class = "stansim_single"
     )
   }
 

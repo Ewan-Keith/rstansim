@@ -210,11 +210,11 @@ param_extract <- function(fitted_stan, calc_loo, parameters,
 
 
 #-----------------------------------------------------------------
-#### stan_sim_checker ####
-# stan_sim_checker runs several tests on input to stan_sim() to
+#### stansim_checker ####
+# stansim_checker runs several tests on input to stan_sim() to
 # check for input validity early in the function. Only basic type
 # checks are made.
-stan_sim_checker <- function(sim_data, calc_loo, use_cores,
+stansim_checker <- function(sim_data, calc_loo, use_cores,
                              parameters, probs, estimates, stan_args,
                              stan_warnings, cache, stansim_seed,
                              sim_name){

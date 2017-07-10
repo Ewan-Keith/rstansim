@@ -10,8 +10,8 @@ library(rstan)
 test_stan_args <- list(file = "tests/testthat/data-raw/8schools.stan",
                      iter = 1000, chains = 4)
 
-test_stansim <- stan_sim(stan_args = test_stan_args,
-                         sim_data = dir("data-raw/data",
+test_stansim <- stansim(stan_args = test_stan_args,
+                         sim_data = dir("tests/testthat/data-raw/data",
                                         full.names = TRUE), use_cores = 4)
 
 # saveRDS(test_stansim, "tests/testthat/objects/test_stansim.rds")
@@ -48,21 +48,59 @@ fit_loo <- stan("tests/testthat/data-raw/logistic.stan", data = standata, iter =
 # saveRDS(fit_loo, "tests/testthat/objects/test_stanfit_loo.rds")
 
 #-----------------------------------------------------------------
-#### output of fit_stan_warnings with warnings treated in three ways
+#### output of two stansim_uni calls for testing stansim constructor ####
 
-test_stan_args <- list(file = "tests/testthat/data-raw/8schools.stan",
-                       iter = 300, chains = 4,
-                       data = readRDS(dir("tests/testthat/data-raw/data",
-                                          full.names = TRUE)[1]),
-                       cores = 2)
+test_stanfit <- readRDS("tests/testthat/objects/test_stanfit.rds")
 
-w_handler_catch <- function(w) {
-  my_warnings <<- c(my_warnings, list(w))
-  invokeRestart("muffleWarning")
-}
+#### roll down long stansim_uni calls ####
+test_stansim_uni1 <-
+  rstansim:::stansim_uni(
+    test_stanfit,
+    data_name = "data_name1",
+    ran_at = Sys.time(),
+    long_data = rstansim:::param_extract(
+      test_stanfit,
+      calc_loo = F,
+      parameters = "all",
+      probs = c(.025, .25, .5, .75, .975),
+      estimates = c("mean",
+                    "se_mean",
+                    "sd",
+                    "n_eff",
+                    "Rhat"),
+      data = "datafile location1.rds"
+    ),
+    stan_warnings = "warning strings1",
+    cache = F
+  )
 
-start_warn <- NULL
+test_stansim_uni2 <-
+  rstansim:::stansim_uni(
+    test_stanfit,
+    data_name = "data_name2",
+    ran_at = Sys.time(),
+    long_data = rstansim:::param_extract(
+      test_stanfit,
+      calc_loo = F,
+      parameters = "all",
+      probs = c(.025, .25, .5, .75, .975),
+      estimates = c("mean",
+                    "se_mean",
+                    "sd",
+                    "n_eff",
+                    "Rhat"),
+      data = "datafile location2.rds"
+    ),
+    stan_warnings = "warning strings2",
+    cache = F
+  )
 
-fit_stan_warnings_catch <-
-  rstansim:::fit_stan_warnings(test_stan_args, w_handler_catch)
+
+#### un roll down calls ####
+
+test_stansim_uni_list <- list(test_stansim_uni1, test_stansim_uni2)
+
+# saveRDS(test_stansim_uni_list,
+#         "tests/testthat/objects/test_stansim_uni_list.rds")
+
 

@@ -10,7 +10,7 @@
 #' @param ... other arguments not used by this method
 #'
 #' @export
-print.stansim <- function(x, ...){
+print.stansim_single <- function(x, ...){
 
   # helper method for clean matrix printing
   print.matrix <- function(m){
@@ -68,7 +68,7 @@ print.stansim <- function(x, ...){
 #' Default arguments will return full data as a dataframe, otherwise
 #' rows will be filtered based on provided arguments.
 #'
-#' @param object An object of S3 class stansim.
+#' @param object An object of S3 class stansim_single.
 #' @param ... Arguments for filtering returned data, see specific methods for further detail.
 #'
 #' @export
@@ -77,18 +77,18 @@ extract_data <- function (object, ...) {
 }
 
 #-----------------------------------------------------------------
-#### extract_data.stansim method ####
+#### extract_data.stansim_single method ####
 # method to extract data from a stansim object based on string filtering
 # of the fields
-#' Extract data from a stansim object
+#' Extract data from a stansim_single object
 #'
-#' @description Applied to an object of type stansim, \code{extract_data}
-#' will return the objects simulation data as a dataframe, subject to the
-#' filtering specified by the function arguments.
+#' @description Applied to an object of type stansim_single,
+#' \code{extract_data} will return the objects simulation data as a
+#' dataframe, subject to the filtering specified by the function arguments.
 #'
-#' @param object An object of S3 class stansim.
+#' @param object An object of S3 class stansim_single.
 #' @param datasets Either a character vector containing the names of datasets
-#' (as provided to the original \code{stan_sim()} call) fitted, or the string
+#' (as provided to the original \code{stansim} call) fitted, or the string
 #' \code{"all"}. The former will only return values for the corresponding
 #' datasets, the latter applies no filtering on stansim datasets.
 #' @param parameters Either a character vector containing the names of stan
@@ -97,7 +97,7 @@ extract_data <- function (object, ...) {
 #' parameters, the latter applies no filtering on parameters. See also
 #' the effect of the \code{param_expand} argument.
 #' @param estimates Either a character vector containing the names of parameter
-#' estimates (as provided to the original \code{stan_sim()} call) calculated,
+#' estimates (as provided to the original \code{stansim} call) calculated,
 #' or the string \code{"all"}. The former will only return values for the
 #' corresponding estimates, the latter applies no filtering on estimates
 #' @param values Either a function taking a single numeric
@@ -113,92 +113,101 @@ extract_data <- function (object, ...) {
 #' @param ... other arguments not used by this method
 #'
 #' @export
-extract_data.stansim <- function(object, datasets = "all", parameters = "all",
-                                 estimates = "all", values = NULL,
-                                 param_expand = TRUE, ...) {
+extract_data.stansim_single <-
+  function(object,
+           datasets = "all",
+           parameters = "all",
+           estimates = "all",
+           values = NULL,
+           param_expand = TRUE,
+           ...) {
+    ## carry out basic input validation
+    if (!is.function(values) & !is.null(values))
+      stop("value argument must be NULL or a function")
 
-  ## carry out basic input validation
-  if (!is.function(values) & !is.null(values))
-    stop("value argument must be NULL or a function")
+    if (!is.character(datasets))
+      stop("dataset argument must be of type character")
 
-  if (!is.character(datasets))
-    stop("dataset argument must be of type character")
+    if (!is.character(parameters))
+      stop("parameter argument must be of type character")
 
-  if (!is.character(parameters))
-    stop("parameter argument must be of type character")
+    if (!is.character(estimates))
+      stop("estimate argument must be of type character")
 
-  if (!is.character(estimates))
-    stop("estimate argument must be of type character")
+    ## if param_expand is on extract all dimensions for given param
+    if (param_expand) {
+      all_params <- as.character(unique(object$data$parameter))
 
-  ## if param_expand is on extract all dimensions for given param
-  if (param_expand){
-    all_params <- as.character(unique(object$data$parameter))
+      dim_removed_params <- gsub("\\[\\d*\\]$", "", all_params)
 
-    dim_removed_params <- gsub("\\[\\d*\\]$", "", all_params)
+      # function to expand matching functions
+      param_expansion <- function(single_parameter,
+                                  all_params,
+                                  dim_removed_params) {
+        match_index <- dim_removed_params %in% single_parameter
 
-    # function to expand matching functions
-    param_expansion <- function(single_parameter,
-                                all_params, dim_removed_params){
+        all_params[match_index]
 
-      match_index <- dim_removed_params %in% single_parameter
+      }
 
-      all_params[match_index]
+      parameters <- unique(c(parameters,
+                             unlist(
+                               sapply(
+                                 parameters,
+                                 param_expansion,
+                                 dim_removed_params = dim_removed_params,
+                                 all_params = all_params,
+                                 USE.NAMES = FALSE
+                               )
+                             )))
 
     }
 
-    parameters <- unique(c(parameters,
-                           unlist(
-                             sapply(
-                               parameters,
-                               param_expansion,
-                               dim_removed_params = dim_removed_params,
-                               all_params = all_params,
-                               USE.NAMES = FALSE
-                             )
-                           )))
-
-  }
-
-  ## extract data
-  data_extract <- object$data
+    ## extract data
+    data_extract <- object$data
 
 
-  ## filter on dataset
-  if ("all" %in% datasets) {
-    if (length(datasets) > 1) {
-      stop("if datasets argument contains \"any\", length(datasets) must be 1")
+    ## filter on dataset
+    if ("all" %in% datasets) {
+      if (length(datasets) > 1) {
+        stop("if datasets argument contains \"any\", length(datasets) must be 1")
+      }
+    } else {
+      data_extract <- data_extract[data_extract$data %in% datasets,]
     }
-  } else {
-    data_extract <- data_extract[data_extract$data %in% datasets, ]
-  }
 
-  # filter on parameter
-  if ("all" %in% parameters) {
-    if (length(parameters) > 1) {
-      stop(
-        paste("if parameters argument contains \"any\",",
-              "length(parameters) must be 1"))
+    # filter on parameter
+    if ("all" %in% parameters) {
+      if (length(parameters) > 1) {
+        stop(
+          paste(
+            "if parameters argument contains \"any\",",
+            "length(parameters) must be 1"
+          )
+        )
+      }
+    } else {
+      data_extract <-
+        data_extract[data_extract$parameter %in% parameters,]
     }
-  } else {
-    data_extract <- data_extract[data_extract$parameter %in% parameters, ]
-  }
 
-  # filter on estimate
-  if ("all" %in% estimates) {
-    if (length(estimates) > 1) {
-      stop(
-        paste("if estimates argument contains \"any\",",
-              "length(estimates) must be 1"))
+    # filter on estimate
+    if ("all" %in% estimates) {
+      if (length(estimates) > 1) {
+        stop(paste(
+          "if estimates argument contains \"any\",",
+          "length(estimates) must be 1"
+        ))
+      }
+    } else {
+      data_extract <- data_extract[data_extract$estimate %in% estimates, ]
     }
-  } else {
-    data_extract <- data_extract[data_extract$estimate %in% estimates,]
+
+    # filter on value function
+    if (!is.null(values))
+      data_extract <- data_extract[values(data_extract$value),]
+
+    # return data
+    data_extract
+
   }
-
-  # filter on value function
-  if (!is.null(values))
-    data_extract <- data_extract[values(data_extract$value), ]
-
-  # return data
-  data_extract
-
-}

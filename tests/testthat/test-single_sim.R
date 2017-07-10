@@ -3,7 +3,6 @@ context("test single_sim command and outputs")
 # rstan needs loaded for loo
 suppressPackageStartupMessages(library(rstan))
 
-
 # read in prepared stanfit object
 test_stanfit <- readRDS("objects/test_stanfit.rds")
 
@@ -56,7 +55,7 @@ test_that("single_sim should return correct object (mocked stan fit)", {
     expect_type(catch_out$data_name, "character"),
 
     is_date <- function(mydate, date.format = "%d/%m/%y") {
-      tryCatch(!is.na(as.Date(mydate, date.format)),
+      tryCatch(!is.na(as.Date(mydate, date.format, tz = "UTC")),
                error = function(err) {FALSE})
     },
 
@@ -321,7 +320,7 @@ test_that("written cache folder and files are correct", {
     expect_type(cached_output$data_name, "character"),
 
     is_date <- function(mydate, date.format = "%d/%m/%y") {
-      tryCatch(!is.na(as.Date(mydate, date.format)),
+      tryCatch(!is.na(as.Date(mydate, date.format, tz = "UTC")),
                error = function(err) {FALSE})
     },
 

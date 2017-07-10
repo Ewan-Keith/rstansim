@@ -1,10 +1,10 @@
 #-----------------------------------------------------------------
-#### stan_sim ####
+#### stansim ####
 #' Fits a stan model to multiple datasets and returns estimated values
 #'
-#' @description \code{stan_sim} fits a specified stan model across multiple
+#' @description \code{stansim} fits a specified stan model across multiple
 #' datasets,  collates, and returns summary information and data for all
-#' models as a \code{stansim} object. All fitted models will have basic
+#' models as a \code{stansim_single} object. All fitted models will have basic
 #' reproducability information recorded; such as parameter inits and seeds,
 #' along with parameter estimates, and simulation info such as time and date
 #' ran.
@@ -20,8 +20,8 @@
 #' terminates as expected this cache is removed.
 #'
 #' @param stan_args A list of function arguments to be used by
-#' the internal \code{stan()} function when fitting the models.
-#' If not specified then the \code{stan()} function defaults are used.
+#' the internal \code{stan} function when fitting the models.
+#' If not specified then the \code{stan} function defaults are used.
 #' @param sim_data A list of strings pointing to the location of
 #' .rds files containing the simulation data. See the vignette on
 #' producing simulation data for details on the formatting of these datasets.
@@ -42,10 +42,10 @@
 #' @param estimates A character vector of non-quantile estimates to be
 #' returned for each model parameter. Argument must be some subset of the
 #' default character vector.
-#' @param stan_warnings How warnings returned by individual \code{stan()}
+#' @param stan_warnings How warnings returned by individual \code{stan}
 #' instances should be handled. \code{"catch"} records all warnings in the
 #' returned object alongside other instance level data, \code{"print"} simply
-#' prints warnings to the console as the models are fit (default \code{stan()}
+#' prints warnings to the console as the models are fit (default \code{stan}
 #' behaviour), and \code{"suppress"} suppressess all warnings without
 #' recording them.
 #' @param cache If \code{TRUE} then the results for each instance are
@@ -55,17 +55,17 @@
 #' results are only returned upon the correct termination of the whole
 #' function. The default value of \code{TRUE} is recommended unless there
 #' are relevant write-permission restrictions.
-#' @param stansim_seed Set a seed for the \code{stan_sim} function.
-#' @param sim_name A name attached to the \code{stansim} object to help
+#' @param stansim_seed Set a seed for the \code{stansim} function.
+#' @param sim_name A name attached to the \code{stansim_single} object to help
 #' identify it. It is strongly recomended that an informative name is
-#' assigned, especially if \code{stansim} objects are to be combined in
+#' assigned, especially if \code{stansim_single} objects are to be combined in
 #' to a \code{stansim_collection} object.
-#' @return An S3 object of class \code{stansim} recording relevant
+#' @return An S3 object of class \code{stansim_single} recording relevant
 #' simulation data.
 #' @import Rcpp
 #'
 #' @export
-stan_sim <- function(stan_args = list(), sim_data = NULL, calc_loo = FALSE,
+stansim <- function(stan_args = list(), sim_data = NULL, calc_loo = FALSE,
                      use_cores = 1L, parameters = "all",
                      probs = c(.025, .25, .5, .75, .975),
                      estimates = c("mean", "se_mean", "sd", "n_eff", "Rhat"),
@@ -80,7 +80,7 @@ stan_sim <- function(stan_args = list(), sim_data = NULL, calc_loo = FALSE,
   ## -------------------------------------------------
   ## error checks
   # carry out basic input validation
-  stan_sim_checker(sim_data, calc_loo, use_cores,
+  stansim_checker(sim_data, calc_loo, use_cores,
                    parameters, probs, estimates, stan_args,
                    stan_warnings, cache, stansim_seed,
                    sim_name)
@@ -144,10 +144,14 @@ stan_sim <- function(stan_args = list(), sim_data = NULL, calc_loo = FALSE,
   ## collect stansim_uni objects into stansim obj and return
   end_time <- Sys.time()
 
-  stansim_obj <- stansim(sim_name = sim_name, stansim_uni_list = sim_estimates,
-                         start_time = start_time, end_time = end_time,
-                         stansim_seed = stansim_seed,
-                         stan_warnings = stan_warnings)
+  stansim_obj <-
+    stansim_single(
+      sim_name = sim_name,
+      stansim_uni_list = sim_estimates,
+      start_time = start_time,
+      end_time = end_time,
+      stansim_seed = stansim_seed
+    )
 
   # if using cache delete folder
   if (cache)

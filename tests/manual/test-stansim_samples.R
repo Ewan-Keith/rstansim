@@ -9,14 +9,14 @@ test_that("stan_sim returns a valid stansim object", {
   test_stan_args <- list(file = "tests/testthat/data-raw/8schools.stan",
                        iter = 1, chains = 1)
 
-  output <- stan_sim(
+  output <- stansim(
     stan_args = test_stan_args,
     sim_data = dir("tests/testthat/data-raw/data", full.names = TRUE)[1],
     use_cores = 1
   )
 
   # basic s3 class check
-  expect_s3_class(output, "stansim")
+  expect_s3_class(output, "stansim_single")
 
   # check s3 slots
   expect_equal(names(output), c("sim_name", "start_time", "end_time",
@@ -36,5 +36,8 @@ test_that("stan_sim returns a valid stansim object", {
   expect_equal(names(unlist(output$instances[[1]]$stan_args)),
                c("chain_id", "iter", "thin", "seed", "warmup", "init",
                  "algorithm", "check_unknown_args", "method" ))
+
+  # check that .cache has been deleted
+  expect_false(dir.exists(".cache"))
 
 })

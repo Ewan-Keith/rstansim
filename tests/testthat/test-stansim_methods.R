@@ -1,6 +1,7 @@
-context("stan_sim methods should function correctly")
+context("stansim_single methods should function correctly")
 
-test_that("extract_data.stansim function should return expected results", {
+test_that(paste("extract_data.stansim_single function should return",
+          "expected results"), {
 
   ## read in test stansim obj to extract from
   extract_test_data <- readRDS("objects/test_stansim.rds")
@@ -24,14 +25,14 @@ test_that("extract_data.stansim function should return expected results", {
 
   expect_equal(dim(
     extract_data(extract_test_data,
-                 datasets = "data-raw/data/schoolsdat2.rds")
+                 datasets = "tests/testthat/data-raw/data/schoolsdat2.rds")
   ),
   c(190, 4))
 
   expect_equal(dim(
     extract_data(extract_test_data,
-                 datasets = c("data-raw/data/schoolsdat2.rds",
-                              "data-raw/data/schoolsdat3.rds"))
+                 datasets = c("tests/testthat/data-raw/data/schoolsdat2.rds",
+                              "tests/testthat/data-raw/data/schoolsdat3.rds"))
   ),
   c(380, 4))
 
@@ -122,13 +123,13 @@ test_that("extract_data.stansim function should return expected results", {
     extract_data(extract_test_data,
                  values = function(x) x > 1.1)
   ),
-  c(352, 4))
+  c(349, 4))
 
   expect_equal(dim(
     extract_data(extract_test_data,
                  values = function(x) x < 0)
   ),
-  c(157, 4))
+  c(161, 4))
 
   expect_equal(dim(
     extract_data(extract_test_data,
@@ -142,7 +143,7 @@ test_that("extract_data.stansim function should return expected results", {
                  estimates = "Rhat",
                  values = function(x) x < 1.1 & x > 1)
   ),
-  c(42, 4))
+  c(46, 4))
 
   ## if "all" is provided for an arg it must be alone
   expect_error(extract_data(
