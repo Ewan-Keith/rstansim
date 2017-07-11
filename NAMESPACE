@@ -2,7 +2,9 @@
 
 S3method(extract_data,stansim_single)
 S3method(print,stansim_single)
+S3method(refit,stansim_single)
 export(extract_data)
+export(refit)
 export(stansim)
 export(stansim_single)
 import(Rcpp)

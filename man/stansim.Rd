@@ -2,7 +2,7 @@
 % Please edit documentation in R/exposedFunctions.R
 \name{stansim}
 \alias{stansim}
-\title{Fits a stan model to multiple datasets and returns estimated values}
+\title{Fit a stan model to multiple datasets}
 \usage{
 stansim(stan_args = list(), sim_data = NULL, calc_loo = FALSE,
   use_cores = 1L, parameters = "all", probs = c(0.025, 0.25, 0.5, 0.75,

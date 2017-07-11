@@ -16,7 +16,7 @@ testStanArgs <- list(file = 'tests/testthat/data-raw/8schools.stan',
                     iter = 5000, chains = 4)
 
 
-testout <- stan_sim(stan_args = testStanArgs,
+testout <- stansim(stan_args = testStanArgs,
                     sim_data = dir("tests/testthat/data-raw/data",
                                    full.names = TRUE),
                     use_cores = 4,

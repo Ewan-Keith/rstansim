@@ -72,7 +72,10 @@ stansim <- function(stan_args = list(), sim_data = NULL, calc_loo = FALSE,
                      stan_warnings = "catch", # options print, catch, suppress
                      cache = TRUE,
                      stansim_seed = floor(stats::runif(1, 1, 100000)),
-                     sim_name = paste0("Stansim_", start_time)){
+                     sim_name = paste0("Stansim_", Sys.time())){
+
+  # store raw arguments in case of refitting
+  raw_call <- as.list(environment())
 
   start_time <- Sys.time()
   set.seed(stansim_seed)
@@ -151,6 +154,13 @@ stansim <- function(stan_args = list(), sim_data = NULL, calc_loo = FALSE,
                             function (x) readRDS(x))
 
   ##-------------------------------------------------
+  ## in case of refit, store all call info for re-use
+  # call <- list()
+  # call$raw_call <- match.call()
+  # call$stan_args <- stan_args
+  # call$sim_data <- sim_data
+
+  ##-------------------------------------------------
   ## collect stansim_uni objects into stansim obj and return
   end_time <- Sys.time()
 
@@ -160,7 +170,8 @@ stansim <- function(stan_args = list(), sim_data = NULL, calc_loo = FALSE,
       stansim_uni_list = sim_estimates,
       start_time = start_time,
       end_time = end_time,
-      stansim_seed = stansim_seed
+      stansim_seed = stansim_seed,
+      raw_call = raw_call
     )
 
   # if using cache delete folder
@@ -175,6 +186,5 @@ stansim <- function(stan_args = list(), sim_data = NULL, calc_loo = FALSE,
 # and with a default to rerun all, but with a warning
 # and request for confirmation if the user tries this
 # (warning can be turned off but default is on)
-
 
 

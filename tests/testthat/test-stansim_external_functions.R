@@ -31,8 +31,8 @@ test_that("stansim test; cache FALSE, loo FALSE", {
     # output should be a list
     expect_type(stansim_output, "list"),
 
-    # list of length 8
-    expect_equal(length(stansim_output), 8),
+    # list of length 9
+    expect_equal(length(stansim_output), 9),
 
     # has class "stansim_single"
     expect_s3_class(stansim_output, "stansim_single"),
@@ -40,7 +40,7 @@ test_that("stansim test; cache FALSE, loo FALSE", {
     # item names should be as expected
     expect_equal(names(stansim_output),
                  c("sim_name", "start_time", "end_time", "model_name",
-                   "model_code", "sim_seed", "instances", "data")),
+                   "model_code", "sim_seed", "instances", "data", "raw_call")),
 
     # sim_name should be correct
     expect_equal(stansim_output$sim_name,
@@ -211,8 +211,8 @@ test_that("stansim test; cache TRUE, loo FALSE", {
     # output should be a list
     expect_type(stansim_output, "list"),
 
-    # list of length 8
-    expect_equal(length(stansim_output), 8),
+    # list of length 9
+    expect_equal(length(stansim_output), 9),
 
     # has class "stansim_single"
     expect_s3_class(stansim_output, "stansim_single"),
@@ -220,7 +220,8 @@ test_that("stansim test; cache TRUE, loo FALSE", {
     # item names should be as expected
     expect_equal(names(stansim_output),
                  c("sim_name", "start_time", "end_time", "model_name",
-                   "model_code", "sim_seed", "instances", "data")),
+                   "model_code", "sim_seed", "instances", "data",
+                   "raw_call")),
 
     # sim_name should be correct
     expect_equal(stansim_output$sim_name,
@@ -390,8 +391,8 @@ test_that("stansim test; cache TRUE, loo FALSE", {
     # output should be a list
     expect_type(stansim_output, "list"),
 
-    # list of length 8
-    expect_equal(length(stansim_output), 8),
+    # list of length 9
+    expect_equal(length(stansim_output), 9),
 
     # has class "stansim_single"
     expect_s3_class(stansim_output, "stansim_single"),
@@ -399,7 +400,8 @@ test_that("stansim test; cache TRUE, loo FALSE", {
     # item names should be as expected
     expect_equal(names(stansim_output),
                  c("sim_name", "start_time", "end_time", "model_name",
-                   "model_code", "sim_seed", "instances", "data")),
+                   "model_code", "sim_seed", "instances", "data",
+                   "raw_call")),
 
     # sim_name should be correct
     expect_equal(stansim_output$sim_name,
@@ -571,8 +573,8 @@ test_that("stansim test; cache TRUE, loo FALSE", {
     # output should be a list
     expect_type(stansim_output, "list"),
 
-    # list of length 8
-    expect_equal(length(stansim_output), 8),
+    # list of length 9
+    expect_equal(length(stansim_output), 9),
 
     # has class "stansim_single"
     expect_s3_class(stansim_output, "stansim_single"),
@@ -580,7 +582,8 @@ test_that("stansim test; cache TRUE, loo FALSE", {
     # item names should be as expected
     expect_equal(names(stansim_output),
                  c("sim_name", "start_time", "end_time", "model_name",
-                   "model_code", "sim_seed", "instances", "data")),
+                   "model_code", "sim_seed", "instances", "data",
+                   "raw_call")),
 
     # sim_name should be correct
     expect_equal(stansim_output$sim_name,

@@ -50,7 +50,7 @@ stansim_uni <- function(fit, data_name, ran_at, long_data, stan_warnings,
 #' @export
 stansim_single <-
   function(sim_name, stansim_uni_list, start_time,
-           end_time, stansim_seed) {
+           end_time, raw_call, stansim_seed) {
 
     ## extract all individual stan instance level data
     # function for cleaning out simstan_uni elements for storage
@@ -86,7 +86,8 @@ stansim_single <-
         "model_code" = model_code,
         "sim_seed" = stansim_seed,
         "instances" = ind_runs,
-        "data" = longer_data
+        "data" = longer_data,
+        "raw_call" = raw_call
       ),
       class = "stansim_single"
     )

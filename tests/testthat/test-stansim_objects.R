@@ -151,14 +151,15 @@ test_that("stansim_single object constructor returns correct values", {
       stansim_uni_list = test_stansim_uni_list,
       start_time = Sys.time(),
       end_time = Sys.time(),
-      stansim_seed = 500
+      stansim_seed = 500,
+      raw_call = "raw call values"
     )
 
   # output should be a list
   expect_type(stansim_single_test, "list")
 
-  # list of length 8
-  expect_equal(length(stansim_single_test), 8)
+  # list of length 9
+  expect_equal(length(stansim_single_test), 9)
 
   # has class "stansim_single"
   expect_s3_class(stansim_single_test, "stansim_single")
@@ -166,7 +167,8 @@ test_that("stansim_single object constructor returns correct values", {
   # item names should be as expected
   expect_equal(names(stansim_single_test),
                c("sim_name", "start_time", "end_time", "model_name",
-                 "model_code", "sim_seed", "instances", "data"))
+                 "model_code", "sim_seed", "instances", "data",
+                 "raw_call"))
 
   # sim_name should be correct
   expect_equal(stansim_single_test$sim_name,
@@ -188,6 +190,9 @@ test_that("stansim_single object constructor returns correct values", {
 
   # sim_seed should be correct
   expect_equal(stansim_single_test$sim_seed, 500)
+
+  # raw_call should be correct
+  expect_equal(stansim_single_test$raw_call, "raw call values")
 
   ## extract the instances for testing
   test_instances <- stansim_single_test$instances

@@ -112,13 +112,13 @@ test_stansim_uni_list <- list(test_stansim_uni1, test_stansim_uni2)
 
 test_stan_args <-
   list(
-    file = "data-raw/8schools.stan",
+    object = rstan::stan_model("tests/testthat/data-raw/8schools.stan"),
     iter = 500,
     chains = 4
   )
 
 single_out <- rstansim:::single_sim(
-  datafile = dir("data-raw/data",
+  datafile = dir("tests/testthat/data-raw/data",
                  full.names = TRUE)[1],
   stan_args = test_stan_args,
   calc_loo = F,
