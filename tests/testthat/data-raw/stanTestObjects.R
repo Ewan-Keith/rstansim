@@ -107,3 +107,28 @@ test_stansim_uni_list <- list(test_stansim_uni1, test_stansim_uni2)
 #         "tests/testthat/objects/test_stansim_uni_list.rds")
 
 
+#-----------------------------------------------------------------
+#### output of a stansim_uni object for stansim() function mocking ####
+
+test_stan_args <-
+  list(
+    file = "data-raw/8schools.stan",
+    iter = 500,
+    chains = 4
+  )
+
+single_out <- rstansim:::single_sim(
+  datafile = dir("data-raw/data",
+                 full.names = TRUE)[1],
+  stan_args = test_stan_args,
+  calc_loo = F,
+  parameters = "all",
+  probs = c(.025, .25, .5, .75, .975),
+  estimates = c("mean", "se_mean",
+                "sd", "n_eff", "Rhat"),
+  stan_warnings = "catch",
+  cache = F
+)
+
+saveRDS(single_out,
+        "tests/testthat/objects/test_stansim_uni_single.rds")

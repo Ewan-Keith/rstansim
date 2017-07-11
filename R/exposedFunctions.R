@@ -1,6 +1,6 @@
 #-----------------------------------------------------------------
 #### stansim ####
-#' Fits a stan model to multiple datasets and returns estimated values
+#' Fit a stan model to multiple datasets
 #'
 #' @description \code{stansim} fits a specified stan model across multiple
 #' datasets,  collates, and returns summary information and data for all
@@ -125,9 +125,11 @@ stansim <- function(stan_args = list(), sim_data = NULL, calc_loo = FALSE,
   ##-------------------------------------------------
   ## run over the datasets
 
-  # parallel loop over datasets, default list combine used for dev
+  # parallel loop over datasets, default list combine used
+  # note, .export only called to enable mocking of single_sim in testing
   sim_estimates <-
-    foreach::foreach(datafile = sim_data) %doparal%
+    foreach::foreach(datafile = sim_data,
+                     .export = "single_sim") %doparal%
     single_sim(datafile, stan_args, calc_loo,
                parameters, probs, estimates, stan_warnings, cache)
 
