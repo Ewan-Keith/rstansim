@@ -11,7 +11,7 @@ test_stanfit <- readRDS("objects/test_stanfit.rds")
 test_that("single_sim should return correct object (mocked stan fit)", {
 
   with_mock(
-    `rstan::stan` = function(...) {
+    `rstan::sampling` = function(...) {
       warning("suppressed warning test")
       test_stanfit
     },
@@ -208,7 +208,7 @@ test_that("single_sim should return correct object (mocked stan fit)", {
 test_that("single_sim warnings behave as expectated", {
 
   with_mock(
-    `rstan::stan` = function(...) {
+    `rstan::sampling` = function(...) {
       warning("test warning 1")
       warning("test warning 2")
       test_stanfit
@@ -265,7 +265,7 @@ test_that("single_sim warnings behave as expectated", {
 test_that("written cache folder and files are correct", {
 
   with_mock(
-    `rstan::stan` = function(...) {
+    `rstan::sampling` = function(...) {
       test_stanfit
     },
 

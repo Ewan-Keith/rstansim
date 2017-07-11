@@ -37,7 +37,7 @@ fit2 <- do.call(stan, list(file = 'data-raw/8schools.stan', data = params,
                        iter = 1000, chains = 4, cores = 4))
 
 ### testing precompiling
-testpc <- stan_model(file = 'data-raw/8schools.stan')
+testpc <- stan_model(file = 'tests/testthat/data-raw/8schools.stan')
 
 testpc_samp <- sampling(testpc, data = params, iter = 1000, chains = 4)
 

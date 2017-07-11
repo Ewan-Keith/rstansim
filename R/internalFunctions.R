@@ -51,7 +51,7 @@ single_sim <- function(datafile, stan_args,
   ## fit the model
   start_time <- Sys.time()
 
-  fitted_stan <- withCallingHandlers(do.call(rstan::stan, stan_args),
+  fitted_stan <- withCallingHandlers(do.call(rstan::sampling, stan_args),
                                      warning = w_handler)
 
   # garbage collect after model fitting

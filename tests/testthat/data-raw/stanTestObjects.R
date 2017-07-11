@@ -132,3 +132,12 @@ single_out <- rstansim:::single_sim(
 
 saveRDS(single_out,
         "tests/testthat/objects/test_stansim_uni_single.rds")
+
+#-----------------------------------------------------------------
+#### object of type stanmodel to avoid compile time in tests ####
+testpc <- stan_model(file = 'tests/testthat/data-raw/8schools.stan')
+
+saveRDS(testpc,
+        "tests/testthat/objects/test_stanmodel.rds")
+
+

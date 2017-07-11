@@ -5,8 +5,12 @@ context("test user exposed functions for correct behaviour")
 test_that("stansim test; cache FALSE, loo FALSE", {
 
   with_mock(
-    `rstansim:::single_sim` = function(...) {
+    `rstansim:::single_sim` = function(...){
       readRDS("objects/test_stansim_uni_single.rds")
+    },
+
+    `rstan::stan_model` = function(...){
+      readRDS("objects/test_stanmodel.rds")
     },
 
     test_stan_args <-
@@ -185,6 +189,10 @@ test_that("stansim test; cache TRUE, loo FALSE", {
       readRDS("objects/test_stansim_uni_single.rds")
     },
 
+    `rstan::stan_model` = function(...){
+      readRDS("objects/test_stanmodel.rds")
+    },
+
     test_stan_args <-
       list(
         file = "data-raw/8schools.stan",
@@ -358,6 +366,10 @@ test_that("stansim test; cache TRUE, loo FALSE", {
                 to = ".cache/schoolsdat4_cached.rds")
 
       readRDS("objects/test_stansim_uni_single.rds")
+    },
+
+    `rstan::stan_model` = function(...){
+      readRDS("objects/test_stanmodel.rds")
     },
 
     test_stan_args <-
@@ -535,6 +547,10 @@ test_that("stansim test; cache TRUE, loo FALSE", {
                 to = ".cache/schoolsdat4_cached.rds")
 
       readRDS("objects/test_stansim_uni_single.rds")
+    },
+
+    `rstan::stan_model` = function(...){
+      readRDS("objects/test_stanmodel.rds")
     },
 
     test_stan_args <-

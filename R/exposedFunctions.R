@@ -102,6 +102,14 @@ stansim <- function(stan_args = list(), sim_data = NULL, calc_loo = FALSE,
   datafile <- NULL
 
   ##-------------------------------------------------
+  ## pre-compile stan model
+  compiled_model <- rstan::stan_model(file = stan_args$file)
+
+  # tidy up
+  stan_args$file <- NULL
+  stan_args$object <- compiled_model
+
+  ##-------------------------------------------------
   ## cache results set up and handling
   if (cache){
     if (dir.exists(".cache/") &
