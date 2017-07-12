@@ -158,8 +158,8 @@ test_that("stansim_single object constructor returns correct values", {
   # output should be a list
   expect_type(stansim_single_test, "list")
 
-  # list of length 9
-  expect_equal(length(stansim_single_test), 9)
+  # list of length 10
+  expect_equal(length(stansim_single_test), 10)
 
   # has class "stansim_single"
   expect_s3_class(stansim_single_test, "stansim_single")
@@ -168,7 +168,7 @@ test_that("stansim_single object constructor returns correct values", {
   expect_equal(names(stansim_single_test),
                c("sim_name", "start_time", "end_time", "model_name",
                  "model_code", "sim_seed", "instances", "data",
-                 "raw_call"))
+                 "raw_call", "refitted"))
 
   # sim_name should be correct
   expect_equal(stansim_single_test$sim_name,

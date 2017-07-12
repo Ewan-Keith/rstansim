@@ -13,7 +13,7 @@ schools_dat <- list(J = 8,
                     sigma = c(15, 10, 16, 11,  9, 11, 10, 18))
 
 testStanArgs <- list(file = 'tests/testthat/data-raw/8schools.stan',
-                    iter = 5000, chains = 4)
+                    iter = 1000, chains = 4)
 
 
 testout <- stansim(stan_args = testStanArgs,

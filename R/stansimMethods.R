@@ -58,6 +58,21 @@ print.stansim_single <- function(x, ...){
   }
   print.matrix(matrix(estimates[1:50], ncol = 5, byrow = TRUE))
 
+  if (length(x$refitted) > 5) {
+    cat(paste0("\nDatasets Refitted: ",
+               length(x$refitted),
+               " (first 5 shown)\n"))
+  } else {
+    cat(paste0("\nDatasets Refitted: ",
+               length(x$refitted),
+               "\n"))
+  }
+
+  if (length(x$refitted) > 0) {
+    for (i in 1:min(c(length(x$refitted), 5))) {
+      cat(x$refitted[i])
+    }
+  }
 }
 
 #-----------------------------------------------------------------

@@ -14,13 +14,28 @@ test_that("refit.stansim_single fails correctly", {
   expect_error(refit(stansim_obj, all_warn = 5),
                "all_warn argument must be of type logical")
 
-  # all_warn must be logical
+  ## all datafile must exist in the file structure
+  expect_error(refit(stansim_obj,
+                     datafiles =
+                       "data-raw/data/schoolsdat5.rds"),
+               paste0("datafile \"",
+                      "data-raw/data/schoolsdat5.rds",
+                      "\" could not be found. Check your file structure"
+               ))
+
+  ## all_datafiles must be found in the original stansim_single
+  # remove schoolsdat4 data records for test
+  df_not_found <- stansim_obj
+  df_not_found$data <- stansim_obj$data[
+    stansim_obj$data[, "data"] !=
+      "data-raw/data/schoolsdat4.rds", ]
+
   expect_error(
-    refit(stansim_obj,
-          datafiles = "tests/testthat/data-raw/data/schoolsdat5.rds"),
+    refit(df_not_found,
+          datafiles = "data-raw/data/schoolsdat4.rds"),
     paste0(
       "datafiles argument \"",
-      "tests/testthat/data-raw/data/schoolsdat5.rds",
+      "data-raw/data/schoolsdat4.rds",
       "\" not found in provided stansim_object"
     )
   )

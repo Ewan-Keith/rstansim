@@ -42,6 +42,9 @@ stansim_uni <- function(fit, data_name, ran_at, long_data, stan_warnings,
 #' @param start_time System time when \code{stansim} was called.
 #' @param end_time System time when the results from \code{stansim}
 #' were returned.
+#' @param raw_call The values of all arguments provided to \code{stansim}
+#' when first ran. This is used for any refitting of datafiles using the
+#' \code{refit} method.
 #' @param stansim_seed The global seed for the \code{stansim} call.
 #'
 #' @return An S3 object of class \code{stansim_single} recording relevant
@@ -87,7 +90,8 @@ stansim_single <-
         "sim_seed" = stansim_seed,
         "instances" = ind_runs,
         "data" = longer_data,
-        "raw_call" = raw_call
+        "raw_call" = raw_call,
+        "refitted" = c()
       ),
       class = "stansim_single"
     )
