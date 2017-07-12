@@ -91,7 +91,7 @@ refit.stansim_single <- function(object, datafiles = "all", stan_args = list(),
   ####-----------------------------------------------------------------
   ## refitting datasets
   # check if user wishes to refit all data
-  if(datafiles == "all"){
+  if(datafiles %in% "all"){
     message("Are you sure you wish to refit all datafiles?")
     if(menu(c("Yes", "No")) == 2) invisible()
   }

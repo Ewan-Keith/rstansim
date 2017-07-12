@@ -39,6 +39,21 @@ test_that("refit.stansim_single fails correctly", {
       "\" not found in provided stansim_object"
     )
   )
+})
+
+test_that("refit.stansim_single updates stansim_single obj correctly", {
+
+  ## read in test stansim_single obj to refit
+  stansim_obj <-
+    readRDS("objects/test_stansim.rds")
+
+  # refit
+  new_stansim <-
+    refit(stansim_obj,
+          datafiles = c("data-raw/data/schoolsdat1.rds",
+                        "data-raw/data/schoolsdat2.rds"))
+
+
 
 
 })

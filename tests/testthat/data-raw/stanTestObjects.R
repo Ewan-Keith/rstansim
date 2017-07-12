@@ -7,14 +7,14 @@ library(rstan)
 #-----------------------------------------------------------------
 #### small scale 8schools example for basic stansim methods testing ####
 
-test_stan_args <- list(file = "tests/testthat/data-raw/8schools.stan",
+test_stan_args <- list(file = "data-raw/8schools.stan",
                      iter = 1000, chains = 4)
 
 test_stansim <- stansim(stan_args = test_stan_args,
-                         sim_data = dir("tests/testthat/data-raw/data",
+                         sim_data = dir("data-raw/data",
                                         full.names = TRUE), use_cores = 4)
 
-# saveRDS(test_stansim, "tests/testthat/objects/test_stansim.rds")
+# saveRDS(test_stansim, "objects/test_stansim.rds")
 
 #-----------------------------------------------------------------
 #### small scale 8schools example for testing that needs a stanfit object ####
