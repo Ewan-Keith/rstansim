@@ -120,6 +120,24 @@ test_that("stansim fails correctly with invalid parameters", {
                paste("stan_args\\$data cannot be directly specified,",
                      "sim_data should be used"))
 
+  # stan_args$pars must not be provided
+  expect_error(stansim(sim_data = sim_data_test,
+                       stan_args = list("pars" = "test")),
+               paste("stan_args\\$pars cannot be directly specified,",
+                     "parameters should be used"))
+
+  # stan_args$sample_file must not be provided
+  expect_error(stansim(sim_data = sim_data_test,
+                       stan_args = list("sample_file" = "test")),
+               paste("stan_args\\$sample_file must be NULL to",
+                     "prevent write conflicts"))
+
+  # stan_args$diagnostic_file must not be provided
+  expect_error(stansim(sim_data = sim_data_test,
+                       stan_args = list("diagnostic_file" = "test")),
+               paste("stan_args\\$diagnostic_file must be NULL to",
+                     "prevent write conflicts"))
+
   # cache must be Boolean
   expect_error(stansim(sim_data = sim_data_test, cache = 555),
                "cache must be of type logical")

@@ -15,9 +15,45 @@ Given the large raw size of fitted rstan models (often > 1GB for even relatively
 2. Extract the relevant summary information from the fitted Stan model and store.
 3. Repeat the above for all simulated datasets.
 
-Using the `rstansim` package, the above steps are all handled using the `stansim()` function.
+Using the `rstansim` package, the above steps are all handled using the `stansim` function.
 
 ## stansim()
+
+The `stansim` function takes a list of datasets (stored as .RDS files; see vignette on data simulation [NOT WRITTEN YET]), a single Stan model to fit to these datasets. It then fits the model to each dataset, recording requested/relevant data for each, and returning an object of class `stansim_single` that holds all outcome data.
+
+## Arguments
+
+### Data for modelling
+
+There is only one argument for `stansim` that *must* be specified (e.g. has no default) and that is the `sim_data` argument. This should be a vector of the location names of the simulation datafiles to be modelled. The easiest way to get these names is to store all simulated data in a single directory, the full locations of each file (relative to the working directory) can then be found by running:
+
+```{R, eval = FALSE}
+dir('directory containing data', full.names = TRUE)
+```
+
+Each dataset must be an .RDS file that, when loaded, returns a list containing the named data elements and their values. The naming of these must follow that used by the `sampling` function in the `rstan` package. 
+
+### Stan arguments
+
+The other argument that you will likely want to specify directly is `stan_args` which takes a list, containing the arguments that control the MCMC sampling carried out by Stan. In practice, 4 of these paramaters are likely to be of interest:
+
+* `chains`: Controlling how many chains to run per model.
+* `iter`: Controlling the number of samples to draw from each chain.
+* `warmup`: The number of samples to mark as warmup.
+* `thin`: The thinning period used for saving samples.
+
+The names of the stan_arg elements must match exactly or else will not be recognised. The example below shows a correct specification:
+
+```{R, eval = FALSE}
+use_stan_args <- list("chains" = 4, "iter" = 2000, "warmup" = 1000, "thin" = 1)
+```
+
+Any other parameters used by the rstan `sampling` function can also be provided, with the exceptions of `data`, `pars`, `sample_file`, and `diagnostic_file` as the first two are overruled by `stansim` arguments, and the last two raise the risk of write conflicts when running parallel simulations.
+
+### other arguments
+
+With valid `sim_data` and `stan_arg` arguments the other `stansim` arguments all have defaults that should return reasonable results. However, you are likely to want to tweak some other arguments to match your unique case.
+
 
 Vignettes are long form documentation commonly included in packages. Because they are part of the distribution of the package, they need to be as compact as possible. The `html_vignette` output type provides a custom style sheet (and tweaks some options) to ensure that the resulting html is as small as possible. The `html_vignette` format:
 

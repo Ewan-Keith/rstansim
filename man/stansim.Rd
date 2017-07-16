@@ -4,7 +4,7 @@
 \alias{stansim}
 \title{Fit a stan model to multiple datasets}
 \usage{
-stansim(stan_args = list(), sim_data = NULL, calc_loo = FALSE,
+stansim(sim_data = NULL, stan_args = list(), calc_loo = FALSE,
   use_cores = 1L, parameters = "all", probs = c(0.025, 0.25, 0.5, 0.75,
   0.975), estimates = c("mean", "se_mean", "sd", "n_eff", "Rhat"),
   stan_warnings = "catch", cache = TRUE,
@@ -12,13 +12,13 @@ stansim(stan_args = list(), sim_data = NULL, calc_loo = FALSE,
   sim_name = paste0("Stansim_", Sys.time()))
 }
 \arguments{
-\item{stan_args}{A list of function arguments to be used by
-the internal \code{stan} function when fitting the models.
-If not specified then the \code{stan} function defaults are used.}
-
 \item{sim_data}{A list of strings pointing to the location of
 .rds files containing the simulation data. See the vignette on
 producing simulation data for details on the formatting of these datasets.}
+
+\item{stan_args}{A list of function arguments to be used by
+the internal \code{stan} function when fitting the models.
+If not specified then the \code{stan} function defaults are used.}
 
 \item{calc_loo}{If \code{TRUE} then model fit statsics will be
 calculated using the \code{loo} package. If \code{TRUE} there must be

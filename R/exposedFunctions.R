@@ -19,12 +19,12 @@
 #' progress is not lost in the case of function failure. When the function
 #' terminates as expected this cache is removed.
 #'
-#' @param stan_args A list of function arguments to be used by
-#' the internal \code{stan} function when fitting the models.
-#' If not specified then the \code{stan} function defaults are used.
 #' @param sim_data A list of strings pointing to the location of
 #' .rds files containing the simulation data. See the vignette on
 #' producing simulation data for details on the formatting of these datasets.
+#' @param stan_args A list of function arguments to be used by
+#' the internal \code{stan} function when fitting the models.
+#' If not specified then the \code{stan} function defaults are used.
 #' @param calc_loo If \code{TRUE} then model fit statsics will be
 #' calculated using the \code{loo} package. If \code{TRUE} there must be
 #' a valid log_lik quantity specified in the generated quantities
@@ -65,7 +65,7 @@
 #' @import Rcpp
 #'
 #' @export
-stansim <- function(stan_args = list(), sim_data = NULL, calc_loo = FALSE,
+stansim <- function(sim_data = NULL, stan_args = list(), calc_loo = FALSE,
                      use_cores = 1L, parameters = "all",
                      probs = c(.025, .25, .5, .75, .975),
                      estimates = c("mean", "se_mean", "sd", "n_eff", "Rhat"),

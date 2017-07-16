@@ -304,7 +304,13 @@ stansim_checker <- function(sim_data, calc_loo, use_cores,
 
   # stan_args$data must not be provided
   if (!is.null(stan_args$data))
-    stop("stan_args$data cannot be directly specified, sim_data should be used")
+    stop(
+      "stan_args$data cannot be directly specified, sim_data should be used")
+
+  # stan_args$pars must not be provided
+  if (!is.null(stan_args$pars))
+    stop(
+      "stan_args$pars cannot be directly specified, parameters should be used")
 
   # cache must be Boolean
   if (!is.logical(cache))
@@ -313,6 +319,10 @@ stansim_checker <- function(sim_data, calc_loo, use_cores,
   # sample_file must be NULL
   if (!is.null(stan_args$sample_file))
     stop("stan_args$sample_file must be NULL to prevent write conflicts")
+
+  # diagnostic_file must be NULL
+  if (!is.null(stan_args$diagnostic_file))
+    stop("stan_args$diagnostic_file must be NULL to prevent write conflicts")
 
   # warn if sim_name is overwritten
   if (!is.character(sim_name))
