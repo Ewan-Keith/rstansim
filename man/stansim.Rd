@@ -9,7 +9,7 @@ stansim(stan_args = list(), sim_data = NULL, calc_loo = FALSE,
   0.975), estimates = c("mean", "se_mean", "sd", "n_eff", "Rhat"),
   stan_warnings = "catch", cache = TRUE,
   stansim_seed = floor(stats::runif(1, 1, 1e+05)),
-  sim_name = paste0("Stansim_", start_time))
+  sim_name = paste0("Stansim_", Sys.time()))
 }
 \arguments{
 \item{stan_args}{A list of function arguments to be used by

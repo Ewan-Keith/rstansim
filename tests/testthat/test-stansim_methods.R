@@ -25,14 +25,14 @@ test_that(paste("extract_data.stansim_single function should return",
 
   expect_equal(dim(
     extract_data(extract_test_data,
-                 datasets = "tests/testthat/data-raw/data/schoolsdat2.rds")
+                 datasets = "data-raw/data/schoolsdat2.rds")
   ),
   c(190, 4))
 
   expect_equal(dim(
     extract_data(extract_test_data,
-                 datasets = c("tests/testthat/data-raw/data/schoolsdat2.rds",
-                              "tests/testthat/data-raw/data/schoolsdat3.rds"))
+                 datasets = c("data-raw/data/schoolsdat2.rds",
+                              "data-raw/data/schoolsdat3.rds"))
   ),
   c(380, 4))
 
@@ -123,13 +123,13 @@ test_that(paste("extract_data.stansim_single function should return",
     extract_data(extract_test_data,
                  values = function(x) x > 1.1)
   ),
-  c(352, 4))
+  c(351, 4))
 
   expect_equal(dim(
     extract_data(extract_test_data,
                  values = function(x) x < 0)
   ),
-  c(157, 4))
+  c(160, 4))
 
   expect_equal(dim(
     extract_data(extract_test_data,
@@ -143,7 +143,7 @@ test_that(paste("extract_data.stansim_single function should return",
                  estimates = "Rhat",
                  values = function(x) x < 1.1 & x > 1)
   ),
-  c(26, 4))
+  c(48, 4))
 
   ## if "all" is provided for an arg it must be alone
   expect_error(extract_data(

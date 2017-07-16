@@ -4,10 +4,12 @@
 \alias{refit}
 \title{Refit specified datafiles in a stansim object}
 \usage{
-refit(object, ...)
+refit(object, datafiles, ...)
 }
 \arguments{
 \item{object}{An object of S3 class stansim_single.}
+
+\item{datafiles}{The full names of the data files to be refitted.}
 
 \item{...}{Arguments specifying datafiles to refit and control
 of warning behaviour.}

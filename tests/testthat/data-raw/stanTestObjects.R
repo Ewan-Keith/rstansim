@@ -4,6 +4,8 @@
 library(rstansim)
 library(rstan)
 
+set.seed(12345)
+
 #-----------------------------------------------------------------
 #### small scale 8schools example for basic stansim methods testing ####
 
@@ -12,21 +14,23 @@ test_stan_args <- list(file = "data-raw/8schools.stan",
 
 test_stansim <- stansim(stan_args = test_stan_args,
                          sim_data = dir("data-raw/data",
-                                        full.names = TRUE), use_cores = 4)
+                                        full.names = TRUE), use_cores = 4,
+                        stansim_seed = 12345)
 
-# saveRDS(test_stansim, "objects/test_stansim.rds")
+saveRDS(test_stansim, "objects/test_stansim.rds")
 
 #-----------------------------------------------------------------
 #### small scale 8schools example for testing that needs a stanfit object ####
 
-test_stan_args <- list(file = "tests/testthat/data-raw/8schools.stan",
+test_stan_args <- list(file = "data-raw/8schools.stan",
                        iter = 1000, chains = 4,
-                       data = readRDS(dir("tests/testthat/data-raw/data",
-                                          full.names = TRUE)[1]))
+                       data = readRDS(dir("data-raw/data",
+                                          full.names = TRUE)[1]),
+                       seed = 12345)
 
 test_stanfit <- do.call(stan, test_stan_args)
 
-# saveRDS(test_stanfit, "tests/testthat/objects/test_stanfit.rds")
+saveRDS(test_stanfit, "objects/test_stanfit.rds")
 
 #-----------------------------------------------------------------
 #### loo friendly small stanfit for extraction testing ####
@@ -45,15 +49,16 @@ standata <- list(y = wells$switch[row_nums],
                  P = ncol(small_X))
 
 # Fit model
-fit_loo <- stan("tests/testthat/data-raw/logistic.stan",
-                data = standata, iter = 500)
+fit_loo <- stan("data-raw/logistic.stan",
+                data = standata, iter = 500,
+                seed = 12345)
 
-# saveRDS(fit_loo, "tests/testthat/objects/test_stanfit_loo.rds")
+saveRDS(fit_loo, "objects/test_stanfit_loo.rds")
 
 #-----------------------------------------------------------------
 #### output of two stansim_uni calls for testing stansim constructor ####
 
-test_stanfit <- readRDS("tests/testthat/objects/test_stanfit.rds")
+test_stanfit <- readRDS("objects/test_stanfit.rds")
 
 #### roll down long stansim_uni calls ####
 test_stansim_uni1 <-
@@ -103,8 +108,8 @@ test_stansim_uni2 <-
 
 test_stansim_uni_list <- list(test_stansim_uni1, test_stansim_uni2)
 
-# saveRDS(test_stansim_uni_list,
-#         "tests/testthat/objects/test_stansim_uni_list.rds")
+saveRDS(test_stansim_uni_list,
+        "objects/test_stansim_uni_list.rds")
 
 
 #-----------------------------------------------------------------
@@ -112,13 +117,14 @@ test_stansim_uni_list <- list(test_stansim_uni1, test_stansim_uni2)
 
 test_stan_args <-
   list(
-    object = rstan::stan_model("tests/testthat/data-raw/8schools.stan"),
+    object = rstan::stan_model("data-raw/8schools.stan"),
     iter = 500,
-    chains = 4
+    chains = 4,
+    seed = 12345
   )
 
 single_out <- rstansim:::single_sim(
-  datafile = dir("tests/testthat/data-raw/data",
+  datafile = dir("data-raw/data",
                  full.names = TRUE)[1],
   stan_args = test_stan_args,
   calc_loo = F,
@@ -131,13 +137,27 @@ single_out <- rstansim:::single_sim(
 )
 
 saveRDS(single_out,
-        "tests/testthat/objects/test_stansim_uni_single.rds")
+        "objects/test_stansim_uni_single.rds")
 
 #-----------------------------------------------------------------
 #### object of type stanmodel to avoid compile time in tests ####
-testpc <- stan_model(file = 'tests/testthat/data-raw/8schools.stan')
+testpc <- stan_model(file = 'data-raw/8schools.stan')
 
 saveRDS(testpc,
-        "tests/testthat/objects/test_stanmodel.rds")
+        "objects/test_stanmodel.rds")
+
+#-----------------------------------------------------------------
+#### Partial stansim() output for testing refit ####
+
+test_stan_args_refit <- list(file = "data-raw/8schools.stan",
+                       iter = 1000, chains = 4, seed = 12345)
+
+test_stansim_refit <- stansim(stan_args = test_stan_args_refit,
+                        sim_data = dir("data-raw/data",
+                                       full.names = TRUE)[c(1, 3)], use_cores = 4,
+                        stansim_seed = 12345)
+
+saveRDS(test_stansim_refit, "objects/test_stansim_refit.rds")
+
 
 

@@ -8,11 +8,12 @@
 #' Otherwise only datafile names provided will be refit.
 #'
 #' @param object An object of S3 class stansim_single.
+#' @param datafiles The full names of the data files to be refitted.
 #' @param ... Arguments specifying datafiles to refit and control
 #' of warning behaviour.
 #'
 #' @export
-refit <- function (object, ...) {
+refit <- function (object, datafiles, ...) {
   UseMethod("refit", object)
 }
 
@@ -23,31 +24,49 @@ refit <- function (object, ...) {
 #' @description \code{refit} NOTE YOU'LL HAVE TO RUN THIS FROM THE
 #' SAME WD AS BEFORE OTHERWISE FILE NAMES WILL BE WRONG
 #'
-#' @param object A list of function arguments to be used by
+#' @param object An object of S3 class stansim_single.
+#' @param datafiles The full names of the data files to be refitted.
+#' These must be consistent both with the datafile names stored within
+#' the \code{stansim_single} object, and with the actual data files.
+#' This is best ensured by running refit from the same working directory
+#' as the original \code{stansim} call.
+#' @param stan_args A list of function arguments to be used by
 #' the internal \code{stan} function when fitting the models.
 #' If not specified then the \code{stan} function defaults are used.
-#' @param sim_data A list of strings pointing to the location of
-#' .rds files containing the simulation data. See the vignette on
-#' producing simulation data for details on the formatting of these datasets.
 #' @param calc_loo If \code{TRUE} then model fit statsics will be
 #' calculated using the \code{loo} package. If \code{TRUE} there must be
 #' a valid log_lik quantity specified in the generated quantities
 #' section of the provided stan model.
+#' @param use_cores Number of cores to use when running in parallel.
+#' Each stan model is fitted serially regardless of the number of chains
+#' ran as parallelisation across models is more flexible than within.
+#' @param cache If \code{TRUE} then the results for each instance are
+#' written to a local, temporary file so that data is not lost should the
+#' function not terminate properly. This temporary data is removed upon the
+#' model terminating as expected. if \code{FALSE} no data is written and
+#' results are only returned upon the correct termination of the whole
+#' function. The default value of \code{TRUE} is recommended unless there
+#' are relevant write-permission restrictions.
+#' @param stansim_seed Set a seed for the \code{stansim} function.
+#' @param ... other arguments not used by this method
 #' @return An S3 object of class \code{stansim_single} recording relevant
 #' simulation data.
 #'
 #' @export
-refit.stansim_single <- function(object, datafiles = "all", stan_args = list(),
-                                 calc_loo = FALSE, use_cores = 1L, cache = TRUE,
-                                 stansim_seed = floor(stats::runif(1, 1, 1e+05)),
-                                 all_warn = TRUE){
+refit.stansim_single <-
+  function(object,
+           datafiles,
+           stan_args = list(),
+           calc_loo = FALSE,
+           use_cores = 1L,
+           cache = TRUE,
+           stansim_seed = floor(stats::runif(1, 1, 1e+05)),
+           ...) {
+
 
   ## input checks
   if(typeof(datafiles) != "character")
     stop("datafiles argument must be of type character")
-
-  if(!is.logical(all_warn))
-    stop("all_warn argument must be of type logical")
 
   # check all datafile args exist and can be found
   file_exists <- function(datafile)
@@ -60,13 +79,13 @@ refit.stansim_single <- function(object, datafiles = "all", stan_args = list(),
 
   # check all datafile args are in the stansim_single object
   data_exists <- function(datafile, object_data){
-    if(!(datafile %in% object_data))
+    if(!(datafile %in% object_data$data))
       stop(paste0(
         "datafiles argument \"",
         datafile,
-        "\" not found in provided stansim_object"))
+        "\" not found in provided stansim_object data"))
   }
-  lapply(datafiles, data_exists, object_data = object$raw_call$sim_data)
+  lapply(datafiles, data_exists, object_data = object$data)
 
   ####-----------------------------------------------------------------
   ## prepare relevant call args
@@ -90,12 +109,6 @@ refit.stansim_single <- function(object, datafiles = "all", stan_args = list(),
 
   ####-----------------------------------------------------------------
   ## refitting datasets
-  # check if user wishes to refit all data
-  if(datafiles %in% "all"){
-    message("Are you sure you wish to refit all datafiles?")
-    if(menu(c("Yes", "No")) == 2) invisible()
-  }
-
   # refit the specified simulations
   refitted_stansim <- do.call(stansim, call_args)
 
@@ -133,11 +146,8 @@ refit.stansim_single <- function(object, datafiles = "all", stan_args = list(),
   new_object$data <- rbind(trimmed_data, refitted_stansim$data)
 
   ## update the refitted field with new data
-  if (datafiles != "all") {
-    new_object$refitted <- c(new_object$refitted, datafiles)
-  } else if (datafiles == "all") {
-    new_object$refitted <- new_object$raw_call$sim_data
-  }
+  new_object$refitted <- unique(c(new_object$refitted, datafiles))
+
 
   ####-----------------------------------------------------------------
   ## return the new object

@@ -4,26 +4,49 @@
 \alias{refit.stansim_single}
 \title{Refit specified datafiles in a stansim_single object}
 \usage{
-\method{refit}{stansim_single}(object, datafiles = "all", all_warn = TRUE)
+\method{refit}{stansim_single}(object, datafiles, stan_args = list(),
+  calc_loo = FALSE, use_cores = 1L, cache = TRUE,
+  stansim_seed = floor(stats::runif(1, 1, 1e+05)), ...)
 }
 \arguments{
-\item{object}{A list of function arguments to be used by
+\item{object}{An object of S3 class stansim_single.}
+
+\item{datafiles}{The full names of the data files to be refitted.
+These must be consistent both with the datafile names stored within
+the \code{stansim_single} object, and with the actual data files.
+This is best ensured by running refit from the same working directory
+as the original \code{stansim} call.}
+
+\item{stan_args}{A list of function arguments to be used by
 the internal \code{stan} function when fitting the models.
 If not specified then the \code{stan} function defaults are used.}
-
-\item{sim_data}{A list of strings pointing to the location of
-.rds files containing the simulation data. See the vignette on
-producing simulation data for details on the formatting of these datasets.}
 
 \item{calc_loo}{If \code{TRUE} then model fit statsics will be
 calculated using the \code{loo} package. If \code{TRUE} there must be
 a valid log_lik quantity specified in the generated quantities
 section of the provided stan model.}
+
+\item{use_cores}{Number of cores to use when running in parallel.
+Each stan model is fitted serially regardless of the number of chains
+ran as parallelisation across models is more flexible than within.}
+
+\item{cache}{If \code{TRUE} then the results for each instance are
+written to a local, temporary file so that data is not lost should the
+function not terminate properly. This temporary data is removed upon the
+model terminating as expected. if \code{FALSE} no data is written and
+results are only returned upon the correct termination of the whole
+function. The default value of \code{TRUE} is recommended unless there
+are relevant write-permission restrictions.}
+
+\item{stansim_seed}{Set a seed for the \code{stansim} function.}
+
+\item{...}{other arguments not used by this method}
 }
 \value{
 An S3 object of class \code{stansim_single} recording relevant
 simulation data.
 }
 \description{
-\code{refit}
+\code{refit} NOTE YOU'LL HAVE TO RUN THIS FROM THE
+SAME WD AS BEFORE OTHERWISE FILE NAMES WILL BE WRONG
 }

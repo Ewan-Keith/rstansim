@@ -154,8 +154,15 @@ test_that("stansim test; cache FALSE, loo FALSE", {
       expect_type(instance$seed, "integer")
 
       # warning strings should be correct
-      # null because of mocking
-      expect_null(instance$warnings)
+
+      warn_regex <-
+        paste0("There were 2 divergent transitions after warmup.",
+               " Increasing adapt_delta above 0.8 may help. ",
+               "See\nhttp://mc-stan.org/misc/warnings.html#",
+               "divergent-transitions-after-warmup")
+
+      expect_equal(instance$warnings[[1]][[1]],
+                   warn_regex)
     },
 
     lapply(test_instances, instance_check)
@@ -335,8 +342,15 @@ test_that("stansim test; cache TRUE, loo FALSE", {
       expect_type(instance$seed, "integer")
 
       # warning strings should be correct
-      # null because of mocking
-      expect_null(instance$warnings)
+
+      warn_regex <-
+        paste0("There were 2 divergent transitions after warmup.",
+               " Increasing adapt_delta above 0.8 may help. ",
+               "See\nhttp://mc-stan.org/misc/warnings.html#",
+               "divergent-transitions-after-warmup")
+
+      expect_equal(instance$warnings[[1]][[1]],
+                   warn_regex)
     },
 
     lapply(test_instances, instance_check),
@@ -515,8 +529,15 @@ test_that("stansim test; cache TRUE, loo FALSE", {
       expect_type(instance$seed, "integer")
 
       # warning strings should be correct
-      # null because of mocking
-      expect_null(instance$warnings)
+
+      warn_regex <-
+        paste0("There were 2 divergent transitions after warmup.",
+               " Increasing adapt_delta above 0.8 may help. ",
+               "See\nhttp://mc-stan.org/misc/warnings.html#",
+               "divergent-transitions-after-warmup")
+
+      expect_equal(instance$warnings[[1]][[1]],
+                   warn_regex)
     },
 
     lapply(test_instances, instance_check),
@@ -697,8 +718,15 @@ test_that("stansim test; cache TRUE, loo FALSE", {
       expect_type(instance$seed, "integer")
 
       # warning strings should be correct
-      # null because of mocking
-      expect_null(instance$warnings)
+
+      warn_regex <-
+        paste0("There were 2 divergent transitions after warmup.",
+               " Increasing adapt_delta above 0.8 may help. ",
+               "See\nhttp://mc-stan.org/misc/warnings.html#",
+               "divergent-transitions-after-warmup")
+
+      expect_equal(instance$warnings[[1]][[1]],
+                   warn_regex)
     },
 
     lapply(test_instances, instance_check),
