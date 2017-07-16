@@ -15,7 +15,15 @@ Overview
 
 *PACKAGE STILL IN DEVELOPMENT AND UNLIKELY TO WORK FOR YOU. SORRY*
 
-`rstansim` provides a simple way to fit a single [stan](http://mc-stan.org/) model to multiple datasets and to extract estimates from each. Making it easy to run simulation studies of Bayesian models using stan in R. When ran in parallel each model is single threaded, with models estimated concurrently, taking full advantage of computational resources, even when the number of available cores is much greater than the number of chains ran per model.
+`rstansim` provides a set of helper and utility functions to simplify running simulation studies using R and [stan](http://mc-stan.org/). The package addresses three aspects of running a simulation study:
+
+* Data simulation. [currently not covered]
+* Model fitting and capture of relevant data.
+* Management of simulation results.
+
+All simulation data is output in a tidy format, for ease of interaction with tidyverse packages for analysis and visualisation. Additionally reproducability information such as seeds, initial values, and data used, are stored alongside the data. 
+
+
 
 Installation
 ------------
@@ -29,4 +37,9 @@ devtools::install_github("ewan-keith/rstansim")
 Usage
 -----
 
-`rstansim` provides a single function `stan_sim()` that fits the specified model to all provided datasets, and returns a set of requested model estimates.
+[still to be written, point to relevant vignettes.]
+
+Documentation
+-----
+
+Further documentation still being written.

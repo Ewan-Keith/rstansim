@@ -21,7 +21,8 @@ test_that("stan_sim returns a valid stansim object", {
   # check s3 slots
   expect_equal(names(output), c("sim_name", "start_time", "end_time",
                                "model_name", "model_code", "sim_seed",
-                               "instances", "data"))
+                               "instances", "data", "raw_call",
+                               "refitted"))
 
   # check data dimensions
   expect_equal(dim(output$data), c(190, 4))
