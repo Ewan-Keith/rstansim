@@ -181,10 +181,26 @@ stansim <- function(stan_args = list(), sim_data = NULL, calc_loo = FALSE,
   return(stansim_obj)
 }
 
-### don't forget to add the rerun function
-# something like rerun(testout, datafiles_to_rerun)
-# and with a default to rerun all, but with a warning
-# and request for confirmation if the user tries this
-# (warning can be turned off but default is on)
+#-----------------------------------------------------------------
+#### rename stansim_single function####
+#' Rename a stansim simulation object
+#'
+#' @description Change the sim_name value of a \code{"stansim_single"}
+#' object.
+#'
+#' @param object An object of S3 class stansim_single.
+#' @param new_name New object name. Must be of type character.
+#'
+#' @export
+rename <- function(object, new_name){
 
+  if(class(object) != "stansim_single")
+    stop("object must be of class stansim_single")
 
+  if(typeof(new_name) != "character")
+    stop("new_name must be of type character")
+
+  object$sim_name <- new_name
+
+  object
+}

@@ -737,3 +737,28 @@ test_that("stansim test; cache TRUE, loo FALSE", {
   )
 
 })
+
+#-----------------------------------------------------------------
+#### brief rename tests ####
+test_that("rename should work as expected", {
+
+  ## read in test stansim_single obj to rename
+  stansim_obj <-
+    readRDS("objects/test_stansim.rds")
+
+  # error if not stansim_single
+  expect_error(rename(object = "test"),
+               "object must be of class stansim_single")
+
+  # error if name not character
+  expect_error(rename(object = stansim_obj, new_name = 555),
+               "new_name must be of type character")
+
+  # precheck object name
+  expect_match(stansim_obj$sim_name, "Stansim_.*")
+
+  # check name is reset correctly
+  renamed_stansim <- rename(stansim_obj, "new name123")
+  expect_equal(renamed_stansim$sim_name, "new name123")
+
+})

@@ -47,6 +47,5 @@ An S3 object of class \code{stansim_single} recording relevant
 simulation data.
 }
 \description{
-\code{refit} NOTE YOU'LL HAVE TO RUN THIS FROM THE
-SAME WD AS BEFORE OTHERWISE FILE NAMES WILL BE WRONG
+\code{refit} Takes a \code{stansim_single} object
 }

@@ -21,8 +21,8 @@ refit <- function (object, datafiles, ...) {
 #### refit.stansim_single method ####
 #' Refit specified datafiles in a stansim_single object
 #'
-#' @description \code{refit} NOTE YOU'LL HAVE TO RUN THIS FROM THE
-#' SAME WD AS BEFORE OTHERWISE FILE NAMES WILL BE WRONG
+#' @description \code{refit} Takes a \code{stansim_single} object
+#'
 #'
 #' @param object An object of S3 class stansim_single.
 #' @param datafiles The full names of the data files to be refitted.
