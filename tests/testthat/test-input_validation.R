@@ -200,11 +200,11 @@ test_that("where args are ignored return the correct warning message", {
   # to terminate the test in a controlled way
   expect_error(
   expect_warning(
-    stansim(sim_data = sim_data_test, stan_args = list("cores" = 5),
+    stansim(sim_data = sim_data_test, stan_args = list("cores" = 5)),
              paste("stansim is parallel across stan instances,",
                    "not within. stan_arg$cores is fixed to 1")
              )
-    ), "calc_loo must be of type logical")
+    )
 
 
 })

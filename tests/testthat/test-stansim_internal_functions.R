@@ -17,7 +17,7 @@ test_that("param_extract should fail correctly with bad input", {
 
   # when no params recognised fail immediately and tell user
   expect_error(
-    param_extract(test_stanfit, calc_loo = FALSE,
+    rstansim:::param_extract(test_stanfit, calc_loo = FALSE,
                   parameters = "notrealparam",
                   probs = def_probs,
                   estimates = def_estimates,
@@ -28,7 +28,7 @@ test_that("param_extract should fail correctly with bad input", {
   )
 
   expect_error(
-    param_extract(test_stanfit, calc_loo = FALSE,
+    rstansim:::param_extract(test_stanfit, calc_loo = FALSE,
                   parameters = c("notrealparam", "notrealparam2"),
                   probs = def_probs,
                   estimates = def_estimates,
@@ -39,7 +39,7 @@ test_that("param_extract should fail correctly with bad input", {
   )
 
   expect_error(
-    param_extract(test_stanfit, calc_loo = FALSE,
+    rstansim:::param_extract(test_stanfit, calc_loo = FALSE,
                   parameters = c("eta", "notrealparam", "notrealparam2"),
                   probs = def_probs,
                   estimates = def_estimates,
@@ -50,7 +50,7 @@ test_that("param_extract should fail correctly with bad input", {
   )
 
   expect_error(
-    param_extract(test_stanfit, calc_loo = FALSE,
+    rstansim:::param_extract(test_stanfit, calc_loo = FALSE,
                   parameters = c("eta", "notrealparam", "notrealparam2",
                                  "eta[1]"),
                   probs = def_probs,
@@ -68,7 +68,7 @@ test_that("param_extract should fail correctly with bad input", {
 test_that("param_extract should return a correct dataframe", {
 
   # prepare default param_extract output
-  test_param_extract <- param_extract(
+  test_param_extract <- rstansim:::param_extract(
     test_stanfit,
     calc_loo = FALSE,
     parameters = "all",
@@ -95,7 +95,7 @@ test_that("param_extract should return a correct dataframe", {
                  "value" = "double"))
 
   # prepare parameter filter param_extract output
-  test_param_pfilter_extract <- param_extract(
+  test_param_pfilter_extract <- rstansim:::param_extract(
     test_stanfit,
     calc_loo = FALSE,
     parameters = "eta",
@@ -107,7 +107,7 @@ test_that("param_extract should return a correct dataframe", {
   ## pfilter dimensions should be as expected
   expect_equal(dim(test_param_pfilter_extract), c(80, 4))
 
-  test_param_pfilter_extract2 <- param_extract(
+  test_param_pfilter_extract2 <- rstansim:::param_extract(
     test_stanfit,
     calc_loo = FALSE,
     parameters = c("eta", "mu"),
@@ -120,7 +120,7 @@ test_that("param_extract should return a correct dataframe", {
   expect_equal(dim(test_param_pfilter_extract2), c(90, 4))
 
   # prepare probs filter param_extract output
-  test_param_probsfilter_extract <- param_extract(
+  test_param_probsfilter_extract <- rstansim:::param_extract(
     test_stanfit,
     calc_loo = FALSE,
     parameters = "all",
@@ -133,7 +133,7 @@ test_that("param_extract should return a correct dataframe", {
   expect_equal(dim(test_param_probsfilter_extract), c(133, 4))
 
   # prepare probs filter2 param_extract output
-  test_param_probsfilter_extract2 <- param_extract(
+  test_param_probsfilter_extract2 <- rstansim:::param_extract(
     test_stanfit,
     calc_loo = FALSE,
     parameters = "all",
@@ -146,7 +146,7 @@ test_that("param_extract should return a correct dataframe", {
   expect_equal(dim(test_param_probsfilter_extract2), c(114, 4))
 
   # prepare probs filter3 param_extract output
-  test_param_probsfilter_extract3 <- param_extract(
+  test_param_probsfilter_extract3 <- rstansim:::param_extract(
     test_stanfit,
     calc_loo = FALSE,
     parameters = "all",
@@ -159,7 +159,7 @@ test_that("param_extract should return a correct dataframe", {
   expect_equal(dim(test_param_probsfilter_extract3), c(95, 4))
 
   # prepare estimates filter param_extract output
-  test_param_efilter_extract <- param_extract(
+  test_param_efilter_extract <- rstansim:::param_extract(
     test_stanfit,
     calc_loo = FALSE,
     parameters = "all",
@@ -172,7 +172,7 @@ test_that("param_extract should return a correct dataframe", {
   expect_equal(dim(test_param_efilter_extract), c(114, 4))
 
   # prepare estimates filter2 param_extract output
-  test_param_efilter_extract2 <- param_extract(
+  test_param_efilter_extract2 <- rstansim:::param_extract(
     test_stanfit,
     calc_loo = FALSE,
     parameters = "all",
@@ -185,7 +185,7 @@ test_that("param_extract should return a correct dataframe", {
   expect_equal(dim(test_param_efilter_extract2), c(133, 4))
 
   # prepare estimates filter3 param_extract output
-  test_param_efilter_extract3 <- param_extract(
+  test_param_efilter_extract3 <- rstansim:::param_extract(
     test_stanfit,
     calc_loo = FALSE,
     parameters = "all",
@@ -205,13 +205,17 @@ test_that("param_extract with LOO mocked should return correct data", {
 
   test_stanfit_loo <- readRDS("objects/test_stanfit_loo.rds")
 
-  loo_extract <- rstansim:::param_extract(
-    test_stanfit_loo,
-    calc_loo = TRUE,
-    parameters = c("beta"),
-    probs = def_probs,
-    estimates = def_estimates,
-    data = "datafile location.rds"
+  # suppress warnings because of the unclsoed connection, not sure how to
+  # close this if loo isn't
+  suppressWarnings(
+    loo_extract <- rstansim:::param_extract(
+      test_stanfit_loo,
+      calc_loo = TRUE,
+      parameters = c("beta"),
+      probs = def_probs,
+      estimates = def_estimates,
+      data = "datafile location.rds"
+    )
   )
 
   ## param_extract should return a dataframe

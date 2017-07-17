@@ -19,9 +19,13 @@ Using the `rstansim` package, the above steps are all handled using the `stansim
 
 ## stansim()
 
-The `stansim` function takes a list of datasets (stored as .RDS files; see vignette on data simulation [NOT WRITTEN YET]), a single Stan model to fit to these datasets. It then fits the model to each dataset, recording requested/relevant data for each, and returning an object of class `stansim_single` that holds all outcome data.
+The `stansim()` function takes a list of datasets (stored as .RDS files; see vignette on data simulation [NOT WRITTEN YET]), a single Stan model to fit to these datasets. It then fits the model to each dataset, recording requested/relevant data for each, and returning an object of class `stansim_single` that holds all outcome data.
 
 ## Arguments
+
+### sim_name
+
+This is the name for your simulation object. Since `stansim()` fits a single model to multiple datasets it most likely makes sense to name your object after the model you are fitting. Why not just name your output object after the model? Because at a later stage you may wish to combine multiple single simulations into a [`stansim_collection`](stansim_collection()) object to help manage them and keep results located together. At this stage the only identifier for the results of each outcome will be this provided name. If you don't set it to start with you can still rest it later using the `rename()` function.
 
 ### Data for modelling
 
@@ -52,53 +56,16 @@ Any other parameters used by the rstan `sampling` function can also be provided,
 
 ### other arguments
 
-With valid `sim_data` and `stan_arg` arguments the other `stansim` arguments all have defaults that should return reasonable results. However, you are likely to want to tweak some other arguments to match your unique case.
+With valid `sim_data` and `stan_arg` arguments the other `stansim` arguments all have defaults that should return reasonable results. However, you are likely to want to tweak some other arguments to match your unique case. These arguments are:
+
+* `calc_loo`: If `TRUE` then [LOO fit statistics](https://cran.r-project.org/web/packages/loo/index.html) are calculated for all models and stored within the returned data.
+* `use_cores`: The number of parallel cores to use. Each model is assigned a single core, rather than each chain.
+* `parameters`: The names of the parameters you wish to store results for, defaults to all.
+* `probs`: Emprical percentiles to record for each parameter, defaults to `c(.025, .25, .5, .75, .975)`.
+* `estimates`: A selection from `c("mean", "se_mean", "sd", "n_eff", "Rhat")` which specifies which of these estimates should be stored for each parameter. By default all are stored.
+
+Other arguments exist but these a less likely to be of interest. See the documentation for `stansim()` for more information.
+
+## Using stansim()
 
 
-Vignettes are long form documentation commonly included in packages. Because they are part of the distribution of the package, they need to be as compact as possible. The `html_vignette` output type provides a custom style sheet (and tweaks some options) to ensure that the resulting html is as small as possible. The `html_vignette` format:
-
-- Never uses retina figures
-- Has a smaller default figure size
-- Uses a custom CSS stylesheet instead of the default Twitter Bootstrap style
-
-## Vignette Info
-
-Note the various macros within the `vignette` section of the metadata block above. These are required in order to instruct R how to build the vignette. Note that you should change the `title` field and the `\VignetteIndexEntry` to match the title of your vignette.
-
-## Styles
-
-The `html_vignette` template includes a basic CSS theme. To override this theme you can specify your own CSS in the document metadata as follows:
-
-    output: 
-      rmarkdown::html_vignette:
-        css: mystyles.css
-
-## Figures
-
-The figure sizes have been customised so that you can easily put two images side-by-side. 
-
-```{r, fig.show='hold'}
-plot(1:10)
-plot(10:1)
-```
-
-You can enable figure captions by `fig_caption: yes` in YAML:
-
-    output:
-      rmarkdown::html_vignette:
-        fig_caption: yes
-
-Then you can use the chunk option `fig.cap = "Your figure caption."` in **knitr**.
-
-## More Examples
-
-You can write math expressions, e.g. $Y = X\beta + \epsilon$, footnotes^[A footnote here.], and tables, e.g. using `knitr::kable()`.
-
-```{r, echo=FALSE, results='asis'}
-knitr::kable(head(mtcars, 10))
-```
-
-Also a quote using `>`:
-
-> "He who gives up [code] safety for [code] speed deserves neither."
-([via](https://twitter.com/hadleywickham/status/504368538874703872))

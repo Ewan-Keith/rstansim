@@ -4,14 +4,19 @@
 \alias{stansim}
 \title{Fit a stan model to multiple datasets}
 \usage{
-stansim(sim_data = NULL, stan_args = list(), calc_loo = FALSE,
-  use_cores = 1L, parameters = "all", probs = c(0.025, 0.25, 0.5, 0.75,
-  0.975), estimates = c("mean", "se_mean", "sd", "n_eff", "Rhat"),
+stansim(sim_name = paste0("Stansim_", Sys.time()), sim_data = NULL,
+  stan_args = list(), calc_loo = FALSE, use_cores = 1L,
+  parameters = "all", probs = c(0.025, 0.25, 0.5, 0.75, 0.975),
+  estimates = c("mean", "se_mean", "sd", "n_eff", "Rhat"),
   stan_warnings = "catch", cache = TRUE,
-  stansim_seed = floor(stats::runif(1, 1, 1e+05)),
-  sim_name = paste0("Stansim_", Sys.time()))
+  stansim_seed = floor(stats::runif(1, 1, 1e+05)))
 }
 \arguments{
+\item{sim_name}{A name attached to the \code{stansim_single} object to help
+identify it. It is strongly recomended that an informative name is
+assigned, especially if \code{stansim_single} objects are to be combined in
+to a \code{stansim_collection} object.}
+
 \item{sim_data}{A list of strings pointing to the location of
 .rds files containing the simulation data. See the vignette on
 producing simulation data for details on the formatting of these datasets.}
@@ -58,11 +63,6 @@ function. The default value of \code{TRUE} is recommended unless there
 are relevant write-permission restrictions.}
 
 \item{stansim_seed}{Set a seed for the \code{stansim} function.}
-
-\item{sim_name}{A name attached to the \code{stansim_single} object to help
-identify it. It is strongly recomended that an informative name is
-assigned, especially if \code{stansim_single} objects are to be combined in
-to a \code{stansim_collection} object.}
 }
 \value{
 An S3 object of class \code{stansim_single} recording relevant
