@@ -187,7 +187,7 @@ param_extract <- function(fitted_stan, calc_loo, parameters,
 
   ##-------------------------------------------------
   ## add an indicator for dataset and sort rows
-  indicator_data <- cbind("data" = data, long_output)
+  indicator_data <- cbind("datafile" = data, long_output)
 
   # order output
   ordered_data <-

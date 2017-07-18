@@ -34,8 +34,8 @@ test_that("stansim test; cache FALSE, loo FALSE", {
     # list of length 10
     expect_equal(length(stansim_output), 10),
 
-    # has class "stansim_single"
-    expect_s3_class(stansim_output, "stansim_single"),
+    # has class "stansim_simulation"
+    expect_s3_class(stansim_output, "stansim_simulation"),
 
     # item names should be as expected
     expect_equal(names(stansim_output),
@@ -222,8 +222,8 @@ test_that("stansim test; cache TRUE, loo FALSE", {
     # list of length 10
     expect_equal(length(stansim_output), 10),
 
-    # has class "stansim_single"
-    expect_s3_class(stansim_output, "stansim_single"),
+    # has class "stansim_simulation"
+    expect_s3_class(stansim_output, "stansim_simulation"),
 
     # item names should be as expected
     expect_equal(names(stansim_output),
@@ -409,8 +409,8 @@ test_that("stansim test; cache TRUE, loo FALSE", {
     # list of length 10
     expect_equal(length(stansim_output), 10),
 
-    # has class "stansim_single"
-    expect_s3_class(stansim_output, "stansim_single"),
+    # has class "stansim_simulation"
+    expect_s3_class(stansim_output, "stansim_simulation"),
 
     # item names should be as expected
     expect_equal(names(stansim_output),
@@ -598,8 +598,8 @@ test_that("stansim test; cache TRUE, loo FALSE", {
     # list of length 10
     expect_equal(length(stansim_output), 10),
 
-    # has class "stansim_single"
-    expect_s3_class(stansim_output, "stansim_single"),
+    # has class "stansim_simulation"
+    expect_s3_class(stansim_output, "stansim_simulation"),
 
     # item names should be as expected
     expect_equal(names(stansim_output),
@@ -742,13 +742,13 @@ test_that("stansim test; cache TRUE, loo FALSE", {
 #### brief rename tests ####
 test_that("rename should work as expected", {
 
-  ## read in test stansim_single obj to rename
+  ## read in test stansim_simulation obj to rename
   stansim_obj <-
     readRDS("objects/test_stansim.rds")
 
-  # error if not stansim_single
+  # error if not stansim_simulation
   expect_error(rename(object = "test"),
-               "object must be of class stansim_single")
+               "object must be of class stansim_simulation")
 
   # error if name not character
   expect_error(rename(object = stansim_obj, new_name = 555),

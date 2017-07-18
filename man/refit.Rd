@@ -7,7 +7,7 @@
 refit(object, datafiles, ...)
 }
 \arguments{
-\item{object}{An object of S3 class stansim_single.}
+\item{object}{An object of S3 class stansim_simulation.}
 
 \item{datafiles}{The full names of the data files to be refitted.}
 

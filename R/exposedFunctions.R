@@ -4,7 +4,7 @@
 #'
 #' @description \code{stansim} fits a specified stan model across multiple
 #' datasets,  collates, and returns summary information and data for all
-#' models as a \code{stansim_single} object. All fitted models will have basic
+#' models as a \code{stansim_simulation} object. All fitted models will have basic
 #' reproducability information recorded; such as parameter inits and seeds,
 #' along with parameter estimates, and simulation info such as time and date
 #' ran.
@@ -19,9 +19,9 @@
 #' progress is not lost in the case of function failure. When the function
 #' terminates as expected this cache is removed.
 #'
-#' @param sim_name A name attached to the \code{stansim_single} object to help
+#' @param sim_name A name attached to the \code{stansim_simulation} object to help
 #' identify it. It is strongly recomended that an informative name is
-#' assigned, especially if \code{stansim_single} objects are to be combined in
+#' assigned, especially if \code{stansim_simulation} objects are to be combined in
 #' to a \code{stansim_collection} object.
 #' @param sim_data A list of strings pointing to the location of
 #' .rds files containing the simulation data. See the vignette on
@@ -60,7 +60,7 @@
 #' function. The default value of \code{TRUE} is recommended unless there
 #' are relevant write-permission restrictions.
 #' @param stansim_seed Set a seed for the \code{stansim} function.
-#' @return An S3 object of class \code{stansim_single} recording relevant
+#' @return An S3 object of class \code{stansim_simulation} recording relevant
 #' simulation data.
 #' @import Rcpp
 #'
@@ -170,7 +170,7 @@ stansim <- function(sim_name = paste0("Stansim_", Sys.time()),
   end_time <- Sys.time()
 
   stansim_obj <-
-    stansim_single(
+    stansim_simulation(
       sim_name = sim_name,
       stansim_uni_list = sim_estimates,
       start_time = start_time,
@@ -187,20 +187,20 @@ stansim <- function(sim_name = paste0("Stansim_", Sys.time()),
 }
 
 #-----------------------------------------------------------------
-#### rename stansim_single function####
+#### rename stansim_simulation function####
 #' Rename a stansim simulation object
 #'
-#' @description Change the sim_name value of a \code{"stansim_single"}
+#' @description Change the sim_name value of a \code{"stansim_simulation"}
 #' object.
 #'
-#' @param object An object of S3 class stansim_single.
+#' @param object An object of S3 class stansim_simulation.
 #' @param new_name New object name. Must be of type character.
 #'
 #' @export
 rename <- function(object, new_name){
 
-  if(class(object) != "stansim_single")
-    stop("object must be of class stansim_single")
+  if(class(object) != "stansim_simulation")
+    stop("object must be of class stansim_simulation")
 
   if(typeof(new_name) != "character")
     stop("new_name must be of type character")

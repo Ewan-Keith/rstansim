@@ -7,7 +7,7 @@
 extract_data(object, ...)
 }
 \arguments{
-\item{object}{An object of S3 class stansim_single.}
+\item{object}{An object of S3 class stansim_simulation.}
 
 \item{...}{Arguments for filtering returned data, see specific methods for further detail.}
 }

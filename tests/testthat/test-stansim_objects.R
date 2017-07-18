@@ -139,14 +139,14 @@ test_that("stan_sim_uni object constructor returns correct values", {
 
 })
 
-test_that("stansim_single object constructor returns correct values", {
+test_that("stansim_simulation object constructor returns correct values", {
 
   # read in prepared stansim_uni list
   test_stansim_uni_list <-
     readRDS("objects/test_stansim_uni_list.rds")
 
-  stansim_single_test <-
-    rstansim::stansim_single(
+  stansim_simulation_test <-
+    rstansim::stansim_simulation(
       sim_name = "object construct test",
       stansim_uni_list = test_stansim_uni_list,
       start_time = Sys.time(),
@@ -156,22 +156,22 @@ test_that("stansim_single object constructor returns correct values", {
     )
 
   # output should be a list
-  expect_type(stansim_single_test, "list")
+  expect_type(stansim_simulation_test, "list")
 
   # list of length 10
-  expect_equal(length(stansim_single_test), 10)
+  expect_equal(length(stansim_simulation_test), 10)
 
-  # has class "stansim_single"
-  expect_s3_class(stansim_single_test, "stansim_single")
+  # has class "stansim_simulation"
+  expect_s3_class(stansim_simulation_test, "stansim_simulation")
 
   # item names should be as expected
-  expect_equal(names(stansim_single_test),
+  expect_equal(names(stansim_simulation_test),
                c("sim_name", "start_time", "end_time", "model_name",
                  "model_code", "sim_seed", "instances", "data",
                  "raw_call", "refitted"))
 
   # sim_name should be correct
-  expect_equal(stansim_single_test$sim_name,
+  expect_equal(stansim_simulation_test$sim_name,
                "object construct test")
 
   # start and end time should be of type date
@@ -179,23 +179,23 @@ test_that("stansim_single object constructor returns correct values", {
     tryCatch(!is.na(as.Date(mydate, date.format, tz = "UTC")),
              error = function(err) FALSE)
   }
-  expect_true(is_date(stansim_single_test$start_time))
-  expect_true(is_date(stansim_single_test$end_time))
+  expect_true(is_date(stansim_simulation_test$start_time))
+  expect_true(is_date(stansim_simulation_test$end_time))
 
   # model name should be correct
-  expect_equal(stansim_single_test$model_name, "8schools")
+  expect_equal(stansim_simulation_test$model_name, "8schools")
 
   # model code should be of correct length
-  expect_equal(nchar(stansim_single_test$model_code), 418)
+  expect_equal(nchar(stansim_simulation_test$model_code), 418)
 
   # sim_seed should be correct
-  expect_equal(stansim_single_test$sim_seed, 500)
+  expect_equal(stansim_simulation_test$sim_seed, 500)
 
   # raw_call should be correct
-  expect_equal(stansim_single_test$raw_call, "raw call values")
+  expect_equal(stansim_simulation_test$raw_call, "raw call values")
 
   ## extract the instances for testing
-  test_instances <- stansim_single_test$instances
+  test_instances <- stansim_simulation_test$instances
 
   # function running tests over each instance list
   instance_check <- function(instance){

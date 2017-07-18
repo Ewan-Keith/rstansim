@@ -12,9 +12,9 @@ stansim(sim_name = paste0("Stansim_", Sys.time()), sim_data = NULL,
   stansim_seed = floor(stats::runif(1, 1, 1e+05)))
 }
 \arguments{
-\item{sim_name}{A name attached to the \code{stansim_single} object to help
+\item{sim_name}{A name attached to the \code{stansim_simulation} object to help
 identify it. It is strongly recomended that an informative name is
-assigned, especially if \code{stansim_single} objects are to be combined in
+assigned, especially if \code{stansim_simulation} objects are to be combined in
 to a \code{stansim_collection} object.}
 
 \item{sim_data}{A list of strings pointing to the location of
@@ -65,13 +65,13 @@ are relevant write-permission restrictions.}
 \item{stansim_seed}{Set a seed for the \code{stansim} function.}
 }
 \value{
-An S3 object of class \code{stansim_single} recording relevant
+An S3 object of class \code{stansim_simulation} recording relevant
 simulation data.
 }
 \description{
 \code{stansim} fits a specified stan model across multiple
 datasets,  collates, and returns summary information and data for all
-models as a \code{stansim_single} object. All fitted models will have basic
+models as a \code{stansim_simulation} object. All fitted models will have basic
 reproducability information recorded; such as parameter inits and seeds,
 along with parameter estimates, and simulation info such as time and date
 ran.

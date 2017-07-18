@@ -7,11 +7,11 @@
 rename(object, new_name)
 }
 \arguments{
-\item{object}{An object of S3 class stansim_single.}
+\item{object}{An object of S3 class stansim_simulation.}
 
 \item{new_name}{New object name. Must be of type character.}
 }
 \description{
-Change the sim_name value of a \code{"stansim_single"}
+Change the sim_name value of a \code{"stansim_simulation"}
 object.
 }

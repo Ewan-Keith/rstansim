@@ -1,6 +1,6 @@
-context("stansim_single methods should function correctly")
+context("stansim_simulation methods should function correctly")
 
-test_that(paste("extract_data.stansim_single function should return",
+test_that(paste("extract_data.stansim_simulation function should return",
           "expected results"), {
 
   ## read in test stansim obj to extract from
@@ -129,7 +129,7 @@ test_that(paste("extract_data.stansim_single function should return",
     extract_data(extract_test_data,
                  values = function(x) x < 0)
   ),
-  c(160, 4))
+  c(161, 4))
 
   expect_equal(dim(
     extract_data(extract_test_data,
@@ -143,7 +143,7 @@ test_that(paste("extract_data.stansim_single function should return",
                  estimates = "Rhat",
                  values = function(x) x < 1.1 & x > 1)
   ),
-  c(48, 4))
+  c(47, 4))
 
   ## if "all" is provided for an arg it must be alone
   expect_error(extract_data(
@@ -173,10 +173,10 @@ test_that(paste("extract_data.stansim_single function should return",
 })
 
 test_that(paste(
-  "print.stansim_single function should print",
+  "print.stansim_simulation function should print",
   "expected output"), {
 
-    ## read in test stansim_single obj to print
+    ## read in test stansim_simulation obj to print
     extract_test_data <- readRDS("objects/test_stansim.rds")
 
     caught_print <- utils::capture.output(print(extract_test_data))
@@ -229,20 +229,20 @@ test_that(paste(
 })
 
 test_that(
-  "print.stansim_single works with > 50 estimates and parameters", {
+  "print.stansim_simulation works with > 50 estimates and parameters", {
 
-    ## read in test stansim_single obj to print
+    ## read in test stansim_simulation obj to print
     extract_test_data <- readRDS("objects/test_stansim.rds")
 
     # add > 50 estimates to data
     temp_data <- extract_test_data$data
     temp_data <- rbind(temp_data,
-                       cbind("data" = NA,
+                       cbind("datafile" = NA,
                              "parameter" = 1:50,
                              "estimate" = 1:50,
                              "value" = NA))
 
-    # put back in to stansim_single object
+    # put back in to stansim_simulation object
     extract_test_data$data <- temp_data
 
     caught_print <-

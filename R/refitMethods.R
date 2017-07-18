@@ -7,7 +7,7 @@
 #' prompt given the potential computational cost (this can be turned off).
 #' Otherwise only datafile names provided will be refit.
 #'
-#' @param object An object of S3 class stansim_single.
+#' @param object An object of S3 class stansim_simulation.
 #' @param datafiles The full names of the data files to be refitted.
 #' @param ... Arguments specifying datafiles to refit and control
 #' of warning behaviour.
@@ -18,16 +18,16 @@ refit <- function (object, datafiles, ...) {
 }
 
 #-----------------------------------------------------------------
-#### refit.stansim_single method ####
-#' Refit specified datafiles in a stansim_single object
+#### refit.stansim_simulation method ####
+#' Refit specified datafiles in a stansim_simulation object
 #'
-#' @description \code{refit} Takes a \code{stansim_single} object
+#' @description \code{refit} Takes a \code{stansim_simulation} object
 #'
 #'
-#' @param object An object of S3 class stansim_single.
+#' @param object An object of S3 class stansim_simulation.
 #' @param datafiles The full names of the data files to be refitted.
 #' These must be consistent both with the datafile names stored within
-#' the \code{stansim_single} object, and with the actual data files.
+#' the \code{stansim_simulation} object, and with the actual data files.
 #' This is best ensured by running refit from the same working directory
 #' as the original \code{stansim} call.
 #' @param stan_args A list of function arguments to be used by
@@ -49,11 +49,11 @@ refit <- function (object, datafiles, ...) {
 #' are relevant write-permission restrictions.
 #' @param stansim_seed Set a seed for the \code{stansim} function.
 #' @param ... other arguments not used by this method
-#' @return An S3 object of class \code{stansim_single} recording relevant
+#' @return An S3 object of class \code{stansim_simulation} recording relevant
 #' simulation data.
 #'
 #' @export
-refit.stansim_single <-
+refit.stansim_simulation <-
   function(object,
            datafiles,
            stan_args = list(),
@@ -77,9 +77,9 @@ refit.stansim_single <-
     }
   lapply(datafiles, file_exists)
 
-  # check all datafile args are in the stansim_single object
+  # check all datafile args are in the stansim_simulation object
   data_exists <- function(datafile, object_data){
-    if(!(datafile %in% object_data$data))
+    if(!(datafile %in% object_data$datafile))
       stop(paste0(
         "datafiles argument \"",
         datafile,

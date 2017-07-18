@@ -10,7 +10,7 @@
 #' @param ... other arguments not used by this method
 #'
 #' @export
-print.stansim_single <- function(x, ...){
+print.stansim_simulation <- function(x, ...){
 
   # helper method for clean matrix printing
   print.matrix <- function(m){
@@ -83,7 +83,7 @@ print.stansim_single <- function(x, ...){
 #' Default arguments will return full data as a dataframe, otherwise
 #' rows will be filtered based on provided arguments.
 #'
-#' @param object An object of S3 class stansim_single.
+#' @param object An object of S3 class stansim_simulation.
 #' @param ... Arguments for filtering returned data, see specific methods for further detail.
 #'
 #' @export
@@ -92,16 +92,16 @@ extract_data <- function (object, ...) {
 }
 
 #-----------------------------------------------------------------
-#### extract_data.stansim_single method ####
+#### extract_data.stansim_simulation method ####
 # method to extract data from a stansim object based on string filtering
 # of the fields
-#' Extract data from a stansim_single object
+#' Extract data from a stansim_simulation object
 #'
-#' @description Applied to an object of type stansim_single,
+#' @description Applied to an object of type stansim_simulation,
 #' \code{extract_data} will return the objects simulation data as a
 #' dataframe, subject to the filtering specified by the function arguments.
 #'
-#' @param object An object of S3 class stansim_single.
+#' @param object An object of S3 class stansim_simulation.
 #' @param datasets Either a character vector containing the names of datasets
 #' (as provided to the original \code{stansim} call) fitted, or the string
 #' \code{"all"}. The former will only return values for the corresponding
@@ -128,7 +128,7 @@ extract_data <- function (object, ...) {
 #' @param ... other arguments not used by this method
 #'
 #' @export
-extract_data.stansim_single <-
+extract_data.stansim_simulation <-
   function(object,
            datasets = "all",
            parameters = "all",

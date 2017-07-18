@@ -16,7 +16,7 @@ test_that("stan_sim returns a valid stansim object", {
   )
 
   # basic s3 class check
-  expect_s3_class(output, "stansim_single")
+  expect_s3_class(output, "stansim_simulation")
 
   # check s3 slots
   expect_equal(names(output), c("sim_name", "start_time", "end_time",

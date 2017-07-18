@@ -1,8 +1,8 @@
 context("refit methods should function correctly")
 
-test_that("refit.stansim_single fails correctly", {
+test_that("refit.stansim_simulation fails correctly", {
 
-  ## read in test stansim_single obj to refit
+  ## read in test stansim_simulation obj to refit
   stansim_obj <-
     readRDS("objects/test_stansim.rds")
 
@@ -19,11 +19,11 @@ test_that("refit.stansim_single fails correctly", {
                       "\" could not be found. Check your file structure"
                ))
 
-  ## all_datafiles must be found in the original stansim_single
+  ## all_datafiles must be found in the original stansim_simulation
   # remove schoolsdat4 data records for test
   df_not_found <- stansim_obj
   df_not_found$data <- stansim_obj$data[
-    stansim_obj$data[, "data"] !=
+    stansim_obj$data[, "datafile"] !=
       "data-raw/data/schoolsdat4.rds", ]
 
   expect_error(
@@ -39,9 +39,9 @@ test_that("refit.stansim_single fails correctly", {
 
 
 
-test_that("refit.stansim_single updates stansim_single obj correctly", {
+test_that("refit.stansim_simulation updates stansim_simulation obj correctly", {
 
-  ## read in test stansim_single obj to refit
+  ## read in test stansim_simulation obj to refit
   stansim_obj <-
     readRDS("objects/test_stansim.rds")
 
@@ -65,8 +65,8 @@ test_that("refit.stansim_single updates stansim_single obj correctly", {
   # list of length 10
   expect_equal(length(new_stansim), 10),
 
-  # has class "stansim_single"
-  expect_s3_class(new_stansim, "stansim_single"),
+  # has class "stansim_simulation"
+  expect_s3_class(new_stansim, "stansim_simulation"),
 
   # item names should be as expected
   expect_equal(names(new_stansim),
@@ -92,16 +92,16 @@ test_that("refit.stansim_single updates stansim_single obj correctly", {
   expect_false(identical(stansim_obj$data, new_stansim$data)),
 
   # non-refited subset data should be same as original
-  old_subset <- stansim_obj$data[stansim_obj$data$data %in%
+  old_subset <- stansim_obj$data[stansim_obj$data$datafile %in%
                                    c("data-raw/data/schoolsdat2.rds",
                                      "data-raw/data/schoolsdat4.rds"), ],
 
-  old_subset <- old_subset[with(old_subset, order(data, parameter, estimate, value)), ],
+  old_subset <- old_subset[with(old_subset, order(datafile, parameter, estimate, value)), ],
 
-  new_subset <- new_stansim$data[new_stansim$data$data %in%
+  new_subset <- new_stansim$data[new_stansim$data$datafile %in%
                                   c("data-raw/data/schoolsdat2.rds",
                                     "data-raw/data/schoolsdat4.rds"), ],
-  new_subset <- new_subset[with(new_subset, order(data, parameter, estimate, value)), ],
+  new_subset <- new_subset[with(new_subset, order(datafile, parameter, estimate, value)), ],
 
   expect_equal(sum(old_subset != new_subset), 0),
 
@@ -117,3 +117,4 @@ test_that("refit.stansim_single updates stansim_single obj correctly", {
 
 
 })
+

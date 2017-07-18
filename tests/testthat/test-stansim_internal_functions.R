@@ -68,15 +68,17 @@ test_that("param_extract should fail correctly with bad input", {
 test_that("param_extract should return a correct dataframe", {
 
   # prepare default param_extract output
-  test_param_extract <- rstansim:::param_extract(
-    test_stanfit,
-    calc_loo = FALSE,
-    parameters = "all",
-    probs = def_probs,
-    estimates = def_estimates,
-    data = "datafile location.rds"
+  # suppress warning from non-closed connection from loo
+  suppressWarnings(
+    test_param_extract <- rstansim:::param_extract(
+      test_stanfit,
+      calc_loo = FALSE,
+      parameters = "all",
+      probs = def_probs,
+      estimates = def_estimates,
+      data = "datafile location.rds"
+    )
   )
-
   ## param_extract should return a dataframe
   expect_true(is.data.frame(test_param_extract))
 
@@ -85,11 +87,11 @@ test_that("param_extract should return a correct dataframe", {
 
   ## colnames should be as expected
   expect_equal(colnames(test_param_extract),
-               c("data", "parameter", "estimate", "value"))
+               c("datafile", "parameter", "estimate", "value"))
 
   # column types should be as expected
   expect_equal(sapply(test_param_extract, typeof),
-               c("data" = "character",
+               c("datafile" = "character",
                  "parameter" = "character",
                  "estimate" = "character",
                  "value" = "double"))
@@ -226,11 +228,11 @@ test_that("param_extract with LOO mocked should return correct data", {
 
   ## colnames should be as expected
   expect_equal(colnames(loo_extract),
-               c("data", "parameter", "estimate", "value"))
+               c("datafile", "parameter", "estimate", "value"))
 
   # column types should be as expected
   expect_equal(sapply(loo_extract, typeof),
-               c("data" = "character",
+               c("datafile" = "character",
                  "parameter" = "character",
                  "estimate" = "character",
                  "value" = "double"))

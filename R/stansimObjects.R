@@ -2,7 +2,7 @@
 #### stansim_uni ####
 # constructor for internal object that is returned by each parallel
 # run of foreach. Only for internal use and will be combined into
-# stansim_single object before being returned.
+# stansim_simulation object before being returned.
 stansim_uni <- function(fit, data_name, ran_at, long_data, stan_warnings,
                         cache) {
 
@@ -25,16 +25,16 @@ stansim_uni <- function(fit, data_name, ran_at, long_data, stan_warnings,
 }
 
 #-----------------------------------------------------------------
-#### stansim_single ####
-#' Construct an S3 object of type stansim_single
+#### stansim_simulation ####
+#' Construct an S3 object of type stansim_simulation
 #'
 #' @description A constructor function for creating S3 Objects of
-#' type \code{stansim_single}. \code{stansim_single} objects are the basic
+#' type \code{stansim_simulation}. \code{stansim_simulation} objects are the basic
 #' unit of output from calls to the \code{stansim} function and collects
 #' the specified data for all stan models fitted.
 #'
 #' @param sim_name The name to be given to the simulation represented
-#' by the \code{stansim_single} object.
+#' by the \code{stansim_simulation} object.
 #' @param stansim_uni_list A list of objects with S3 class
 #' \code{stan_sim_uni}. This is an unexported class used to store the
 #' outcomes of individual simulation runs internal to the \code{stansim}
@@ -47,11 +47,11 @@ stansim_uni <- function(fit, data_name, ran_at, long_data, stan_warnings,
 #' \code{refit} method.
 #' @param stansim_seed The global seed for the \code{stansim} call.
 #'
-#' @return An S3 object of class \code{stansim_single} recording relevant
+#' @return An S3 object of class \code{stansim_simulation} recording relevant
 #' simulation data.
 #'
 #' @export
-stansim_single <-
+stansim_simulation <-
   function(sim_name, stansim_uni_list, start_time,
            end_time, raw_call, stansim_seed) {
 
@@ -93,7 +93,7 @@ stansim_single <-
         "raw_call" = raw_call,
         "refitted" = c()
       ),
-      class = "stansim_single"
+      class = "stansim_simulation"
     )
   }
 
