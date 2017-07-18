@@ -3,6 +3,7 @@
 S3method(extract_data,stansim_simulation)
 S3method(print,stansim_simulation)
 S3method(refit,stansim_simulation)
+export(collect)
 export(extract_data)
 export(refit)
 export(rename)
