@@ -68,25 +68,29 @@ collect <- function(collection_name, object, ...) {
     # if both simulation
     if (class(two_collect[[1]]) == "stansim_simulation" &
         class(two_collect[[2]]) == "stansim_simulation") {
-      two_grouped <- collect_simulations(two_collect[[1]],
+      two_grouped <- collect_simulations(collection_name,
+                                         two_collect[[1]],
                                          two_collect[[2]])
     } else
       # if both collection
       if (class(two_collect[[1]]) == "stansim_collection" &
           class(two_collect[[2]]) == "stansim_collection") {
-        two_grouped <- collect_collections(two_collect[[1]],
+        two_grouped <- collect_collections(collection_name,
+                                           two_collect[[1]],
                                            two_collect[[2]])
       } else
         # if simulation and collection
         if (class(two_collect[[1]]) == "stansim_simulation" &
             class(two_collect[[2]]) == "stansim_collection") {
-          two_grouped <- collect_mixed(two_collect[[1]],
+          two_grouped <- collect_mixed(collection_name,
+                                       two_collect[[1]],
                                        two_collect[[2]])
         } else
           # if collection and simulation
           if (class(two_collect[[1]]) == "stansim_collection" &
               class(two_collect[[2]]) == "stansim_simulation") {
-            two_grouped <- collect_mixed(two_collect[[2]],
+            two_grouped <- collect_mixed(collection_name,
+                                         two_collect[[2]],
                                          two_collect[[1]])
           }
 
