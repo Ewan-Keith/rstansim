@@ -122,13 +122,16 @@ test_that("param_extract should return a correct dataframe", {
   expect_equal(dim(test_param_pfilter_extract2), c(90, 4))
 
   # prepare probs filter param_extract output
-  test_param_probsfilter_extract <- rstansim:::param_extract(
-    test_stanfit,
-    calc_loo = FALSE,
-    parameters = "all",
-    probs = c(.1, .9),
-    estimates = def_estimates,
-    data = "datafile location.rds"
+  # suppress warning from non-closed connection from loo
+  suppressWarnings(
+    test_param_probsfilter_extract <- rstansim:::param_extract(
+      test_stanfit,
+      calc_loo = FALSE,
+      parameters = "all",
+      probs = c(.1, .9),
+      estimates = def_estimates,
+      data = "datafile location.rds"
+    )
   )
 
   ## pfilter dimensions should be as expected

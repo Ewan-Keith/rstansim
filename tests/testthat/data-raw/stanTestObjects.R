@@ -159,5 +159,30 @@ test_stansim_refit <- stansim(stan_args = test_stan_args_refit,
 
 saveRDS(test_stansim_refit, "objects/test_stansim_refit.rds")
 
+#-----------------------------------------------------------------
+#### refitted stansim_simulation for collect testing ####
 
+test_stan_args_refit <- list(file = "data-raw/8schools.stan",
+                             iter = 1000, chains = 4, seed = 12345)
 
+test_stansim_refit <- stansim(sim_name = "refitted test sim",
+                              stan_args = test_stan_args_refit,
+                              sim_data = dir("data-raw/data",
+                                             full.names = TRUE), use_cores = 4,
+                              stansim_seed = 12345)
+refitted <- refit(test_stansim_refit, dir("data-raw/data",
+                                          full.names = TRUE)[c(1, 3)])
+
+saveRDS(refitted, "objects/refitted_for_collection_tests.rds")
+
+#-----------------------------------------------------------------
+#### basic saved collection for method testing ####
+sim1 <-
+  readRDS("objects/test_stansim.rds")
+
+sim2 <-
+  readRDS("objects/refitted_for_collection_tests.rds")
+
+collection <- collect("collection 1", sim1, sim2)
+
+saveRDS(collection, "objects/collection_for_method_tests.rds")

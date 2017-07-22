@@ -22,7 +22,7 @@ collect_simulations <- function(collection_name, sim1, sim2){
   } else {
     sim1_refitted <- cbind.data.frame(
       "sim_name" = sim1$sim_name,
-      extract_refitted(sim1),
+      "datafile" = extract_refitted(sim1),
       stringsAsFactors = FALSE
     )
   }
@@ -32,7 +32,7 @@ collect_simulations <- function(collection_name, sim1, sim2){
   } else {
     sim2_refitted <- cbind.data.frame(
       "sim_name" = sim2$sim_name,
-      extract_refitted(sim2),
+      "datafile" = extract_refitted(sim2),
       stringsAsFactors = FALSE
     )
   }
