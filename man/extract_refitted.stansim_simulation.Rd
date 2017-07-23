@@ -4,10 +4,12 @@
 \alias{extract_refitted.stansim_simulation}
 \title{Extract names of refitted datasets from a stansim_simulation object}
 \usage{
-\method{extract_refitted}{stansim_simulation}(object)
+\method{extract_refitted}{stansim_simulation}(object, ...)
 }
 \arguments{
 \item{object}{An object of S3 class stansim_simulation.}
+
+\item{...}{other arguments not used by this method.}
 }
 \description{
 Applied to an object of type stansim_simulation,

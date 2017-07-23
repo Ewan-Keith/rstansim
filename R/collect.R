@@ -41,7 +41,18 @@ collect <- function(collection_name, object, ...) {
   lapply(collect_args, class_check)
 
   # no two group object should have the same sim_name or collection_name
-  ## COME BACK TO WHEN YOU HAVE WORKING COLLECTION EXAMPLES
+  get_name <- function(x){
+    if(class(x) == "stansim_simulation")
+      x$sim_name
+
+    if(class(x) == "stansim_collection")
+      x$collection_name
+  }
+  names <- unlist(lapply(collect_args, get_name))
+
+  if(anyDuplicated(names) != 0)
+    stop(paste("The collection_name and simulation_name values of all",
+               "arguments must be unique"))
 
   ## -------------------------------------------------
   ## base condition (length of groups = 1)

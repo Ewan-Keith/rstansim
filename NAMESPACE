@@ -2,6 +2,7 @@
 
 S3method(extract_data,stansim_collection)
 S3method(extract_data,stansim_simulation)
+S3method(extract_refitted,stansim_collection)
 S3method(extract_refitted,stansim_simulation)
 S3method(print,stansim_simulation)
 S3method(refit,stansim_simulation)

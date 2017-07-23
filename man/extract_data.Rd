@@ -9,7 +9,8 @@ extract_data(object, ...)
 \arguments{
 \item{object}{An object of S3 class stansim_simulation.}
 
-\item{...}{Arguments for filtering returned data, see specific methods for further detail.}
+\item{...}{Arguments for filtering returned data,
+see specific methods for further detail.}
 }
 \description{
 Generic function for extracting data from rstansim objects.

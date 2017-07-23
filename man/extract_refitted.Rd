@@ -4,10 +4,13 @@
 \alias{extract_refitted}
 \title{Extract identifiers of refitted items from rstansim objects}
 \usage{
-extract_refitted(object)
+extract_refitted(object, ...)
 }
 \arguments{
 \item{object}{An object of S3 class stansim_simulation.}
+
+\item{...}{Arguments for filtering returned refitted records,
+see specific methods for further detail.}
 }
 \description{
 Generic function for extracting refitted identifiers from

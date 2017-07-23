@@ -77,6 +77,45 @@ collect_simulations <- function(collection_name, sim1, sim2){
 
 #-----------------------------------------------------------------
 #### collect_collections ####
+collect_collections <- function(collection_name, coll1, coll2){
+
+  #### extract and merge data ####
+  # extract
+  coll1_data <- extract_data(coll1)
+
+  coll2_data <- extract_data(coll2)
+
+  # merge
+  merged_data <- rbind(coll1_data, coll2_data)
+
+  #### extract and reconstruct refitted records ####
+  # extract (with specific NULL handling)
+  if (length(extract_refitted(coll1)) == 0) {
+    coll1_refitted <- NULL
+  } else {
+    coll1_refitted <- extract_refitted(coll1)
+  }
+
+  if (length(extract_refitted(coll2)) == 0) {
+    coll2_refitted <- NULL
+  } else {
+    coll2_refitted <- extract_refitted(coll2)
+  }
+
+  # merge
+  merged_refitted <- rbind(coll1_refitted, coll2_refitted)
+
+  #### merge old simulation lists ####
+  merged_list <- c(coll1$simulations, coll2$simulations)
+
+  #### call stansim_collector constructor and return ####
+  stansim_collection(collection_name = collection_name,
+                     data = merged_data,
+                     refitted = merged_refitted,
+                     simulations = merged_list)
+
+
+}
 
 #-----------------------------------------------------------------
 #### collect_mixed ####

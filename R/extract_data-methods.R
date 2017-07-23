@@ -7,7 +7,8 @@
 #' rows will be filtered based on provided arguments.
 #'
 #' @param object An object of S3 class stansim_simulation.
-#' @param ... Arguments for filtering returned data, see specific methods for further detail.
+#' @param ... Arguments for filtering returned data,
+#' see specific methods for further detail.
 #'
 #' @export
 extract_data <- function (object, ...) {

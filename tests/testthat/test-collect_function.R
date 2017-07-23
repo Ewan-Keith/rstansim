@@ -1,4 +1,4 @@
-context("collect functions should fucntion correctly")
+context("collect function should function correctly")
 
 test_that("collect function fails correctly", {
 
