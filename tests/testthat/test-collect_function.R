@@ -55,10 +55,12 @@ test_that("collect function fails correctly", {
     )
   )
 
+  # all names should be different
   expect_error(
     collect(collection_name = "test",
-            object = 55),
-    "still need to add tests for this using stansim_collection objects"
+            object = stansim_obj,
+            stansim_obj),
+    "The collection_name and simulation_name values of all arguments must be unique"
   )
 
   ## error if only 1 stansim_simulation is provided

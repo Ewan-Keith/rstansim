@@ -5,7 +5,7 @@
 \title{Extract details of refitted datasets from a stansim_collection object}
 \usage{
 \method{extract_refitted}{stansim_collection}(object, sim_names = "all",
-  datafiles = "all")
+  datafiles = "all", ...)
 }
 \arguments{
 \item{object}{An object of S3 class stansim_collection.}
@@ -18,7 +18,9 @@ simulations, the latter applies no filtering on stansim simulations.}
 \item{datafiles}{Either a character vector containing the names of datafiles
 (as provided to the original \code{stansim} call) fitted, or the string
 \code{"all"}. The former will only return values for the corresponding
-datafiles, the latter applies no filtering on stansim datafiles}
+datafiles, the latter applies no filtering on stansim datafiles.}
+
+\item{...}{other arguments not used by this method.}
 }
 \description{
 Applied to an object of type stansim_collection,

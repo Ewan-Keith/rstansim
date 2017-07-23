@@ -46,11 +46,12 @@ extract_refitted.stansim_simulation <- function(object, ...) {
 #' @param datafiles Either a character vector containing the names of datafiles
 #' (as provided to the original \code{stansim} call) fitted, or the string
 #' \code{"all"}. The former will only return values for the corresponding
-#' datafiles, the latter applies no filtering on stansim datafiles
+#' datafiles, the latter applies no filtering on stansim datafiles.
+#' @param ... other arguments not used by this method.
 #'
 #' @export
 extract_refitted.stansim_collection <-
-  function(object, sim_names = "all", datafiles = "all") {
+  function(object, sim_names = "all", datafiles = "all", ...) {
 
     ## carry out basic input validation
     if (!is.character(datafiles))

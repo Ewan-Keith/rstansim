@@ -42,11 +42,9 @@ collect <- function(collection_name, object, ...) {
 
   # no two group object should have the same sim_name or collection_name
   get_name <- function(x){
-    if(class(x) == "stansim_simulation")
-      x$sim_name
+    if(class(x) == "stansim_simulation") return(x$sim_name)
 
-    if(class(x) == "stansim_collection")
-      x$collection_name
+    if(class(x) == "stansim_collection") return(x$collection_name)
   }
   names <- unlist(lapply(collect_args, get_name))
 

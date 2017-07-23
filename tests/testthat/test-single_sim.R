@@ -12,7 +12,6 @@ test_that("single_sim should return correct object (mocked stan fit)", {
 
   with_mock(
     `rstan::sampling` = function(...) {
-      warning("suppressed warning test")
       test_stanfit
     },
 
