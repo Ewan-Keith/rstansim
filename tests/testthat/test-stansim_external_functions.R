@@ -746,10 +746,6 @@ test_that("rename should work as expected", {
   stansim_obj <-
     readRDS("objects/test_stansim.rds")
 
-  # error if not stansim_simulation
-  expect_error(rename(object = "test"),
-               "object must be of class stansim_simulation")
-
   # error if name not character
   expect_error(rename(object = stansim_obj, new_name = 555),
                "new_name must be of type character")

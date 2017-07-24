@@ -2,7 +2,7 @@
 % Please edit documentation in R/rename.R
 \name{rename}
 \alias{rename}
-\title{Rename a stansim simulation object}
+\title{Rename a stansim object}
 \usage{
 rename(object, new_name)
 }
@@ -12,6 +12,8 @@ rename(object, new_name)
 \item{new_name}{New object name. Must be of type character.}
 }
 \description{
-Change the sim_name value of a \code{"stansim_simulation"}
-object.
+Generic function for refitting specified datafiles in
+rstansim objects. By default refits all datafiles, following a user
+prompt given the potential computational cost (this can be turned off).
+Otherwise only datafile names provided will be refit.
 }

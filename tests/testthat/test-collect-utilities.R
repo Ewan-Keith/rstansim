@@ -216,6 +216,16 @@ test_that("test that the simualtions are correctly structured", {
 #-----------------------------------------------------------------
 #### collect_collections ####
 
+## read in test stansim_collection obj to use in tests
+coll1 <-
+  readRDS("objects/collection_for_method_tests.rds")
+
+coll2 <-
+  rename(readRDS("objects/collection_for_method_tests.rds"),
+         "test collection 2")
+
+collection <- collect("collection 2", coll1, coll2)
+
 test_that("collect_collections output structure is right", {
 
   # class is correct
@@ -239,13 +249,13 @@ test_that("collection_name, data, and refitted output is correct", {
   expect_type(collection$collection_name, "character")
 
   # collection name is correct
-  expect_equal(collection$collection_name, "collection 1")
+  expect_equal(collection$collection_name, "collection 2")
 
   # data is a dataframe
   expect_true(is.data.frame(collection$data))
 
   # data dims is correct
-  expect_equal(dim(collection$data), c(1520, 5))
+  expect_equal(dim(collection$data), c(3040, 5))
 
   # check names are correct
   expect_equal(names(collection$data), c("sim_name", "datafile",
@@ -256,15 +266,15 @@ test_that("collection_name, data, and refitted output is correct", {
   expect_true(is.data.frame(collection$refitted))
 
   # data dims is correct
-  expect_equal(dim(collection$refitted), c(2, 2))
+  expect_equal(dim(collection$refitted), c(4, 2))
 
   # check names are correct
   expect_equal(names(collection$refitted), c("sim_name", "datafile"))
 
   # check refitted datafiles are correct
   expect_equal(collection$refitted$datafile,
-               c("data-raw/data/schoolsdat1.rds",
-                 "data-raw/data/schoolsdat3.rds"))
+               rep(c("data-raw/data/schoolsdat1.rds",
+                 "data-raw/data/schoolsdat3.rds"), 2))
 
 })
 
@@ -276,11 +286,12 @@ test_that("test that the simualtions are correctly structured", {
   expect_type(coll_sims, "list")
 
   # length of two
-  expect_equal(length(coll_sims), 2)
+  expect_equal(length(coll_sims), 4)
 
   # names should be the simulation names
   expect_named(coll_sims,
-               c("Stansim_2017-07-18 20:21:21","refitted test sim"))
+               c("Stansim_2017-07-18 20:21:21", "refitted test sim",
+                 "Stansim_2017-07-18 20:21:21", "refitted test sim"))
 
   # break down into second simualtion
   sim_breakdown <- coll_sims$`refitted test sim`
