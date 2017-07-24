@@ -1,30 +1,4 @@
 #-----------------------------------------------------------------
-#### stansim_uni ####
-# constructor for internal object that is returned by each parallel
-# run of foreach. Only for internal use and will be combined into
-# stansim_simulation object before being returned.
-stansim_uni <- function(fit, data_name, ran_at, long_data, stan_warnings,
-                        cache) {
-
-  structure(
-    list(
-      "data_name" = data_name,
-      "ran_at" = ran_at,
-      "elapsed_time" = rstan::get_elapsed_time(fit),
-      "stan_inits" = fit@inits,
-      "stan_args" = fit@stan_args,
-      "seed" = rstan::get_seed(fit),
-      "out_data" = long_data,
-      "model_name" = fit@model_name,
-      "model_code" = fit@stanmodel@model_code,
-      "warnings" = stan_warnings
-    ),
-    class = "stansim_uni"
-  )
-
-}
-
-#-----------------------------------------------------------------
 #### stansim_simulation ####
 #' Construct an S3 object of type stansim_simulation
 #'

@@ -2,21 +2,48 @@
 % Please edit documentation in R/refitMethods.R
 \name{refit}
 \alias{refit}
-\title{Refit specified datafiles in a stansim object}
+\title{Refit specified datafiles in a stansim_simulation object}
 \usage{
-refit(object, datafiles, ...)
+refit(object, datafiles, stan_args = list(), calc_loo = FALSE,
+  use_cores = 1L, cache = TRUE, stansim_seed = floor(stats::runif(1, 1,
+  1e+05)))
 }
 \arguments{
 \item{object}{An object of S3 class stansim_simulation.}
 
-\item{datafiles}{The full names of the data files to be refitted.}
+\item{datafiles}{The full names of the data files to be refitted.
+These must be consistent both with the datafile names stored within
+the \code{stansim_simulation} object, and with the actual data files.
+This is best ensured by running refit from the same working directory
+as the original \code{stansim} call.}
 
-\item{...}{Arguments specifying datafiles to refit and control
-of warning behaviour.}
+\item{stan_args}{A list of function arguments to be used by
+the internal \code{stan} function when fitting the models.
+If not specified then the \code{stan} function defaults are used.}
+
+\item{calc_loo}{If \code{TRUE} then model fit statsics will be
+calculated using the \code{loo} package. If \code{TRUE} there must be
+a valid log_lik quantity specified in the generated quantities
+section of the provided stan model.}
+
+\item{use_cores}{Number of cores to use when running in parallel.
+Each stan model is fitted serially regardless of the number of chains
+ran as parallelisation across models is more flexible than within.}
+
+\item{cache}{If \code{TRUE} then the results for each instance are
+written to a local, temporary file so that data is not lost should the
+function not terminate properly. This temporary data is removed upon the
+model terminating as expected. if \code{FALSE} no data is written and
+results are only returned upon the correct termination of the whole
+function. The default value of \code{TRUE} is recommended unless there
+are relevant write-permission restrictions.}
+
+\item{stansim_seed}{Set a seed for the \code{stansim} function.}
+}
+\value{
+An S3 object of class \code{stansim_simulation} recording relevant
+simulation data.
 }
 \description{
-Generic function for refitting specified datafiles in
-rstansim objects. By default refits all datafiles, following a user
-prompt given the potential computational cost (this can be turned off).
-Otherwise only datafile names provided will be refit.
+\code{refit} Takes a \code{stansim_simulation} object
 }

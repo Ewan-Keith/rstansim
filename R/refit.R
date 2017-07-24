@@ -1,24 +1,5 @@
 #-----------------------------------------------------------------
-#### refit generic method ####
-#' Refit specified datafiles in a stansim object
-#'
-#' @description Generic function for refitting specified datafiles in
-#' rstansim objects. By default refits all datafiles, following a user
-#' prompt given the potential computational cost (this can be turned off).
-#' Otherwise only datafile names provided will be refit.
-#'
-#' @param object An object of S3 class stansim_simulation.
-#' @param datafiles The full names of the data files to be refitted.
-#' @param ... Arguments specifying datafiles to refit and control
-#' of warning behaviour.
-#'
-#' @export
-refit <- function (object, datafiles, ...) {
-  UseMethod("refit", object)
-}
-
-#-----------------------------------------------------------------
-#### refit.stansim_simulation method ####
+#### refit function ####
 #' Refit specified datafiles in a stansim_simulation object
 #'
 #' @description \code{refit} Takes a \code{stansim_simulation} object
@@ -48,23 +29,25 @@ refit <- function (object, datafiles, ...) {
 #' function. The default value of \code{TRUE} is recommended unless there
 #' are relevant write-permission restrictions.
 #' @param stansim_seed Set a seed for the \code{stansim} function.
-#' @param ... other arguments not used by this method
 #' @return An S3 object of class \code{stansim_simulation} recording relevant
 #' simulation data.
 #'
 #' @export
-refit.stansim_simulation <-
+refit <-
   function(object,
            datafiles,
            stan_args = list(),
            calc_loo = FALSE,
            use_cores = 1L,
            cache = TRUE,
-           stansim_seed = floor(stats::runif(1, 1, 1e+05)),
-           ...) {
+           stansim_seed = floor(stats::runif(1, 1, 1e+05))) {
 
 
   ## input checks
+
+  if (class(object) != "stansim_simulation")
+    stop("object must be of class stansim_simulation")
+
   if(typeof(datafiles) != "character")
     stop("datafiles argument must be of type character")
 
