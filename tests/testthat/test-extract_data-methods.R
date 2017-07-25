@@ -10,8 +10,8 @@ test_that(paste("extract_data.stansim_simulation function should return",
                   expect_error(extract_data(extract_test_data, values = 5),
                                "value argument must be NULL or a function")
 
-                  expect_error(extract_data(extract_test_data, datasets = 5),
-                               "dataset argument must be of type character")
+                  expect_error(extract_data(extract_test_data, datafiles = 5),
+                               "datafiles argument must be of type character")
 
                   expect_error(extract_data(extract_test_data, parameters = 5),
                                "parameter argument must be of type character")
@@ -25,13 +25,13 @@ test_that(paste("extract_data.stansim_simulation function should return",
 
                   expect_equal(dim(
                     extract_data(extract_test_data,
-                                 datasets = "data-raw/data/schoolsdat2.rds")
+                                 datafiles = "data-raw/data/schoolsdat2.rds")
                   ),
                   c(190, 4))
 
                   expect_equal(dim(
                     extract_data(extract_test_data,
-                                 datasets = c("data-raw/data/schoolsdat2.rds",
+                                 datafiles = c("data-raw/data/schoolsdat2.rds",
                                               "data-raw/data/schoolsdat3.rds"))
                   ),
                   c(380, 4))
@@ -148,10 +148,10 @@ test_that(paste("extract_data.stansim_simulation function should return",
                   ## if "all" is provided for an arg it must be alone
                   expect_error(extract_data(
                     extract_test_data,
-                    datasets = c("all",
+                    datafiles = c("all",
                                  "data-raw/data/schoolsdat2.rds")
                   ),
-                  "if datasets argument contains \"any\", length\\(datasets\\) must be 1")
+                  "if datafiles argument contains \"any\", length\\(datafiles\\) must be 1")
 
                   expect_error(extract_data(
                     extract_test_data,
@@ -186,8 +186,8 @@ test_that(paste("extract_data.stansim_collection function should return",
                   expect_error(extract_data(extract_test_data, sim_names = 5),
                                "sim_names argument must be of type character")
 
-                  expect_error(extract_data(extract_test_data, datasets = 5),
-                               "dataset argument must be of type character")
+                  expect_error(extract_data(extract_test_data, datafiles = 5),
+                               "datafiles argument must be of type character")
 
                   expect_error(extract_data(extract_test_data, parameters = 5),
                                "parameter argument must be of type character")
@@ -207,13 +207,13 @@ test_that(paste("extract_data.stansim_collection function should return",
 
                   expect_equal(dim(
                     extract_data(extract_test_data,
-                                 datasets = "data-raw/data/schoolsdat2.rds")
+                                 datafiles = "data-raw/data/schoolsdat2.rds")
                   ),
                   c(380, 5))
 
                   expect_equal(dim(
                     extract_data(extract_test_data,
-                                 datasets = c("data-raw/data/schoolsdat2.rds",
+                                 datafiles = c("data-raw/data/schoolsdat2.rds",
                                               "data-raw/data/schoolsdat3.rds"))
                   ),
                   c(760, 5))
@@ -337,10 +337,10 @@ test_that(paste("extract_data.stansim_collection function should return",
 
                   expect_error(extract_data(
                     extract_test_data,
-                    datasets = c("all",
+                    datafiles = c("all",
                                  "data-raw/data/schoolsdat2.rds")
                   ),
-                  "if datasets argument contains \"any\", length\\(datasets\\) must be 1")
+                  "if datafiles argument contains \"any\", length\\(datafiles\\) must be 1")
 
                   expect_error(extract_data(
                     extract_test_data,

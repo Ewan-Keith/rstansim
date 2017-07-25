@@ -1,21 +1,35 @@
 #### collect ####
 #' Group stansim objects into a collection
 #'
-#' @description \code{collect} groups together an arbitrary number of objects
+#' @description \code{collect()} groups together an arbitrary number of objects
 #' with class \code{stansim_simulation} or \code{stansim_collection} into a
 #' single \code{stansim_collection} object. Allows for multiple simulations
 #' to be stored, saved, analysed and managed in a single object.
 #'
 #' @param collection_name A name attached to the \code{stansim_collection}
-#' object to help identify it. It is strongly recomended that an informative
-#' name is assigned.
-#' @param object An object of classs \code{stansim_simulation} or
-#' \code{stansim_collection}
+#' object to help identify it. It is strongly recommended that an informative
+#' and unique name is assigned.
+#' @param object An object of class \code{stansim_simulation} or
+#' \code{stansim_collection}. Must be provided.
 #' @param ... Any further \code{stansim_simulation} or
 #' \code{stansim_collection} objects to be grouped into a single
 #' \code{stansim_collection} object.
 #' @return An S3 object of class \code{stansim_simulation} recording relevant
 #' simulation data.
+#' @examples
+#' \dontrun{
+#' # group together stansim_simulation objects
+#' collection_basic <- collect("Linear Regression Study", simulation1,
+#'                             simulation2)
+#'
+#' # group together stansim_simulations and stansim_collections
+#' collection_extended <- collect("Extended Lin Reg Study", collection_basic,
+#'                                simulation3)
+#'
+#' # group together multiple stansim_collections
+#' merged_collections <- collect("merged collections", collection_extended,
+#'                               collection_additional)
+#' }
 #'
 #' @export
 collect <- function(collection_name, object, ...) {
@@ -42,23 +56,23 @@ collect <- function(collection_name, object, ...) {
 
   # no two group object should have the same sim_name or collection_name
   get_name <- function(x){
-    if(class(x) == "stansim_simulation") return(x$sim_name)
+    if (class(x) == "stansim_simulation") return(x$sim_name)
 
-    if(class(x) == "stansim_collection") return(x$collection_name)
+    if (class(x) == "stansim_collection") return(x$collection_name)
   }
   names <- unlist(lapply(collect_args, get_name))
 
-  if(anyDuplicated(names) != 0)
+  if (anyDuplicated(names) != 0)
     stop(paste("The collection_name and simulation_name values of all",
                "arguments must be unique"))
 
   ## -------------------------------------------------
   ## base condition (length of groups = 1)
 
-  if(length(collect_args) == 1){
+  if (length(collect_args) == 1){
 
     # error if only one stansim_simulation is provided
-    if(class(object) == "stansim_simulation")
+    if (class(object) == "stansim_simulation")
       stop("A single simulation cannot be used to make a collection.")
 
     # return renamed collection

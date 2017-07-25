@@ -8,11 +8,11 @@ collect(collection_name, object, ...)
 }
 \arguments{
 \item{collection_name}{A name attached to the \code{stansim_collection}
-object to help identify it. It is strongly recomended that an informative
-name is assigned.}
+object to help identify it. It is strongly recommended that an informative
+and unique name is assigned.}
 
-\item{object}{An object of classs \code{stansim_simulation} or
-\code{stansim_collection}}
+\item{object}{An object of class \code{stansim_simulation} or
+\code{stansim_collection}. Must be provided.}
 
 \item{...}{Any further \code{stansim_simulation} or
 \code{stansim_collection} objects to be grouped into a single
@@ -23,8 +23,24 @@ An S3 object of class \code{stansim_simulation} recording relevant
 simulation data.
 }
 \description{
-\code{collect} groups together an arbitrary number of objects
+\code{collect()} groups together an arbitrary number of objects
 with class \code{stansim_simulation} or \code{stansim_collection} into a
 single \code{stansim_collection} object. Allows for multiple simulations
 to be stored, saved, analysed and managed in a single object.
+}
+\examples{
+\dontrun{
+# group together stansim_simulation objects
+collection_basic <- collect("Linear Regression Study", simulation1,
+                            simulation2)
+
+# group together stansim_simulations and stansim_collections
+collection_extended <- collect("Extended Lin Reg Study", collection_basic,
+                               simulation3)
+
+# group together multiple stansim_collections
+merged_collections <- collect("merged collections", collection_extended,
+                              collection_additional)
+}
+
 }

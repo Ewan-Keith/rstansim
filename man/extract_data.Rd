@@ -12,6 +12,9 @@ extract_data(object, ...)
 \item{...}{Arguments for filtering returned data,
 see specific methods for further detail.}
 }
+\value{
+A dataframe containing the specified data.
+}
 \description{
 Generic function for extracting data from rstansim objects.
 Default arguments will return full data as a dataframe, otherwise

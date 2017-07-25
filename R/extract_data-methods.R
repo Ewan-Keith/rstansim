@@ -9,6 +9,7 @@
 #' @param object An object of S3 class stansim_simulation.
 #' @param ... Arguments for filtering returned data,
 #' see specific methods for further detail.
+#' @return A dataframe containing the specified data.
 #'
 #' @export
 extract_data <- function (object, ...) {
@@ -17,44 +18,65 @@ extract_data <- function (object, ...) {
 
 #-----------------------------------------------------------------
 #### extract_data.stansim_simulation method ####
-# method to extract data from a stansim object based on string filtering
-# of the fields
 #' Extract data from a stansim_simulation object
 #'
 #' @description Applied to an object of type stansim_simulation,
-#' \code{extract_data} will return the objects simulation data as a
+#' \code{extract_data()} will return the object's simulation data as a
 #' dataframe, subject to the filtering specified by the function arguments.
 #'
 #' @param object An object of S3 class stansim_simulation.
-#' @param datasets Either a character vector containing the names of datasets
-#' (as provided to the original \code{stansim} call) fitted, or the string
+#' @param datafiles Either a character vector containing the names of datafiles
+#'  (as provided to the original \code{stansim()} call) fitted, or the string
 #' \code{"all"}. The former will only return values for the corresponding
-#' datasets, the latter applies no filtering on stansim datasets.
+#' datafiles, the latter applies no filtering on datafiles
 #' @param parameters Either a character vector containing the names of stan
-#' model parameters present in the fitted stan model, or the string
+#' model parameters present in the fitted stan models, or the string
 #' \code{"all"}. The former will only return values for the corresponding
 #' parameters, the latter applies no filtering on parameters. See also
 #' the effect of the \code{param_expand} argument.
 #' @param estimates Either a character vector containing the names of parameter
-#' estimates (as provided to the original \code{stansim} call) calculated,
+#' estimates calculated (e.g. c("2.5%", "mean", "97.5%")),
 #' or the string \code{"all"}. The former will only return values for the
 #' corresponding estimates, the latter applies no filtering on estimates
 #' @param values Either a function taking a single numeric
 #' argument that returns a Boolean value, or \code{NULL}. The former will
-#' only return values for which the provided function evaluates as
+#' only return values for which the provided function is
 #' \code{TRUE}, the latter applies no filtering on values.
 #' @param param_expand If \code{TRUE} then any provided \code{parameters}
-#' arguments, without specified dimension, will be exapnded to capture all
+#' arguments, without specified dimension, will be expanded to capture all
 #' dimensions of that parameter. For example, \code{"eta"} becomes
 #' \code{c("eta[1]", "eta[2]", "eta[3]", ...)}. Expansion isn't carried out
 #' if a parameters dimension is specified (e.g. \code{parameters = "eta[1]"})
 #' or if \code{param_expand = FALSE}.
 #' @param ... other arguments not used by this method
+#' @return A dataframe containing the specified data.
+#' @examples
+#' \dontrun{
+#' # extract full dataset
+#' extract_data(simulation)
+#'
+#' # extract all parameter means, 2.5% & 97.5% percentiles
+#' extract_data(simulation, estimates = c("2.5%", "mean", "97.5%"))
+#'
+#' # extract all Rhat estimates greater than 1.1
+#' extract_data(simulation, estimates = "Rhat",
+#'              values = function(x) x > 1.1)
+#'
+#' # extract all "eta" parameters
+#' extract_data(simulation, parameters = "eta")
+#'
+#' # extract all "eta[1]" parameters
+#' extract_data(simulation, parameters = "eta[1]",
+#'              param_expand = FALSE)
+#'
+#' # extract all rows for datafile "data_file-12.rds"
+#' extract_data(simulation, datafiles = "data_file-12.rds")
+#' }
 #'
 #' @export
 extract_data.stansim_simulation <-
   function(object,
-           datasets = "all",
+           datafiles = "all",
            parameters = "all",
            estimates = "all",
            values = NULL,
@@ -64,8 +86,8 @@ extract_data.stansim_simulation <-
     if (!is.function(values) & !is.null(values))
       stop("value argument must be NULL or a function")
 
-    if (!is.character(datasets))
-      stop("dataset argument must be of type character")
+    if (!is.character(datafiles))
+      stop("datafiles argument must be of type character")
 
     if (!is.character(parameters))
       stop("parameter argument must be of type character")
@@ -107,13 +129,13 @@ extract_data.stansim_simulation <-
 
 
     ## filter on dataset
-    if ("all" %in% datasets) {
-      if (length(datasets) > 1) {
-        stop(paste("if datasets argument contains \"any\",",
-                   "length(datasets) must be 1"))
+    if ("all" %in% datafiles) {
+      if (length(datafiles) > 1) {
+        stop(paste("if datafiles argument contains \"any\",",
+                   "length(datafiles) must be 1"))
       }
     } else {
-      data_extract <- data_extract[data_extract$data %in% datasets, ]
+      data_extract <- data_extract[data_extract$data %in% datafiles, ]
     }
 
     # filter on parameter
@@ -157,7 +179,7 @@ extract_data.stansim_simulation <-
 #' Extract data from a stansim_collection object
 #'
 #' @description Applied to an object of type stansim_collection,
-#' \code{extract_data} will return the objects simulation data as a
+#' \code{extract_data()} will return the object's simulation data as a
 #' dataframe, subject to the filtering specified by the function arguments.
 #'
 #' @param object An object of S3 class stansim_collection.
@@ -165,36 +187,61 @@ extract_data.stansim_simulation <-
 #' \code{stansim_simulation} objects grouped in the collection, or the string
 #' \code{"all"}. The former will only return values for the corresponding
 #' simulations, the latter applies no filtering on stansim simulations.
-#' @param datasets Either a character vector containing the names of datasets
-#' (as provided to the original \code{stansim} call) fitted, or the string
+#' @param datafiles Either a character vector containing the names of datafiles
+#'  (as provided to the original \code{stansim()} call) fitted, or the string
 #' \code{"all"}. The former will only return values for the corresponding
-#' datasets, the latter applies no filtering on stansim datasets.
+#' datafiles, the latter applies no filtering on datafiles
 #' @param parameters Either a character vector containing the names of stan
-#' model parameters present in the fitted stan model, or the string
+#' model parameters present in the fitted stan models, or the string
 #' \code{"all"}. The former will only return values for the corresponding
 #' parameters, the latter applies no filtering on parameters. See also
 #' the effect of the \code{param_expand} argument.
 #' @param estimates Either a character vector containing the names of parameter
-#' estimates (as provided to the original \code{stansim} call) calculated,
+#' estimates calculated (e.g. c("2.5%", "mean", "97.5%")),
 #' or the string \code{"all"}. The former will only return values for the
 #' corresponding estimates, the latter applies no filtering on estimates
 #' @param values Either a function taking a single numeric
 #' argument that returns a Boolean value, or \code{NULL}. The former will
-#' only return values for which the provided function evaluates as
+#' only return values for which the provided function is
 #' \code{TRUE}, the latter applies no filtering on values.
 #' @param param_expand If \code{TRUE} then any provided \code{parameters}
-#' arguments, without specified dimension, will be exapnded to capture all
+#' arguments, without specified dimension, will be expanded to capture all
 #' dimensions of that parameter. For example, \code{"eta"} becomes
 #' \code{c("eta[1]", "eta[2]", "eta[3]", ...)}. Expansion isn't carried out
 #' if a parameters dimension is specified (e.g. \code{parameters = "eta[1]"})
 #' or if \code{param_expand = FALSE}.
 #' @param ... other arguments not used by this method
+#' @return A dataframe containing the specified data.
+#' @examples
+#' \dontrun{
+#' # extract full dataset
+#' extract_data(collection)
+#'
+#' # extract all parameter means, 2.5% & 97.5% percentiles
+#' extract_data(collection, estimates = c("2.5%", "mean", "97.5%"))
+#'
+#' # extract all Rhat estimates greater than 1.1
+#' extract_data(collection, estimates = "Rhat",
+#'              values = function(x) x > 1.1)
+#'
+#' # extract all "eta" parameters
+#' extract_data(collection, parameters = "eta")
+#'
+#' # extract all "eta[1]" parameters
+#' extract_data(collection, parameters = "eta[1]",
+#'              param_expand = FALSE)
+#'
+#' # extract all rows for datafile "data_file-12.rds"
+#' extract_data(collection, datafiles = "data_file-12.rds")
+#' # extract all rows for sim_names "simulation1"
+#' extract_data(collection, sim_names = "simulation1")
+#' }
 #'
 #' @export
 extract_data.stansim_collection <-
   function(object,
            sim_names = "all",
-           datasets = "all",
+           datafiles = "all",
            parameters = "all",
            estimates = "all",
            values = NULL,
@@ -208,8 +255,8 @@ extract_data.stansim_collection <-
     if (!is.character(sim_names))
       stop("sim_names argument must be of type character")
 
-    if (!is.character(datasets))
-      stop("dataset argument must be of type character")
+    if (!is.character(datafiles))
+      stop("datafiles argument must be of type character")
 
     if (!is.character(parameters))
       stop("parameter argument must be of type character")
@@ -261,13 +308,13 @@ extract_data.stansim_collection <-
 
 
     ## filter on dataset
-    if ("all" %in% datasets) {
-      if (length(datasets) > 1) {
-        stop(paste("if datasets argument contains \"any\",",
-                   "length(datasets) must be 1"))
+    if ("all" %in% datafiles) {
+      if (length(datafiles) > 1) {
+        stop(paste("if datafiles argument contains \"any\",",
+                   "length(datafiles) must be 1"))
       }
     } else {
-      data_extract <- data_extract[data_extract$data %in% datasets, ]
+      data_extract <- data_extract[data_extract$data %in% datafiles, ]
     }
 
     # filter on parameter

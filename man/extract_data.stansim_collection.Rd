@@ -5,7 +5,7 @@
 \title{Extract data from a stansim_collection object}
 \usage{
 \method{extract_data}{stansim_collection}(object, sim_names = "all",
-  datasets = "all", parameters = "all", estimates = "all",
+  datafiles = "all", parameters = "all", estimates = "all",
   values = NULL, param_expand = TRUE, ...)
 }
 \arguments{
@@ -16,29 +16,29 @@
 \code{"all"}. The former will only return values for the corresponding
 simulations, the latter applies no filtering on stansim simulations.}
 
-\item{datasets}{Either a character vector containing the names of datasets
-(as provided to the original \code{stansim} call) fitted, or the string
+\item{datafiles}{Either a character vector containing the names of datafiles
+ (as provided to the original \code{stansim()} call) fitted, or the string
 \code{"all"}. The former will only return values for the corresponding
-datasets, the latter applies no filtering on stansim datasets.}
+datafiles, the latter applies no filtering on datafiles}
 
 \item{parameters}{Either a character vector containing the names of stan
-model parameters present in the fitted stan model, or the string
+model parameters present in the fitted stan models, or the string
 \code{"all"}. The former will only return values for the corresponding
 parameters, the latter applies no filtering on parameters. See also
 the effect of the \code{param_expand} argument.}
 
 \item{estimates}{Either a character vector containing the names of parameter
-estimates (as provided to the original \code{stansim} call) calculated,
+estimates calculated (e.g. c("2.5%", "mean", "97.5%")),
 or the string \code{"all"}. The former will only return values for the
 corresponding estimates, the latter applies no filtering on estimates}
 
 \item{values}{Either a function taking a single numeric
 argument that returns a Boolean value, or \code{NULL}. The former will
-only return values for which the provided function evaluates as
+only return values for which the provided function is
 \code{TRUE}, the latter applies no filtering on values.}
 
 \item{param_expand}{If \code{TRUE} then any provided \code{parameters}
-arguments, without specified dimension, will be exapnded to capture all
+arguments, without specified dimension, will be expanded to capture all
 dimensions of that parameter. For example, \code{"eta"} becomes
 \code{c("eta[1]", "eta[2]", "eta[3]", ...)}. Expansion isn't carried out
 if a parameters dimension is specified (e.g. \code{parameters = "eta[1]"})
@@ -46,8 +46,37 @@ or if \code{param_expand = FALSE}.}
 
 \item{...}{other arguments not used by this method}
 }
+\value{
+A dataframe containing the specified data.
+}
 \description{
 Applied to an object of type stansim_collection,
-\code{extract_data} will return the objects simulation data as a
+\code{extract_data()} will return the object's simulation data as a
 dataframe, subject to the filtering specified by the function arguments.
+}
+\examples{
+\dontrun{
+# extract full dataset
+extract_data(collection)
+
+# extract all parameter means, 2.5\% & 97.5\% percentiles
+extract_data(collection, estimates = c("2.5\%", "mean", "97.5\%"))
+
+# extract all Rhat estimates greater than 1.1
+extract_data(collection, estimates = "Rhat",
+             values = function(x) x > 1.1)
+
+# extract all "eta" parameters
+extract_data(collection, parameters = "eta")
+
+# extract all "eta[1]" parameters
+extract_data(collection, parameters = "eta[1]",
+             param_expand = FALSE)
+
+# extract all rows for datafile "data_file-12.rds"
+extract_data(collection, datafiles = "data_file-12.rds")
+# extract all rows for sim_names "simulation1"
+extract_data(collection, sim_names = "simulation1")
+}
+
 }
