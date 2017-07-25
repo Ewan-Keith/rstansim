@@ -164,13 +164,17 @@ collect_mixed <- function(collection_name, sim1, coll1){
   attributes(sim1)$class <- NULL
 
   # rename sim1 list
-  names(sim1) <- sim1$sim_name
+  renamed_sim1 <- list("temp" = sim1)
+  names(renamed_sim1) <- sim1$sim_name
 
   # remove original name
   sim1$sim_name <- NULL
 
   # merge lists
-  merged_list <- c(sim1, coll1$simulations)
+  merged_list <- c(renamed_sim1, coll1$simulations)
+
+  # remove sim1 original name
+  merged_list[[1]]$sim_name <- NULL
 
   #### call stansim_collector constructor and return ####
   stansim_collection(collection_name = collection_name,

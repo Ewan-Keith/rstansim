@@ -324,9 +324,9 @@ stansim_checker <- function(sim_data, calc_loo, use_cores,
   if (!is.null(stan_args$diagnostic_file))
     stop("stan_args$diagnostic_file must be NULL to prevent write conflicts")
 
-  # warn if sim_name is overwritten
+  # sim_name must be character
   if (!is.character(sim_name))
-    warning("sim_name corced to character")
+    stop("sim_name must be of type character")
 
   # probs must be numeric between 0 and 1
   probs_validate <- function(prob) {
