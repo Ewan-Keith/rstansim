@@ -113,8 +113,7 @@ test_that("refit.stansim_simulation updates stansim_simulation obj correctly", {
 
   )
 
-
-
-
 })
+
+
 

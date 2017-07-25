@@ -150,3 +150,19 @@ test_that(
     expect_type(missing_datafile_test[, 2], "character")
 
   })
+
+test_that("extract_refitted.stansim_collection fails correctly", {
+
+  coll1 <-
+    readRDS("objects/collection_for_method_tests.rds")
+
+  expect_error(extract_refitted(coll1, datafiles = c("all", "another")),
+               paste("if datafiles argument contains \"any\",",
+                     "length\\(datafiles\\) must be 1"))
+
+  expect_error(extract_refitted(coll1, sim_names = c("all", "another")),
+               paste("if sim_names argument contains \"any\",",
+                     "length\\(sim_names\\) must be 1"))
+
+
+})
