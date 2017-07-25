@@ -20,7 +20,7 @@ print.stansim_simulation <- function(x, ...){
     m[is.na(m)] <- ""
 
     utils::write.table(format(m, justify = "left"),
-                       row.names = F, col.names = F, quote = F)
+                       row.names = FALSE, col.names = FALSE, quote = FALSE)
   }
 
   # stored parameters

@@ -143,7 +143,7 @@ param_extract <- function(fitted_stan, calc_loo, parameters,
   colnames(output) <- paste0("value-", colnames(output))
 
   wide_output <- data.frame(parameters = row.names(output),
-                            output, row.names = NULL, check.names = F)
+                            output, row.names = NULL, check.names = FALSE)
 
   long_output <- stats::reshape(
     wide_output,
