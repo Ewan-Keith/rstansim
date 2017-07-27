@@ -16,6 +16,13 @@ Print basic information regarding a stansim_simulation object,
 including simulation title, time/date ran, number of models fitted, parameters
 and estimates recorded, and the titles of any datasets that were refitted.
 }
+\examples{
+\dontrun{
+# print stansim_simulation summary info
+print(simulation)
+}
+
+}
 \seealso{
 S3 class \code{\link{stansim_simulation}}.
 }

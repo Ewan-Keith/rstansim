@@ -16,6 +16,13 @@ Print basic information regarding a stansim_collection object,
 including collection title, the simulations within the collection,
 and any datafiles that have been refitted.
 }
+\examples{
+\dontrun{
+# print stansim_collection summary info
+print(collection)
+}
+
+}
 \seealso{
 S3 class \code{\link{stansim_collection}}.
 }

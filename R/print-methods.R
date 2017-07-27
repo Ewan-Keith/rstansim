@@ -11,6 +11,12 @@
 #'
 #' @seealso S3 class \code{\link{stansim_simulation}}.
 #'
+#' @examples
+#' \dontrun{
+#' # print stansim_simulation summary info
+#' print(simulation)
+#' }
+#'
 #' @export
 print.stansim_simulation <- function(x, ...){
 
@@ -78,6 +84,12 @@ print.stansim_simulation <- function(x, ...){
 #' @param ... other arguments not used by this method
 #'
 #' @seealso S3 class \code{\link{stansim_collection}}.
+#'
+#' @examples
+#' \dontrun{
+#' # print stansim_collection summary info
+#' print(collection)
+#' }
 #'
 #' @export
 print.stansim_collection <- function(x, ...){
