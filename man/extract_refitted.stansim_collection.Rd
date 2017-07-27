@@ -2,7 +2,7 @@
 % Please edit documentation in R/extract_refitted-methods.R
 \name{extract_refitted.stansim_collection}
 \alias{extract_refitted.stansim_collection}
-\title{Extract details of refitted datasets from a stansim_collection object}
+\title{Extract details of refitted datafiles from a stansim_collection object}
 \usage{
 \method{extract_refitted}{stansim_collection}(object, sim_names = "all",
   datafiles = "all", ...)
@@ -22,8 +22,26 @@ datafiles, the latter applies no filtering on stansim datafiles.}
 
 \item{...}{other arguments not used by this method.}
 }
+\value{
+A dataframe with the simulation titles and datafile names of
+refitted datfiles.
+}
 \description{
 Applied to an object of type stansim_collection,
-\code{extract_refitted} will return a dataframe simulation-dataset
+\code{extract_refitted()} will return a dataframe of simulation-datafile
 pairings that have been refitted since the initial simulation.
+}
+\examples{
+\dontrun{
+# extract all refitted indicators
+extract_refitted(collection)
+
+# extract only datafiles from "simulation1"
+extract_refitted(collection, sim_names = "simulation1")
+
+# extract only indicators for datafile "data-file_12.rds"
+extract_refitted(collection, datafiles = "data-file_12.rds")
+
+}
+
 }

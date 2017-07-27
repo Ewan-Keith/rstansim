@@ -6,7 +6,8 @@
 #' Default arguments will return full data as a dataframe, otherwise
 #' rows will be filtered based on provided arguments.
 #'
-#' @param object An object of S3 class stansim_simulation.
+#' @param object An S3 object of class stansim_simulation or
+#' stansim_collection.
 #' @param ... Arguments for filtering returned data,
 #' see specific methods for further detail.
 #' @return A dataframe containing the specified data.

@@ -2,7 +2,7 @@
 % Please edit documentation in R/extract_refitted-methods.R
 \name{extract_refitted.stansim_simulation}
 \alias{extract_refitted.stansim_simulation}
-\title{Extract names of refitted datasets from a stansim_simulation object}
+\title{Extract names of refitted datafiles from a stansim_simulation object}
 \usage{
 \method{extract_refitted}{stansim_simulation}(object, ...)
 }
@@ -11,8 +11,18 @@
 
 \item{...}{other arguments not used by this method.}
 }
+\value{
+A character vector of the refitted datafile names.
+}
 \description{
 Applied to an object of type stansim_simulation,
-\code{extract_refitted} will return a vector of names of datasets
+\code{extract_refitted()} will return a vector of the names of datafiles
 that have been refitted since the initial simulation.
+}
+\examples{
+\dontrun{
+# extract names of refitted datafiles
+extract_refitted(simulation)
+}
+
 }

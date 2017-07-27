@@ -2,9 +2,9 @@ Package: rstansim
 Type: Package
 Title: Tools for Running Simulation Studies With Stan And R
 Version: 0.1.0
+Date: 2017-07-27
 Authors@R: person("Ewan", "Keith", email = "ewan.keith100@gmail.com",
     role = c("aut", "cre"))
-Maintainer: The package maintainer <ewan.keith100@gmail.com>
 Description: Provides a wrapper function for fitting a
     stan model to multiple data sets, then extracting and
     combining specified estimates from all models. Allows for

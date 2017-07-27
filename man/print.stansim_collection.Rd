@@ -13,7 +13,8 @@
 }
 \description{
 Print basic information regarding a stansim_collection object,
-including collection title,
+including collection title, the simulations within the collection,
+and any datafiles that have been refitted.
 }
 \seealso{
 S3 class \code{\link{stansim_collection}}.

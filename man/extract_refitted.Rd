@@ -7,12 +7,19 @@
 extract_refitted(object, ...)
 }
 \arguments{
-\item{object}{An object of S3 class stansim_simulation.}
+\item{object}{An S3 object of class stansim_simulation or
+stansim_collection.}
 
 \item{...}{Arguments for filtering returned refitted records,
 see specific methods for further detail.}
 }
+\value{
+The specified refitted identifiers,
+see specific methods for further detail.
+}
 \description{
 Generic function for extracting refitted identifiers from
-rstansim objects.
+rstansim objects. Default arguments will return full data as a dataframe,
+otherwise rows will be filtered based on provided arguments
+(stansim_collections only).
 }
