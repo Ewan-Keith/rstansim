@@ -2,17 +2,20 @@
 % Please edit documentation in R/print-methods.R
 \name{print.stansim_simulation}
 \alias{print.stansim_simulation}
-\title{Print a summary for a stansim simulation object}
+\title{Print a summary for a stansim_simulation object}
 \usage{
 \method{print}{stansim_simulation}(x, ...)
 }
 \arguments{
-\item{x}{An object of S3 class stansim.}
+\item{x}{An object of S3 class stansim_simulation.}
 
 \item{...}{other arguments not used by this method}
 }
 \description{
-Print basic  information regarding a stansim simulation object,
-including simulation title, time/date ran, number of models fitted, and parameters
-and estimates recorded.
+Print basic information regarding a stansim_simulation object,
+including simulation title, time/date ran, number of models fitted, parameters
+and estimates recorded, and the titles of any datasets that were refitted.
+}
+\seealso{
+S3 class \code{\link{stansim_simulation}}.
 }

@@ -1,27 +1,18 @@
 #-----------------------------------------------------------------
-#### print.stansim method ####
-#' Print a summary for a stansim simulation object
+#### print.stansim_simulation method ####
+#' Print a summary for a stansim_simulation object
 #'
-#' @description Print basic  information regarding a stansim simulation object,
-#' including simulation title, time/date ran, number of models fitted, and parameters
-#' and estimates recorded.
+#' @description Print basic information regarding a stansim_simulation object,
+#' including simulation title, time/date ran, number of models fitted, parameters
+#' and estimates recorded, and the titles of any datasets that were refitted.
 #'
-#' @param x An object of S3 class stansim.
+#' @param x An object of S3 class stansim_simulation.
 #' @param ... other arguments not used by this method
+#'
+#' @seealso S3 class \code{\link{stansim_simulation}}.
 #'
 #' @export
 print.stansim_simulation <- function(x, ...){
-
-  # helper method for clean matrix printing
-  print.matrix <- function(m){
-
-    m <- m[rowSums(is.na(m)) != ncol(m), , drop = FALSE]
-
-    m[is.na(m)] <- ""
-
-    utils::write.table(format(m, justify = "left"),
-                       row.names = FALSE, col.names = FALSE, quote = FALSE)
-  }
 
   # stored parameters
   paramaters <- unique(as.character(x$data$parameter))
@@ -45,7 +36,7 @@ print.stansim_simulation <- function(x, ...){
         length(paramaters),
         "\n"))
   }
-  print.matrix(matrix(paramaters[1:50], ncol = 5, byrow = TRUE))
+  print_tidy_matrix(matrix(paramaters[1:50], ncol = 5, byrow = TRUE))
 
   if (length(estimates) > 50) {
     cat(paste0("\nEstimates Recorded: ",
@@ -56,22 +47,86 @@ print.stansim_simulation <- function(x, ...){
         length (estimates),
         "\n"))
   }
-  print.matrix(matrix(estimates[1:50], ncol = 5, byrow = TRUE))
+  print_tidy_matrix(matrix(estimates[1:50], ncol = 5, byrow = TRUE))
 
   if (length(x$refitted) > 5) {
     cat(paste0("\nDatasets Refitted: ",
                length(x$refitted),
-               " (first 5 shown)\n"))
+               " (first 5 shown)"))
   } else {
     cat(paste0("\nDatasets Refitted: ",
-               length(x$refitted),
-               "\n"))
+               length(x$refitted)))
   }
 
   if (length(x$refitted) > 0) {
     for (i in 1:min(c(length(x$refitted), 5))) {
-      cat(x$refitted[i])
+      cat(paste("\n", x$refitted[i]))
     }
   }
 }
 
+
+#-----------------------------------------------------------------
+#### print.stansim_collection method ####
+#' Print a summary for a stansim_collection object
+#'
+#' @description Print basic information regarding a stansim_collection object,
+#' including collection title, the simulations within the collection,
+#' and any datafiles that have been refitted.
+#'
+#' @param x An object of S3 class stansim_collection.
+#' @param ... other arguments not used by this method
+#'
+#' @seealso S3 class \code{\link{stansim_collection}}.
+#'
+#' @export
+print.stansim_collection <- function(x, ...){
+
+  # collection title
+  cat(paste0("Stansim Collection Title: ", x$collection_name, "\n"))
+
+  # print simulation names
+  if (length(names(x$simulations)) > 10) {
+    cat(paste0("\nSimulations Collected: ",
+               length(names(x$simulations)),
+               " (first 10 shown)"))
+  } else {
+    cat(paste0("\nSimulations Collected: ",
+               length(names(x$simulations))))
+  }
+
+  if (length(names(x$simulations)) > 0) {
+    for (i in 1:min(c(length(x$refitted), 10))) {
+      cat(paste0("\n  ", names(x$simulations)[i]))
+    }
+  }
+
+
+  # print out refitted datasets
+  if (nrow(x$refitted) > 5) {
+    cat(paste0("\n\nDatafiles Refitted: ",
+               nrow(x$refitted),
+               " (first 5 shown)\n"))
+  } else {
+    cat(paste0("\n\nDatafiles Refitted: ",
+               nrow(x$refitted),
+               "\n"))
+  }
+
+  if (nrow(x$refitted) > 0) {
+    print.data.frame(x$refitted[1:min(c(nrow(x$refitted), 5)),], row.names = FALSE)
+  }
+
+}
+
+#-----------------------------------------------------------------
+#### the tidy print matrix internal function for  ####
+print_tidy_matrix <- function(m){
+
+  m <- m[rowSums(is.na(m)) != ncol(m), , drop = FALSE]
+
+  m[is.na(m)] <- ""
+
+  utils::write.table(format(m, justify = "left"),
+                     row.names = FALSE, col.names = FALSE, quote = FALSE)
+}
