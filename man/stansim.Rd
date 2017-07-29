@@ -12,40 +12,41 @@ stansim(sim_name = paste0("Stansim_", Sys.time()), sim_data = NULL,
   stansim_seed = floor(stats::runif(1, 1, 1e+05)))
 }
 \arguments{
-\item{sim_name}{A name attached to the \code{stansim_simulation} object to help
-identify it. It is strongly recomended that an informative name is
-assigned, especially if \code{stansim_simulation} objects are to be combined in
-to a \code{stansim_collection} object.}
+\item{sim_name}{A name attached to the \code{stansim_simulation} object to
+help identify it. It is strongly recomended that an informative name is
+assigned, especially if \code{stansim_simulation} objects are to be
+combined in to a \code{stansim_collection} object for management of
+results.}
 
-\item{sim_data}{A list of strings pointing to the location of
-.rds files containing the simulation data. See the vignette on
-producing simulation data for details on the formatting of these datasets.}
+\item{sim_data}{A list of strings pointing to the location of .rds files
+containing the simulation data. See the vignette on producing simulation
+data for details on the formatting of these datasets.}
 
-\item{stan_args}{A list of function arguments to be used by
-the internal \code{stan} function when fitting the models.
-If not specified then the \code{stan} function defaults are used.}
+\item{stan_args}{A list of function arguments to be used by the internal
+\code{rstan::sampling} function when fitting the models. If not specified
+then the \code{rstan::sampling} function defaults are used.}
 
-\item{calc_loo}{If \code{TRUE} then model fit statsics will be
-calculated using the \code{loo} package. If \code{TRUE} there must be
-a valid log_lik quantity specified in the generated quantities
-section of the provided stan model.}
+\item{calc_loo}{If \code{TRUE} then model fit statisics will be calculated
+using the \code{loo} package. If \code{TRUE} there must be a valid log_lik
+quantity specified in the generated quantities section of the provided stan
+model.}
 
-\item{use_cores}{Number of cores to use when running in parallel.
-Each stan model is fitted serially regardless of the number of chains
-ran as parallelisation across models is more flexible than within.}
+\item{use_cores}{Number of cores to use when running in parallel. Each stan
+model is fitted serially regardless of the number of chains ran, as
+parallelisation across models is more flexible than within.}
 
-\item{parameters}{A character vector indicating which parameters
-should have estimates returned and stored from the fitted models.
-By default all parameters are returned, for non-scalar parameters
-you cannot select subsets of the parameter (e.g. must request
-\code{theta} rather than \code{theta[1]}).}
+\item{parameters}{A character vector indicating which parameters should have
+estimates returned and stored from the fitted models. By default all
+parameters are returned, for non-scalar parameters you cannot select
+subsets of the parameter (e.g. must request \code{theta} rather than
+\code{theta[1]}).}
 
 \item{probs}{A numeric vector of values between 0 and 1. Corresponding
 quantiles will be estimated and returned for all fitted models.}
 
-\item{estimates}{A character vector of non-quantile estimates to be
-returned for each model parameter. Argument must be some subset of the
-default character vector.}
+\item{estimates}{A character vector of non-quantile estimates to be returned
+for each model parameter. Argument must be some subset of the default
+character vector.}
 
 \item{stan_warnings}{How warnings returned by individual \code{stan}
 instances should be handled. \code{"catch"} records all warnings in the
@@ -54,35 +55,61 @@ prints warnings to the console as the models are fit (default \code{stan}
 behaviour), and \code{"suppress"} suppressess all warnings without
 recording them.}
 
-\item{cache}{If \code{TRUE} then the results for each instance are
-written to a local, temporary file so that data is not lost should the
-function not terminate properly. This temporary data is removed upon the
-model terminating as expected. if \code{FALSE} no data is written and
-results are only returned upon the correct termination of the whole
-function. The default value of \code{TRUE} is recommended unless there
-are relevant write-permission restrictions.}
+\item{cache}{If \code{TRUE} then the results for each instance are written to
+a local, temporary file so that data is not lost should the function not
+terminate properly. This temporary data is removed upon the model
+terminating as expected. if \code{FALSE} no data is written and results are
+only returned upon the correct termination of the whole function. The
+default value of \code{TRUE} is recommended unless there are relevant
+write-permission restrictions.}
 
 \item{stansim_seed}{Set a seed for the \code{stansim} function.}
 }
 \value{
 An S3 object of class \code{stansim_simulation} recording relevant
-simulation data.
+  simulation data.
 }
 \description{
-\code{stansim} fits a specified stan model across multiple
-datasets,  collates, and returns summary information and data for all
-models as a \code{stansim_simulation} object. All fitted models will have basic
-reproducability information recorded; such as parameter inits and seeds,
-along with parameter estimates, and simulation info such as time and date
-ran.
+\code{stansim} fits a stan model across multiple datasets,
+  collates, and returns summary information and data for all fitted models as
+  a \code{stansim_simulation} object. All fitted models have basic
+  reproducability information recorded; such as parameter inits and seeds,
+  along with parameter estimates, and simulation information such as time and
+  date ran.
 
-Raw stan posterior samples are not returned, rather the user specifies the
-estimates they wish to record (e.g. posterior percentiles, Rhat, etc.)
-and the parameters for which they wish to record these estimates.
-All data is collated into a single long-format dataframe for further
-analysis.
+  Raw stan posterior samples are not returned, rather the user specifies the
+  estimates they wish to record (e.g. posterior percentiles, Rhat, etc.) and
+  the parameters for which they wish to record these estimates. All data is
+  collated into a single, \href{http://tidyverse.org/}{tidy} dataframe for
+  further analysis.
 
-By default the function caches completed runs as it progresses, so that
-progress is not lost in the case of function failure. When the function
-terminates as expected this cache is removed.
+  By default the function caches completed runs as it progresses, so that
+  progress is not lost in the case of function failure. By simply running the
+  function with the same calls in the same working directory it will pick up
+  where it left off. When the function terminates as expected this cache is
+  removed.
+}
+\examples{
+\dontrun{
+# specify arguments for stan
+StanArgs <- list(file = '8schools.stan',
+                 iter = 1000, chains = 4)
+
+# get number of cores
+core_num <- parallel::detectCores()
+
+# get the list of data file locations
+datafiles <- dir("data/repo", full.names = TRUE)
+
+# fit the model to all datafiles using specified stan arguments
+# store the specified estimates for all parameters
+simulation <- stansim(sim_name = "stansim simulation",
+                      sim_data = datafiles,
+                      stan_args = StanArgs,
+                      calc_loo = T,
+                      use_cores = core_num,
+                      probs =  c(.025, .5, .975),
+                      estimates = c("mean", "n_eff", "Rhat"))
+}
+
 }

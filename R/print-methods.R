@@ -3,8 +3,9 @@
 #' Print a summary for a stansim_simulation object
 #'
 #' @description Print basic information regarding a stansim_simulation object,
-#' including simulation title, time/date ran, number of models fitted, parameters
-#' and estimates recorded, and the titles of any datasets that were refitted.
+#'   including simulation title, time/date ran, number of models fitted,
+#'   parameters and estimates recorded, and the titles of any datasets that were
+#'   refitted.
 #'
 #' @param x An object of S3 class stansim_simulation.
 #' @param ... other arguments not used by this method
@@ -77,8 +78,8 @@ print.stansim_simulation <- function(x, ...){
 #' Print a summary for a stansim_collection object
 #'
 #' @description Print basic information regarding a stansim_collection object,
-#' including collection title, the simulations within the collection,
-#' and any datafiles that have been refitted.
+#'   including collection title, the simulations within the collection, and any
+#'   datafiles that have been refitted.
 #'
 #' @param x An object of S3 class stansim_collection.
 #' @param ... other arguments not used by this method

@@ -11,7 +11,17 @@
 
 \item{new_name}{New object name. Must be of type character.}
 }
+\value{
+An S3 object of class \code{stansim_collection}.
+}
 \description{
 Change the collection_name value of a \
-code{"stansim_collection"} object.
+  code{"stansim_collection"} object.
+}
+\examples{
+\dontrun{
+# rename a stansim_collection to "new collection name"
+rename(collection, "new collection name")
+}
+
 }

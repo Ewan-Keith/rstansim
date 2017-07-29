@@ -2,20 +2,19 @@
 #' Group stansim objects into a collection
 #'
 #' @description \code{collect()} groups together an arbitrary number of objects
-#' with class \code{stansim_simulation} or \code{stansim_collection} into a
-#' single \code{stansim_collection} object. Allows for multiple simulations
-#' to be stored, saved, analysed and managed in a single object.
+#'   with class \code{stansim_simulation} or \code{stansim_collection} into a
+#'   single \code{stansim_collection} object. Allows for multiple simulations to
+#'   be stored, saved, analysed and managed in a single object.
 #'
 #' @param collection_name A name attached to the \code{stansim_collection}
-#' object to help identify it. It is strongly recommended that an informative
-#' and unique name is assigned.
+#'   object to help identify it. It is strongly recommended that an informative
+#'   and unique name is assigned.
 #' @param object An object of class \code{stansim_simulation} or
-#' \code{stansim_collection}. Must be provided.
-#' @param ... Any further \code{stansim_simulation} or
-#' \code{stansim_collection} objects to be grouped into a single
-#' \code{stansim_collection} object.
+#'   \code{stansim_collection}. Must be provided.
+#' @param ... Any further \code{stansim_simulation} or \code{stansim_collection}
+#'   objects to be grouped into a single \code{stansim_collection} object.
 #' @return An S3 object of class \code{stansim_simulation} recording relevant
-#' simulation data.
+#'   simulation data.
 #' @examples
 #' \dontrun{
 #' # group together stansim_simulation objects

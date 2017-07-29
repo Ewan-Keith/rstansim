@@ -23,13 +23,13 @@ datafiles, the latter applies no filtering on stansim datafiles.}
 \item{...}{other arguments not used by this method.}
 }
 \value{
-A dataframe with the simulation titles and datafile names of
-refitted datfiles.
+A dataframe with the simulation titles and datafile names of refitted
+  datfiles.
 }
 \description{
 Applied to an object of type stansim_collection,
-\code{extract_refitted()} will return a dataframe of simulation-datafile
-pairings that have been refitted since the initial simulation.
+  \code{extract_refitted()} will return a dataframe of simulation-datafile
+  pairings that have been refitted since the initial simulation.
 }
 \examples{
 \dontrun{

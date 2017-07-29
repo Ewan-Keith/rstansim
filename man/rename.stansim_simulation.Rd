@@ -9,9 +9,18 @@
 \arguments{
 \item{object}{An object of S3 class stansim_simulation.}
 
-\item{new_name}{New object name. Must be of type character.}
+\item{new_name}{New object name.}
+}
+\value{
+An S3 object of class \code{stansim_simulation}.
 }
 \description{
-Change the sim_name value of a \code{"stansim_simulation"}
-object.
+Change the sim_name of a \code{"stansim_simulation"} object.
+}
+\examples{
+\dontrun{
+# rename a stansim_simulation to "new simulation name"
+rename(simulation, "new simulation name")
+}
+
 }

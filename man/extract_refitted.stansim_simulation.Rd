@@ -16,8 +16,8 @@ A character vector of the refitted datafile names.
 }
 \description{
 Applied to an object of type stansim_simulation,
-\code{extract_refitted()} will return a vector of the names of datafiles
-that have been refitted since the initial simulation.
+  \code{extract_refitted()} will return a vector of the names of datafiles
+  that have been refitted since the initial simulation.
 }
 \examples{
 \dontrun{

@@ -16,4 +16,5 @@
 #' `browseVignettes(package = "rstansim")`
 #' @docType package
 #' @name rstansim
+#' @import Rcpp
 NULL

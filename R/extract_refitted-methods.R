@@ -3,16 +3,15 @@
 #' Extract identifiers of refitted items from rstansim objects
 #'
 #' @description Generic function for extracting refitted identifiers from
-#' rstansim objects. Default arguments will return full data as a dataframe,
-#' otherwise rows will be filtered based on provided arguments
-#' (stansim_collections only).
+#'   rstansim objects. Default arguments will return full data as a dataframe,
+#'   otherwise rows will be filtered based on provided arguments
+#'   (stansim_collections only).
 #'
-#' @param object An S3 object of class stansim_simulation or
-#' stansim_collection.
-#' @param ... Arguments for filtering returned refitted records,
-#' see specific methods for further detail.
-#' @return The specified refitted identifiers,
-#' see specific methods for further detail.
+#' @param object An S3 object of class stansim_simulation or stansim_collection.
+#' @param ... Arguments for filtering returned refitted records, see specific
+#'   methods for further detail.
+#' @return The specified refitted identifiers, see specific methods for further
+#'   detail.
 #'
 #' @export
 extract_refitted <- function (object, ...) {
@@ -24,8 +23,8 @@ extract_refitted <- function (object, ...) {
 #' Extract names of refitted datafiles from a stansim_simulation object
 #'
 #' @description Applied to an object of type stansim_simulation,
-#' \code{extract_refitted()} will return a vector of the names of datafiles
-#' that have been refitted since the initial simulation.
+#'   \code{extract_refitted()} will return a vector of the names of datafiles
+#'   that have been refitted since the initial simulation.
 #'
 #' @param object An object of S3 class stansim_simulation.
 #' @param ... other arguments not used by this method.
@@ -46,21 +45,21 @@ extract_refitted.stansim_simulation <- function(object, ...) {
 #' Extract details of refitted datafiles from a stansim_collection object
 #'
 #' @description Applied to an object of type stansim_collection,
-#' \code{extract_refitted()} will return a dataframe of simulation-datafile
-#' pairings that have been refitted since the initial simulation.
+#'   \code{extract_refitted()} will return a dataframe of simulation-datafile
+#'   pairings that have been refitted since the initial simulation.
 #'
 #' @param object An object of S3 class stansim_collection.
 #' @param sim_names Either a character vector containing the names of the
-#' \code{stansim_simulation} objects grouped in the collection, or the string
-#' \code{"all"}. The former will only return values for the corresponding
-#' simulations, the latter applies no filtering on stansim simulations.
+#'   \code{stansim_simulation} objects grouped in the collection, or the string
+#'   \code{"all"}. The former will only return values for the corresponding
+#'   simulations, the latter applies no filtering on stansim simulations.
 #' @param datafiles Either a character vector containing the names of datafiles
-#' (as provided to the original \code{stansim} call) fitted, or the string
-#' \code{"all"}. The former will only return values for the corresponding
-#' datafiles, the latter applies no filtering on stansim datafiles.
+#'   (as provided to the original \code{stansim} call) fitted, or the string
+#'   \code{"all"}. The former will only return values for the corresponding
+#'   datafiles, the latter applies no filtering on stansim datafiles.
 #' @param ... other arguments not used by this method.
-#' @return A dataframe with the simulation titles and datafile names of
-#' refitted datfiles.
+#' @return A dataframe with the simulation titles and datafile names of refitted
+#'   datfiles.
 #'
 #' @examples
 #' \dontrun{

@@ -11,20 +11,20 @@ stansim_collection(collection_name, data, refitted, simulations)
 object to help identify it. It is strongly recomended that an informative
 name is assigned.}
 
-\item{data}{The tidy dataframe containing data from all grouped simulations}
+\item{data}{The tidy dataframe containing data from all grouped simulations.}
 
 \item{refitted}{A dataframe containing a row for every refitted datafile,
 listing the simulation to which it belonged and the datafile name.}
 
-\item{simulations}{A list of all simulation data other than estimated
-values and the list of refitted data.}
+\item{simulations}{A list of all simulation data other than estimated values
+and the list of refitted data.}
 }
 \value{
 An S3 object of class \code{stansim_collection}.
 }
 \description{
-A constructor function for creating S3 Objects of
-type \code{stansim_collection}. \code{stansim_collection} objects are the
-preferred means of managing and storing the results of multiple stan
-simulations ran using \code{stansim()}.
+A constructor function for creating S3 objects of class
+  \code{stansim_collection}. \code{stansim_collection} objects are the
+  preferred means of managing and storing the results of multiple stan
+  simulations ran using \code{stansim()}.
 }

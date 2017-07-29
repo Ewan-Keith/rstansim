@@ -7,13 +7,13 @@
 rename(object, new_name)
 }
 \arguments{
-\item{object}{An object of S3 class stansim_simulation.}
+\item{object}{An S3 object of class stansim_simulation or stansim_collection.}
 
-\item{new_name}{New object name. Must be of type character.}
+\item{new_name}{New object name.}
+}
+\value{
+A stansim S3 object.
 }
 \description{
-Generic function for refitting specified datafiles in
-rstansim objects. By default refits all datafiles, following a user
-prompt given the potential computational cost (this can be turned off).
-Otherwise only datafile names provided will be refit.
+Generic function for renaming rstansim objects.
 }

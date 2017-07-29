@@ -7,17 +7,16 @@
 extract_data(object, ...)
 }
 \arguments{
-\item{object}{An S3 object of class stansim_simulation or
-stansim_collection.}
+\item{object}{An S3 object of class stansim_simulation or stansim_collection.}
 
-\item{...}{Arguments for filtering returned data,
-see specific methods for further detail.}
+\item{...}{Arguments for filtering returned data, see specific methods for
+further detail.}
 }
 \value{
 A dataframe containing the specified data.
 }
 \description{
 Generic function for extracting data from rstansim objects.
-Default arguments will return full data as a dataframe, otherwise
-rows will be filtered based on provided arguments.
+  Default arguments will return full data as a dataframe, otherwise rows will
+  be filtered based on provided arguments.
 }
