@@ -27,7 +27,7 @@ params <- readRDS("tests/testthat/data-raw/data/schoolsdat1.rds")
 library(rstan)
 
 fit <- stan(file = 'tests/testthat/data-raw/8schools.stan', data = params,
-            iter = 1000, chains = 4)
+            iter = 1000, chains = 4, cores = 4)
 
 fitwarm <- stan(file = 'data-raw/8schools.stan', data = params,
                 iter = 1000, chains = 4, warmup = 0)
@@ -67,3 +67,22 @@ fit.out <- capture.output(stan(file = 'tests/testthat/data-raw/8schools.stan', d
             iter = 500, chains = 4))
 
 
+### sim tests ####
+library(rstan)
+library(shinystan)
+
+reg_sim <- function(N = 100) {
+  list("N" = N, "x" = rep(0, N), "y" = rep(0, N))
+}
+
+reg_data <- reg_sim(1000)
+
+fit <- stan(file = 'tests/testthat/data-raw/simtestreg.stan', data = reg_data,
+            iter = 1, chains = 1, cores = 1,
+            algorithm = "Fixed_param")
+
+extracted <- extract(fit)
+
+plot(extracted$stansim_x, extracted$stansim_y)
+
+launch_shinystan(fit)
