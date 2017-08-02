@@ -8,11 +8,9 @@ rstansim
 Overview
 --------
 
-*PACKAGE STILL IN DEVELOPMENT AND UNLIKELY TO WORK FOR YOU. SORRY*
-
 `rstansim` provides a set of helper and utility functions to simplify running simulation studies using R and [stan](http://mc-stan.org/). The package addresses three aspects of running a simulation study:
 
--   Data simulation. \[currently not covered\]
+-   Data simulation.
 -   Model fitting and capture of relevant data.
 -   Management of simulation results.
 
