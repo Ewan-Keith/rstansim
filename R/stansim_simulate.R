@@ -11,25 +11,31 @@
 #' If \code{sim_drop} is true then any stan data object with a name beginning with "sim_" wil have this string removed from it's name.
 #' For example, the simulated data "sim_x" would be returned simply as "x". This helps avoid the issue of overlapping data names for both
 #' input and output
-#' @param file temp
-#' @param data_name temp
-#' @param save_dir temp
-#' @param holding_data temp
+#'
+#' @param file A character string or a connection that R supports specifying the Stan model specification in Stan's modeling language.
+#' @param data_name A name attached to the \code{stansim_data} object to
+#'   help identify it. It is strongly recomended that an informative name is
+#'   assigned. If \code{save_dir} isn't NULL, this will also be the name stem for the saved .rds files.
+#' @param input_data temp
 #' @param sim_params temp
 #' @param param_values temp
-#' @param datasets temp
-#' @param use_cores temp
+#' @param datasets The number of simulated datasets to produce.
+#' @param save_dir If NULL
+#' @param return_object if FALSE the no \code{stansim_data} object is returned. Use along with \code{save_dir} to write output data
+#' that is too large to store and manipulate in memory.
+#' @param use_cores Number of cores to use when running in parallel.
 #' @param sim_drop temp
 #'
 #' @export
 stansim_simulate <-
   function(file,
            data_name = paste0("Simdata_", Sys.time()),
-           save_dir = NULL,
-           holding_data = NULL,
+           input_data = NULL,
            sim_params = "all",
            param_values = NULL,
            datasets = 1,
+           save_dir = NULL,
+           return_object = TRUE,
            use_cores = 1,
            sim_drop = TRUE) {
 
@@ -48,9 +54,9 @@ stansim_simulate <-
   if(typeof(save_dir) != "character" & !(is.null(save_dir)))
     stop("save_dir must be NULL or of type character")
 
-  # holding_data must be NULL or list
-  if(!(is.null(holding_data) | typeof(holding_data) == "list"))
-    stop("holding_data must be NULL or of type list")
+  # input_data must be NULL or list
+  if(!(is.null(input_data) | typeof(input_data) == "list"))
+    stop("input_data must be NULL or of type list")
 
   # param values must be NULL or list
   if(!(is.null(param_values) | typeof(param_values) == "list"))
@@ -62,6 +68,11 @@ stansim_simulate <-
   # datasets must be a positive integer
   if(datasets < 1 | datasets %% 1 != 0)
     stop("datasets must be a positive integer")
+
+  # return_object must be logical
+  if(typeof(return_object) != "logical")
+    stop("return_object must be of type logical")
+
 
   # sim_drop must be logical
   if(typeof(sim_drop) != "logical")
@@ -85,7 +96,7 @@ stansim_simulate <-
     foreach::foreach(1:datasets) %doparal%
     simulate_internal(
       cmodel = compiled_model,
-      holding_data = holding_data,
+      input_data = input_data,
       sim_params = sim_params,
       param_values = param_values,
       sim_drop = sim_drop
@@ -116,11 +127,11 @@ stansim_simulate <-
 
 
 # simulate_internal placeholder
-simulate_internal <- function(cmodel, holding_data, sim_params, param_values, sim_drop) {
+simulate_internal <- function(cmodel, input_data, sim_params, param_values, sim_drop) {
   fitted <-
     rstan::sampling(
       object = cmodel,
-      data = holding_data,
+      data = input_data,
       init = list(param_values),
       iter = 1,
       chains = 1,
@@ -129,7 +140,7 @@ simulate_internal <- function(cmodel, holding_data, sim_params, param_values, si
     )
 
   # merge simulated data with user specified data for subsetting
-  params_and_data <- c(holding_data, rstan::extract(fitted))
+  params_and_data <- c(input_data, rstan::extract(fitted))
 
   # extract the values to simulate
   extracted <- params_and_data[sim_params]

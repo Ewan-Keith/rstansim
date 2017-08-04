@@ -5,25 +5,31 @@
 \title{Simulate datasets from a stan model}
 \usage{
 stansim_simulate(file, data_name = paste0("Simdata_", Sys.time()),
-  save_dir = NULL, holding_data = NULL, sim_params = "all",
-  param_values = NULL, datasets = 1, use_cores = 1, sim_drop = TRUE)
+  input_data = NULL, sim_params = "all", param_values = NULL,
+  datasets = 1, save_dir = NULL, return_object = TRUE, use_cores = 1,
+  sim_drop = TRUE)
 }
 \arguments{
-\item{file}{temp}
+\item{file}{A character string or a connection that R supports specifying the Stan model specification in Stan's modeling language.}
 
-\item{data_name}{temp}
+\item{data_name}{A name attached to the \code{stansim_data} object to
+help identify it. It is strongly recomended that an informative name is
+assigned. If \code{save_dir} isn't NULL, this will also be the name stem for the saved .rds files.}
 
-\item{save_dir}{temp}
-
-\item{holding_data}{temp}
+\item{input_data}{temp}
 
 \item{sim_params}{temp}
 
 \item{param_values}{temp}
 
-\item{datasets}{temp}
+\item{datasets}{The number of simulated datasets to produce.}
 
-\item{use_cores}{temp}
+\item{save_dir}{If NULL}
+
+\item{return_object}{if FALSE the no \code{stansim_data} object is returned. Use along with \code{save_dir} to write output data
+that is too large to store and manipulate in memory.}
+
+\item{use_cores}{Number of cores to use when running in parallel.}
 
 \item{sim_drop}{temp}
 }

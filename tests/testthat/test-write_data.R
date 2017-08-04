@@ -53,7 +53,7 @@ test_that("write_data creates directory and functions correctly", {
 
   for (i in list.files("testdir")) {
     # test that all files have the correct stem
-    expect_match(i, "^name_stem_\\d+.RDS$")
+    expect_match(i, "^name_stem_\\d+\\.RDS$")
 
     # read in one of the files
     rds_test <- readRDS(paste0("testdir/", i))
@@ -89,7 +89,7 @@ test_that("write_data functions correctly with pre-existing directory", {
   expect_true(dir.exists("testdir"))
 
   # run write_data
-  write_data(data_test, path = "testdir", data_name = "name_stem")
+  write_data(data_test, path = "testdir", data_name = NULL)
 
   # test that directory has been created
   expect_true(dir.exists("testdir"))
@@ -99,7 +99,7 @@ test_that("write_data functions correctly with pre-existing directory", {
 
   for (i in list.files("testdir")) {
     # test that all files have the correct stem
-    expect_match(i, "^name_stem_\\d+.RDS$")
+    expect_match(i, "^Simdata_.*\\.RDS$")
 
     # read in one of the files
     rds_test <- readRDS(paste0("testdir/", i))

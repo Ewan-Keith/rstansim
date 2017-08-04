@@ -13,7 +13,7 @@ context("stansim_simulate functions as expected")
 # file <- 'data-raw/simtestreg.stan'
 #
 # fit <- stansim_simulate(file = file,
-#                         holding_data = reg_data,
+#                         input_data = reg_data,
 #                         datasets = 100,
 #                         param_values = test_vals,
 #                         sim_params = c("sim_x", "sim_y", "N"),
@@ -51,17 +51,17 @@ test_that("stansim_simulate fails as expected with bad input", {
                                 save_dir = NA),
                "save_dir must be NULL or of type character")
 
-  # holding_data must be NULL or list [1]
+  # input_data must be NULL or list [1]
   expect_error(stansim_simulate(file = "test",
                                 save_dir = "test",
-                                holding_data = 55),
-               "holding_data must be NULL or of type list")
+                                input_data = 55),
+               "input_data must be NULL or of type list")
 
-  # holding_data must be NULL or list [2]
+  # input_data must be NULL or list [2]
   expect_error(stansim_simulate(file = "test",
                                 save_dir = "test",
-                                holding_data = "test"),
-               "holding_data must be NULL or of type list")
+                                input_data = "test"),
+               "input_data must be NULL or of type list")
 
   # param_values must be NULL or list [1]
   expect_error(stansim_simulate(file = "test",
