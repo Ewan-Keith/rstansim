@@ -186,3 +186,24 @@ sim2 <-
 collection <- collect("collection 1", sim1, sim2)
 
 saveRDS(collection, "objects/collection_for_method_tests.rds")
+
+#-----------------------------------------------------------------
+#### basic saved stansim_data object for methods testing ####
+reg_sim <- function(N = 100) {
+  list("N" = N, "x" = rep(0, N), "y" = rep(0, N))
+}
+
+reg_data <- reg_sim(100)
+
+test_vals <- list("alpha" = 100, "beta" = -5, "sigma" = 20)
+
+file <- 'data-raw/simtestreg.stan'
+
+fit <- stansim_simulate(file = file,
+                        holding_data = reg_data,
+                        datasets = 100,
+                        param_values = test_vals,
+                        sim_params = c("sim_x", "sim_y", "N"),
+                        use_cores = 4)
+
+saveRDS(fit, "objects/stansim_data_for_method_tests.rds")

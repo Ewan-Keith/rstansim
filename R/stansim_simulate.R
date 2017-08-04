@@ -1,15 +1,20 @@
 
-
+# if save_dir is NULL then return the stansim_data object, if not NULL then save to the specified dir
 
 #-----------------------------------------------------------------
 #### stansim_simulate ####
+#' stansim_simulate placeholder
+#'
+#' @export
 stansim_simulate <-
   function(file,
-           save_dir,
+           data_name = paste0("Simdata_", Sys.time()),
+           save_dir = NULL,
            holding_data = NULL,
            sim_params = "all",
            param_values = NULL,
            datasets = 1,
+           use_cores = 1,
            sim_drop = TRUE) {
 
 
@@ -19,9 +24,13 @@ stansim_simulate <-
   if(typeof(file) != "character")
     stop("file must be of type character")
 
-  # save_dir must be character
-  if(typeof(save_dir) != "character")
-    stop("save_dir must be of type character")
+  # data_name must be character
+  if (!is.character(data_name))
+    stop("data_name must be of type character")
+
+  # save_dir must be character or NULL
+  if(typeof(save_dir) != "character" & !(is.null(save_dir)))
+    stop("save_dir must be NULL or of type character")
 
   # holding_data must be NULL or list
   if(!(is.null(holding_data) | typeof(holding_data) == "list"))
@@ -42,24 +51,63 @@ stansim_simulate <-
   if(typeof(sim_drop) != "logical")
     stop("sim_drop must be of type logical")
 
-  #-----------------------------------------------------------------
-  #### prep saving dir ####
+  # ----------------------------------------------------------------
+  #### set up for parallel running ####
+  cl <- parallel::makeCluster(use_cores)
+  doParallel::registerDoParallel(cl)
+
+  # define %dopar% alias
+  `%doparal%` <- foreach::`%dopar%`
+
+  # -----------------------------------------------------------------
+  ## pre-compile stan model
+  compiled_model <- rstan::stan_model(file = file)
 
   #-----------------------------------------------------------------
   #### run simulations ####
-  simulate_internal(file = file,
-                    holding_data = holding_data,
-                    sim_params = sim_params,
-                    param_values = param_values,
-                    sim_drop = sim_drop)
+  data_list <-
+    foreach::foreach(1:datasets) %doparal%
+    simulate_internal(
+      cmodel = compiled_model,
+      holding_data = holding_data,
+      sim_params = sim_params,
+      param_values = param_values,
+      sim_drop = sim_drop
+    )
+
+  # de-register the parallel background once done
+  parallel::stopCluster(cl)
+
+  # store in stansim_data object
+  data_object <- stansim_data(data_name = data_name,
+                              data = data_list,
+                              compiled_model = compiled_model)
+
+  #-----------------------------------------------------------------
+  #### prep saving dir ####
+
+
+  #-----------------------------------------------------------------
+  #### return or save output ####
+  if(is.null(save_dir)){
+    # return
+    return(data_object)
+  } else {
+
+  }
+
 }
 
 
 
-simulate_internal <- function(file, holding_data, sim_params, param_values, sim_drop) {
+
+
+
+# simulate_internal placeholder
+simulate_internal <- function(cmodel, holding_data, sim_params, param_values, sim_drop) {
   fitted <-
-    rstan::stan(
-      file = file,
+    rstan::sampling(
+      object = cmodel,
       data = holding_data,
       init = list(param_values),
       iter = 1,
@@ -92,7 +140,7 @@ simulate_internal <- function(file, holding_data, sim_params, param_values, sim_
       names(simplified_extracted)
     }
 
-  simplified_extracted
+  return(simplified_extracted)
 
 }
 
