@@ -1,9 +1,25 @@
-
-# if save_dir is NULL then return the stansim_data object, if not NULL then save to the specified dir
-
 #-----------------------------------------------------------------
 #### stansim_simulate ####
-#' stansim_simulate placeholder
+#' Simulate datasets from a stan model
+#'
+#' @description \code{stansim_simulate()} takes a specified stan model and allows the user to simulate data from it
+#' based on specified parameter values. The user then specified which data they wish to return and how many simulations
+#' they wish to run. By default an object of class \code{stansim_data} will be returned, but if a character is provided to
+#' \code{save_dir} then the data will be saved as individual .rds files in the specified directory.
+#'
+#' To allow for simulated data to be directly fed into stan model that simulated them as input data, the sim_drop argument is provided.
+#' If \code{sim_drop} is true then any stan data object with a name beginning with "sim_" wil have this string removed from it's name.
+#' For example, the simulated data "sim_x" would be returned simply as "x". This helps avoid the issue of overlapping data names for both
+#' input and output
+#' @param file temp
+#' @param data_name temp
+#' @param save_dir temp
+#' @param holding_data temp
+#' @param sim_params temp
+#' @param param_values temp
+#' @param datasets temp
+#' @param use_cores temp
+#' @param sim_drop temp
 #'
 #' @export
 stansim_simulate <-
@@ -84,16 +100,12 @@ stansim_simulate <-
                               compiled_model = compiled_model)
 
   #-----------------------------------------------------------------
-  #### prep saving dir ####
-
-
-  #-----------------------------------------------------------------
   #### return or save output ####
   if(is.null(save_dir)){
     # return
     return(data_object)
   } else {
-
+    write_data(data_object, path = save_dir, data_name = data_name)
   }
 
 }

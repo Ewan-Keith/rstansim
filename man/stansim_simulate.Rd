@@ -2,12 +2,39 @@
 % Please edit documentation in R/stansim_simulate.R
 \name{stansim_simulate}
 \alias{stansim_simulate}
-\title{stansim_simulate placeholder}
+\title{Simulate datasets from a stan model}
 \usage{
 stansim_simulate(file, data_name = paste0("Simdata_", Sys.time()),
   save_dir = NULL, holding_data = NULL, sim_params = "all",
   param_values = NULL, datasets = 1, use_cores = 1, sim_drop = TRUE)
 }
+\arguments{
+\item{file}{temp}
+
+\item{data_name}{temp}
+
+\item{save_dir}{temp}
+
+\item{holding_data}{temp}
+
+\item{sim_params}{temp}
+
+\item{param_values}{temp}
+
+\item{datasets}{temp}
+
+\item{use_cores}{temp}
+
+\item{sim_drop}{temp}
+}
 \description{
-stansim_simulate placeholder
+\code{stansim_simulate()} takes a specified stan model and allows the user to simulate data from it
+based on specified parameter values. The user then specified which data they wish to return and how many simulations
+they wish to run. By default an object of class \code{stansim_data} will be returned, but if a character is provided to
+\code{save_dir} then the data will be saved as individual .rds files in the specified directory.
+
+To allow for simulated data to be directly fed into stan model that simulated them as input data, the sim_drop argument is provided.
+If \code{sim_drop} is true then any stan data object with a name beginning with "sim_" wil have this string removed from it's name.
+For example, the simulated data "sim_x" would be returned simply as "x". This helps avoid the issue of overlapping data names for both
+input and output
 }

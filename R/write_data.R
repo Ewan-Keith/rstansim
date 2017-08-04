@@ -20,6 +20,8 @@
 #'
 #' @examples
 #' \dontrun{
+#' # write the contents of a stansim_data object
+#' write_data(object = data_object, path = "save_to_dir", data_name = "simdata")
 #' }
 #'
 #' @export
