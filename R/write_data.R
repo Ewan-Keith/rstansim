@@ -72,7 +72,7 @@ write_data <- function(object, path, data_name = NULL, recursive = FALSE) {
   #### write data to rds files ####
   # function to write each file
   write_named_data <- function(name_list, obj_list){
-    saveRDS(obj_list[[name_list]], file = paste0(path, "/", name_list, ".RDS"))
+    saveRDS(obj_list[[name_list]], file = paste0(path, "/", name_list, ".rds"))
   }
 
   catch <- lapply(names(named_data), write_named_data, named_data)

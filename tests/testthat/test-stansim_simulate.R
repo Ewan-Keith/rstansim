@@ -99,3 +99,13 @@ test_that("stansim_simulate fails as expected with bad input", {
                "sim_drop must be of type logical")
 
 })
+
+#-----------------------------------------------------------------
+#### output verification ####
+
+# read in pre-compiled stan_model
+compiled_model <- readRDS("objects/sim_compiled.rds")
+
+test_that("stansim_simulate returns correct output", {
+
+})
