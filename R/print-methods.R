@@ -143,3 +143,51 @@ print_tidy_matrix <- function(m){
   utils::write.table(format(m, justify = "left"),
                      row.names = FALSE, col.names = FALSE, quote = FALSE)
 }
+
+
+#-----------------------------------------------------------------
+#### print.stansim_data method ####
+#' Print a summary for a stansim_data object
+#'
+#' @description Print basic information regarding a stansim_data object,
+#'   including data title, number of datasets, variables recorded, and the name
+#'   of the model from which the data was simulated from.
+#'
+#' @param x An object of S3 class stansim_data.
+#' @param ... other arguments not used by this method
+#'
+#' @seealso S3 class \code{\link{stansim_data}}.
+#'
+#' @examples
+#' \dontrun{
+#' # print stansim_data summary info
+#' print(simulated_data)
+#' }
+#'
+#' @export
+print.stansim_data <- function(x, ...){
+
+  # collection title
+  cat(paste0("Stansim Data Title: ", x$data_name, "\n"))
+
+  # number of datasets recorded
+  cat(paste0("Number of datasets simulated: ", length(x$data), "\n\n"))
+
+  # model simulated from
+  cat(paste0("Simulated from model: ", x$model_name, "\n\n"))
+
+  # variables recorded
+  if (length(x$data[[1]]) > 50) {
+    cat(paste0("Variables Recorded: ",
+               length(x$data[[1]]),
+               " (first 50 shown)\n"))
+  } else {
+    cat(paste0("Variables Recorded: ",
+               length(x$data[[1]]),
+               "\n"))
+  }
+
+  variables <- names(output1$data[[1]])
+
+  print_tidy_matrix(matrix(variables[1:50], ncol = 5, byrow = TRUE))
+}
