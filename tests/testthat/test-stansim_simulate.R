@@ -66,6 +66,16 @@ test_that("stansim_simulate fails as expected with bad input", {
                                 vars = 55),
                "vars must be of type character")
 
+  # datasets must be positive integer [1]
+  expect_error(stansim_simulate(file = "test",
+                                datasets = -1),
+               "datasets must be a positive integer")
+
+  # datasets must be positive integer [2]
+  expect_error(stansim_simulate(file = "test",
+                                datasets = 2.1),
+               "datasets must be a positive integer")
+
   # vars must be type character [2]
   expect_error(stansim_simulate(file = "test",
                                 vars = NA),
@@ -88,6 +98,16 @@ test_that("stansim_simulate fails as expected with bad input", {
                                 param_values = "test"),
                "param_values must be NULL or of type list")
 
+  # return_object must of type logical [1]
+  expect_error(stansim_simulate(file = "test",
+                                return_object = 55),
+               "return_object must be of type logical")
+
+  # return_object must of type logical [2]
+  expect_error(stansim_simulate(file = "test",
+                                return_object = "test"),
+               "return_object must be of type logical")
+
   # sim_drop must of type logical [1]
   expect_error(stansim_simulate(file = "test",
                                 sim_drop = 55),
@@ -103,9 +123,89 @@ test_that("stansim_simulate fails as expected with bad input", {
 #-----------------------------------------------------------------
 #### output verification ####
 
-# read in pre-compiled stan_model
-compiled_model <- readRDS("objects/sim_compiled.rds")
-
 test_that("stansim_simulate returns correct output", {
 
-})
+  ## prep arguments
+  reg_data <- list("N" = 100, "x" = rep(0, 100), "y" = rep(0, 100))
+  test_vals <- list("alpha" = 100, "beta" = -5, "sigma" = 20)
+
+  catch <-
+    capture_output(
+      output1 <- stansim_simulate(
+        file = 'data-raw/simtestreg.stan',
+        data_name = "test data",
+        input_data = reg_data,
+        vars = c("sim_x", "sim_y", "N"),
+        param_values = test_vals,
+        datasets = 5
+      )
+    )
+
+  # expect class
+  expect_s3_class(output1, "stansim_data")
+
+  # expect list
+  expect_type(output1, "list")
+
+  # expect length
+  expect_length(output1, 4)
+
+  # expect dim names
+  expect_named(output1, c("data_name", "data", "model_name", "model_code"))
+
+  # expect data_name type
+  expect_type(output1$data_name, "character")
+
+  # expect data name value
+  expect_equal(output1$data_name, "test data")
+
+  # expect data is list
+  expect_type(output1$data, "list")
+
+  # expect data length
+  expect_length(output1$data, 5)
+
+  ## for each data list
+  for (d in output1$data) {
+    # expect a list
+    expect_type(d, "list")
+
+    # expect length 3
+    expect_length(d, 3)
+
+    # expect names
+    expect_named(d, c("x", "y", "N"))
+
+    # for x and y
+    for (i in c("x", "y")) {
+      # expect dimension
+      expect_length(d[[i]], 100)
+
+      # expect numeric
+      expect_type(d[[i]], "double")
+    }
+
+    # expect N numeric
+    expect_type(d$N, "double")
+
+    # expect N dimension
+    expect_length(d$N, 1)
+
+    # expect N value
+    expect_equal(d$N, 100)
+  }
+
+  # expect model name is character
+  expect_type(output1$model_name, "character")
+
+  # expect model name value
+  expect_equal(output1$model_name, "simtestreg")
+
+  # expect model_code is character
+  expect_type(output1$model_code, "character")
+
+  # expect start of model code
+  expect_match(
+    output1$model_code,
+    "data \\{\\nint<lower=0> N;\\nvector\\[N\\] x;\\nvector\\[N\\] y;\\n\\}")
+  })

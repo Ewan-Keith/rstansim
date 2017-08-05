@@ -1,6 +1,6 @@
 context("simulate_internal utility function works as expected")
 
-# read in pre-compiled stan_model
+# compile stan_model
 catch <-
   capture_output(compiled_model <-
                    rstan::stan_model(file = 'data-raw/simtestreg.stan'))

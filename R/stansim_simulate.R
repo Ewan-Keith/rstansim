@@ -73,9 +73,6 @@ stansim_simulate <-
   if(!(is.null(param_values) | typeof(param_values) == "list"))
     stop("param_values must be NULL or of type list")
 
-  # datasets must be numeric
-    if(typeof(datasets) != "numeric")
-
   # datasets must be a positive integer
   if(datasets < 1 | datasets %% 1 != 0)
     stop("datasets must be a positive integer")
