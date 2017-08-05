@@ -21,6 +21,10 @@
 stansim_data <- function(data_name,
                          data,
                          compiled_model) {
+
+  # set the names on data
+  data <- stats::setNames(data, paste0(data_name, seq(length(data))))
+
   # create s3 object
   structure(
     list(

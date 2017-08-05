@@ -165,6 +165,10 @@ test_that("stansim_simulate returns correct output", {
   # expect data length
   expect_length(output1$data, 5)
 
+  # expect data list names
+  expect_named(output1$data, c("test data1", "test data2", "test data3",
+                               "test data4", "test data5"))
+
   ## for each data list
   for (d in output1$data) {
     # expect a list

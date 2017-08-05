@@ -25,7 +25,7 @@
 #' }
 #'
 #' @export
-write_data <- function(object, path, data_name = NULL, recursive = FALSE) {
+write_data <- function(object, path, data_name = NULL, recursive = TRUE) {
 
   #-----------------------------------------------------------------
   #### input checks ####

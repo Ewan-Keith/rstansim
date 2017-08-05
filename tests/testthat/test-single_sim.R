@@ -32,7 +32,8 @@ test_that("single_sim should return correct object (mocked stan fit)", {
       estimates = c("mean", "se_mean",
                     "sd", "n_eff", "Rhat"),
       stan_warnings = "suppress",
-      cache = F
+      cache = F,
+      stansim_data_used = F
     ),
 
     # should be list
@@ -152,7 +153,8 @@ test_that("single_sim should return correct object (mocked stan fit)", {
       estimates = c("mean", "se_mean",
                     "sd", "n_eff", "Rhat"),
       stan_warnings = "print",
-      cache = F
+      cache = F,
+      stansim_data_used = F
     ),
 
     # should be list
@@ -181,7 +183,8 @@ test_that("single_sim should return correct object (mocked stan fit)", {
       estimates = c("mean", "se_mean",
                     "sd", "n_eff", "Rhat"),
       stan_warnings = "suppress",
-      cache = F
+      cache = F,
+      stansim_data_used = F
     ),
 
     # should be list
@@ -230,7 +233,8 @@ test_that("single_sim warnings behave as expectated", {
       estimates = c("mean", "se_mean",
                     "sd", "n_eff", "Rhat"),
       stan_warnings = "catch",
-      cache = F
+      cache = F,
+      stansim_data_used = F
     ),
 
     # warnings caught should be list
@@ -288,7 +292,8 @@ test_that("written cache folder and files are correct", {
       estimates = c("mean", "se_mean",
                     "sd", "n_eff", "Rhat"),
       stan_warnings = "catch",
-      cache = T
+      cache = T,
+      stansim_data_used = F
     ),
 
     # cache file should have been written

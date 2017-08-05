@@ -26,9 +26,10 @@
 #'   assigned, especially if \code{stansim_simulation} objects are to be
 #'   combined in to a \code{stansim_collection} object for management of
 #'   results.
-#' @param sim_data A list of strings pointing to the location of .rds files
-#'   containing the simulation data. See the vignette on producing simulation
-#'   data for details on the formatting of these datasets.
+#' @param sim_data Either an object of class \code{stansim_data} or a vector of
+#'   strings pointing to the location of .rds files containing the simulation
+#'   data. See the vignette on producing simulation data for details on the
+#'   formatting of these datasets.
 #' @param stan_args A list of function arguments to be used by the internal
 #'   \code{rstan::sampling} function when fitting the models. If not specified
 #'   then the \code{rstan::sampling} function defaults are used.
@@ -122,6 +123,21 @@ stansim <- function(sim_name = paste0("Stansim_", Sys.time()),
   if (!is.character(sim_name))
     sim_name <- as.character(sim_name)
 
+  ## -------------------------------------------------
+  ## if stansim_data object used then convert to same format as string vector
+  if (class(sim_data) == "stansim_data") {
+
+    # replace sim_data with sim_data$data
+    sim_data <- sim_data$data
+
+    # set indicator for use of stansim_data methods
+    stansim_data_used <- TRUE
+
+  } else {
+
+    # set indicator for use of stansim_data methods
+    stansim_data_used <- FALSE
+  }
 
   ## -------------------------------------------------
   ## set up for parallel running
@@ -172,7 +188,7 @@ stansim <- function(sim_name = paste0("Stansim_", Sys.time()),
     foreach::foreach(datafile = sim_data,
                      .export = "single_sim") %doparal%
     single_sim(datafile, stan_args, calc_loo,
-               parameters, probs, estimates, stan_warnings, cache)
+               parameters, probs, estimates, stan_warnings, cache, stansim_data_used)
 
   # de-register the parallel background once done
   parallel::stopCluster(cl)

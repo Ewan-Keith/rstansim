@@ -9,7 +9,8 @@
 # with the sim_data parameter.
 single_sim <- function(datafile, stan_args,
                        calc_loo, parameters, probs,
-                       estimates, stan_warnings, cache){
+                       estimates, stan_warnings, cache,
+                       stansim_data_used){
 
   # garbage collect on start
   gc()
@@ -17,7 +18,12 @@ single_sim <- function(datafile, stan_args,
   ##-------------------------------------------------
   ## setup stan data properly
   # read in the data varying from model to model
-  stan_args$data <- readRDS(datafile)
+  if (stansim_data_used) {
+    stan_args$data <- datafile
+
+  } else {
+    stan_args$data <- readRDS(datafile)
+  }
 
   # fix stan's use of cores to 1
   stan_args$cores <- 1L
@@ -235,29 +241,35 @@ stansim_checker <- function(sim_data, calc_loo, use_cores,
   if (is.null(sim_data))
     stop("sim_data must be specified")
 
-  if (length(sim_data) < 1)
-    stop("sim_data must have length > 0")
+  if (typeof(sim_data) != "character" &
+      class(sim_data) != "stansim_data")
+    stop("sim_data must be an object of class stansim_data or of type character")
 
-  # all sim_data locations must exist
-  # sim_data must be .rds file
-  sim_data_checks <- function(each_sim_data){
-    if (!file.exists(each_sim_data))
-      stop(paste0("sim_data arg \"",
-                  each_sim_data,
-                  "\" could not be found"))
+  if (class(sim_data) != "stansim_data") {
+    if (length(sim_data) < 1)
+      stop("sim_data must have length > 0")
 
-    if (tolower(
-      substr(each_sim_data,
-             nchar(each_sim_data) - 3 + 1,
-             nchar(each_sim_data))
-      ) != "rds") {
-      stop(paste0("sim_data arg \"",
-                  each_sim_data,
-                  "\" is not a .rds file"))
+    # all sim_data locations must exist
+    # sim_data must be .rds file
+    sim_data_checks <- function(each_sim_data) {
+      if (!file.exists(each_sim_data))
+        stop(paste0("sim_data arg \"",
+                    each_sim_data,
+                    "\" could not be found"))
+
+      if (tolower(substr(
+        each_sim_data,
+        nchar(each_sim_data) - 3 + 1,
+        nchar(each_sim_data)
+      )) != "rds") {
+        stop(paste0("sim_data arg \"",
+                    each_sim_data,
+                    "\" is not a .rds file"))
+      }
     }
-  }
 
-  lapply(sim_data, sim_data_checks)
+    lapply(sim_data, sim_data_checks)
+  }
 
   # calc_loo must be Boolean
   if (!is.logical(calc_loo))

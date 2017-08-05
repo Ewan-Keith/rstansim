@@ -12,7 +12,7 @@ test_that("stansim fails correctly with invalid parameters", {
                "sim_data must be specified")
 
   expect_error(stansim(sim_data = list()),
-               "sim_data must have length > 0")
+               "sim_data must be an object of class stansim_data or of type character")
 
   expect_error(stansim(sim_data = "not a real file.rds"),
                "sim_data arg \"not a real file.rds\" could not be found")
