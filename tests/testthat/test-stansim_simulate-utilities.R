@@ -1,7 +1,9 @@
 context("simulate_internal utility function works as expected")
 
 # read in pre-compiled stan_model
-compiled_model <- readRDS("objects/sim_compiled.rds")
+catch <-
+  capture_output(compiled_model <-
+                   rstan::stan_model(file = 'data-raw/simtestreg.stan'))
 
 ## prep arguments
 reg_data <- list("N" = 100, "x" = rep(0, 100), "y" = rep(0, 100))
