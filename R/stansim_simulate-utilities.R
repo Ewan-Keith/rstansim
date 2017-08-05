@@ -1,5 +1,6 @@
 # simulate_internal
 simulate_internal <- function(cmodel, input_data, vars, param_values, sim_drop) {
+
   fitted <-
     rstan::sampling(
       object = cmodel,
@@ -8,8 +9,7 @@ simulate_internal <- function(cmodel, input_data, vars, param_values, sim_drop) 
       iter = 1,
       chains = 1,
       cores = 1,
-      algorithm = "Fixed_param",
-      refresh = -1
+      algorithm = "Fixed_param"
     )
 
   # merge simulated data with user specified data for subsetting

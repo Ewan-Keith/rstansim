@@ -1,7 +1,5 @@
 context("simulate_internal utility function works as expected")
 
-library(rstansim)
-
 # read in pre-compiled stan_model
 compiled_model <- readRDS("objects/sim_compiled.rds")
 
