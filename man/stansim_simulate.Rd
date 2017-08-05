@@ -5,9 +5,8 @@
 \title{Simulate datasets from a stan model}
 \usage{
 stansim_simulate(file, data_name = paste0("Simdata_", Sys.time()),
-  input_data = NULL, sim_params = "all", param_values = NULL,
-  datasets = 1, save_dir = NULL, return_object = TRUE, use_cores = 1,
-  sim_drop = TRUE)
+  input_data = NULL, vars = "all", param_values = NULL, datasets = 1,
+  save_dir = NULL, return_object = TRUE, use_cores = 1, sim_drop = TRUE)
 }
 \arguments{
 \item{file}{A character string or a connection that R supports specifying the Stan model specification in Stan's modeling language.}
@@ -16,22 +15,27 @@ stansim_simulate(file, data_name = paste0("Simdata_", Sys.time()),
 help identify it. It is strongly recomended that an informative name is
 assigned. If \code{save_dir} isn't NULL, this will also be the name stem for the saved .rds files.}
 
-\item{input_data}{temp}
+\item{input_data}{Values for the data field in the provided stan model. Values must be provided for all
+entries even if they are not used in the 'generate quantities' model section producing the simulated data.}
 
-\item{sim_params}{temp}
+\item{vars}{The names of the stan variables to return. Defaults to "all", otherwise a vector of variable names should be provided.}
 
-\item{param_values}{temp}
+\item{param_values}{A list containing the named values for the stan model parameters used to simulate data. If a parameter's
+value is not specified here it will be initialised randomly. Recommended to specify all parameter values.}
 
 \item{datasets}{The number of simulated datasets to produce.}
 
-\item{save_dir}{If NULL}
+\item{save_dir}{The name of the directory to save the simulated data to, if this doesn't exist it will be created. Defaults to NULL in which case no data is saved.}
 
 \item{return_object}{if FALSE the no \code{stansim_data} object is returned. Use along with \code{save_dir} to write output data
 that is too large to store and manipulate in memory.}
 
 \item{use_cores}{Number of cores to use when running in parallel.}
 
-\item{sim_drop}{temp}
+\item{sim_drop}{If TRUE then any simulated data objects beginning in "sim_" will have this removed. So "sim_x" becomes "x".}
+}
+\value{
+An object of S3 class stansim_data or NULL.
 }
 \description{
 \code{stansim_simulate()} takes a specified stan model and allows the user to simulate data from it

@@ -207,3 +207,11 @@ fit <- stansim_simulate(file = file,
                         use_cores = 4)
 
 saveRDS(fit, "objects/stansim_data_for_method_tests.rds")
+
+#-----------------------------------------------------------------
+#### object of type stanmodel for data simulation use ####
+sim_compiled <- stan_model(file = 'data-raw/simtestreg.stan')
+
+saveRDS(sim_compiled,
+        "objects/sim_compiled.rds")
+

@@ -36,7 +36,7 @@ test_that("stansim_simulate fails as expected with bad input", {
   expect_error(stansim_simulate(file = 55),
                "file must be of type character")
 
-  # data nam must be character
+  # data name must be character
   expect_error(stansim_simulate(file = "test",
                                 data_name = 55),
                "data_name must be of type character")
@@ -53,37 +53,48 @@ test_that("stansim_simulate fails as expected with bad input", {
 
   # input_data must be NULL or list [1]
   expect_error(stansim_simulate(file = "test",
-                                save_dir = "test",
                                 input_data = 55),
                "input_data must be NULL or of type list")
 
   # input_data must be NULL or list [2]
   expect_error(stansim_simulate(file = "test",
-                                save_dir = "test",
                                 input_data = "test"),
                "input_data must be NULL or of type list")
 
+  # vars must be type character [1]
+  expect_error(stansim_simulate(file = "test",
+                                vars = 55),
+               "vars must be of type character")
+
+  # vars must be type character [2]
+  expect_error(stansim_simulate(file = "test",
+                                vars = NA),
+               "vars must be of type character")
+
+  # if "all" provided to vars it must be alone
+  expect_error(
+    stansim_simulate(file = "test",
+                     vars = c("all", "test")),
+    "if vars argument contains \"all\", length\\(vars\\) must be 1"
+  )
+
   # param_values must be NULL or list [1]
   expect_error(stansim_simulate(file = "test",
-                                save_dir = "test",
                                 param_values = 55),
                "param_values must be NULL or of type list")
 
   # param_values must be NULL or list [2]
   expect_error(stansim_simulate(file = "test",
-                                save_dir = "test",
                                 param_values = "test"),
                "param_values must be NULL or of type list")
 
   # sim_drop must of type logical [1]
   expect_error(stansim_simulate(file = "test",
-                                save_dir = "test",
                                 sim_drop = 55),
                "sim_drop must be of type logical")
 
   # sim_drop must of type logical [2]
   expect_error(stansim_simulate(file = "test",
-                                save_dir = "test",
                                 sim_drop = "test"),
                "sim_drop must be of type logical")
 

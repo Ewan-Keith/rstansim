@@ -16,22 +16,25 @@
 #' @param data_name A name attached to the \code{stansim_data} object to
 #'   help identify it. It is strongly recomended that an informative name is
 #'   assigned. If \code{save_dir} isn't NULL, this will also be the name stem for the saved .rds files.
-#' @param input_data temp
-#' @param sim_params temp
-#' @param param_values temp
+#' @param input_data Values for the data field in the provided stan model. Values must be provided for all
+#' entries even if they are not used in the 'generate quantities' model section producing the simulated data.
+#' @param vars The names of the stan variables to return. Defaults to "all", otherwise a vector of variable names should be provided.
+#' @param param_values A list containing the named values for the stan model parameters used to simulate data. If a parameter's
+#' value is not specified here it will be initialised randomly. Recommended to specify all parameter values.
 #' @param datasets The number of simulated datasets to produce.
-#' @param save_dir If NULL
+#' @param save_dir The name of the directory to save the simulated data to, if this doesn't exist it will be created. Defaults to NULL in which case no data is saved.
 #' @param return_object if FALSE the no \code{stansim_data} object is returned. Use along with \code{save_dir} to write output data
 #' that is too large to store and manipulate in memory.
 #' @param use_cores Number of cores to use when running in parallel.
-#' @param sim_drop temp
+#' @param sim_drop If TRUE then any simulated data objects beginning in "sim_" will have this removed. So "sim_x" becomes "x".
+#' @return An object of S3 class stansim_data or NULL.
 #'
 #' @export
 stansim_simulate <-
   function(file,
            data_name = paste0("Simdata_", Sys.time()),
            input_data = NULL,
-           sim_params = "all",
+           vars = "all",
            param_values = NULL,
            datasets = 1,
            save_dir = NULL,
@@ -57,6 +60,14 @@ stansim_simulate <-
   # input_data must be NULL or list
   if(!(is.null(input_data) | typeof(input_data) == "list"))
     stop("input_data must be NULL or of type list")
+
+  # vars must be character
+  if (!is.character(vars))
+    stop("vars must be of type character")
+
+  # if "all" provided to vars length must be 1
+  if ("all" %in% vars & length(vars) != 1)
+    stop("if vars argument contains \"all\", length(vars) must be 1")
 
   # param values must be NULL or list
   if(!(is.null(param_values) | typeof(param_values) == "list"))
@@ -97,7 +108,7 @@ stansim_simulate <-
     simulate_internal(
       cmodel = compiled_model,
       input_data = input_data,
-      sim_params = sim_params,
+      vars = vars,
       param_values = param_values,
       sim_drop = sim_drop
     )
@@ -120,53 +131,3 @@ stansim_simulate <-
   }
 
 }
-
-
-
-
-
-
-# simulate_internal placeholder
-simulate_internal <- function(cmodel, input_data, sim_params, param_values, sim_drop) {
-  fitted <-
-    rstan::sampling(
-      object = cmodel,
-      data = input_data,
-      init = list(param_values),
-      iter = 1,
-      chains = 1,
-      cores = 1,
-      algorithm = "Fixed_param"
-    )
-
-  # merge simulated data with user specified data for subsetting
-  params_and_data <- c(input_data, rstan::extract(fitted))
-
-  # extract the values to simulate
-  extracted <- params_and_data[sim_params]
-
-  # remove unnecesary dimnames attributes
-  remove_attributes <- function(x) {
-    attributes(x)$dimnames <- NULL
-    x
-  }
-  clean_extracted <- lapply(X = extracted, FUN = remove_attributes)
-
-  # simplify any one dim arrays, careful with this. come back to and check.
-  simplified_extracted <- lapply(clean_extracted, "c")
-
-  # if sim_drop then cut "sim_" from all param/data names
-  names(simplified_extracted) <-
-    if (sim_drop) {
-      gsub("^sim_", "", names(simplified_extracted))
-    } else {
-      names(simplified_extracted)
-    }
-
-  return(simplified_extracted)
-
-}
-
-
-
-
