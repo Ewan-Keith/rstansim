@@ -66,7 +66,7 @@ write_data <- function(object, path, data_name = NULL, recursive = FALSE) {
   names_vector <- paste0(name_stem, "_", seq(length(unnamed_data)))
 
   # attach names to all object data
-  named_data <- setNames(unnamed_data, names_vector)
+  named_data <- stats::setNames(unnamed_data, names_vector)
 
   #-----------------------------------------------------------------
   #### write data to rds files ####
