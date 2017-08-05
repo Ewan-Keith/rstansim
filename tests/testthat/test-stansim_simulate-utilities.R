@@ -10,8 +10,8 @@ test_vals <- list("alpha" = 100, "beta" = -5, "sigma" = 20)
 test_that("simulate_internal returns correctly formatted output (sim_drop = T)", {
 
   # run simulate_internal with sim_drop = T
-  #catch <-
-  #  capture_output(
+  catch <-
+    capture_output(
       sim_out <- rstansim:::simulate_internal(
         compiled_model,
         reg_data,
@@ -19,7 +19,7 @@ test_that("simulate_internal returns correctly formatted output (sim_drop = T)",
         test_vals,
         sim_drop = T
       )
-  #  )
+    )
 
   # expect a list
   expect_type(sim_out, "list")

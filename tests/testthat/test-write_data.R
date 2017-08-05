@@ -79,6 +79,7 @@ test_that("write_data creates directory and functions correctly", {
 #### test with existent directory ####
 
 test_that("write_data functions correctly with pre-existing directory", {
+  skip_on_appveyor()
   # check that directory doesn't already exist
   expect_false(dir.exists("testdir"))
 
