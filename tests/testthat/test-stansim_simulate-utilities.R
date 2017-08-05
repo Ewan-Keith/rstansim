@@ -12,7 +12,7 @@ test_that("simulate_internal returns correctly formatted output (sim_drop = T)",
   # run simulate_internal with sim_drop = T
   catch <-
     capture_output(
-      sim_out <- rstansim:::simulate_internal(
+      sim_out <- simulate_internal(
         compiled_model,
         reg_data,
         c("sim_x", "sim_y", "N"),
