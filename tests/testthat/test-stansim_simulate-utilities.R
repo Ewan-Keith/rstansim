@@ -1,5 +1,7 @@
 context("simulate_internal utility function works as expected")
 
+library(rstansim)
+
 # read in pre-compiled stan_model
 compiled_model <- readRDS("objects/sim_compiled.rds")
 
@@ -12,7 +14,7 @@ test_that("simulate_internal returns correctly formatted output (sim_drop = T)",
   # run simulate_internal with sim_drop = T
   catch <-
     capture_output(
-      sim_out <- simulate_internal(
+      sim_out <- rstansim:::simulate_internal(
         compiled_model,
         reg_data,
         c("sim_x", "sim_y", "N"),
