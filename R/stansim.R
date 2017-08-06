@@ -155,6 +155,7 @@ stansim <- function(sim_name = paste0("Stansim_", Sys.time()),
 
   # define datafile locally first to avoid R CMD Check Note
   datafile <- NULL
+  data_name <- NULL
 
   ##-------------------------------------------------
   ## pre-compile stan model
@@ -194,7 +195,7 @@ stansim <- function(sim_name = paste0("Stansim_", Sys.time()),
     foreach::foreach(datafile = sim_data, data_name = data_names,
                      .export = "single_sim") %doparal%
     single_sim(datafile, stan_args, calc_loo,
-               parameters, probs, estimates, stan_warnings, cache, stansim_data_used, data_name)
+               parameters, probs, estimates, stan_warnings, cache, stansim_data_used, data_name = data_name)
 
   # de-register the parallel background once done
   parallel::stopCluster(cl)
