@@ -9,8 +9,7 @@
 # with the sim_data parameter.
 single_sim <- function(datafile, stan_args,
                        calc_loo, parameters, probs,
-                       estimates, stan_warnings, cache,
-                       stansim_data_used, data_name){
+                       estimates, stan_warnings, cache){
 
   # garbage collect on start
   gc()
@@ -18,15 +17,7 @@ single_sim <- function(datafile, stan_args,
   ##-------------------------------------------------
   ## setup stan data properly
   # read in the data varying from model to model
-  if (stansim_data_used) {
-    stan_args$data <- datafile
-
-    # replace with name for later
-    datafile <- data_name
-
-  } else {
-    stan_args$data <- readRDS(datafile)
-  }
+  stan_args$data <- readRDS(datafile)
 
   # fix stan's use of cores to 1
   stan_args$cores <- 1L

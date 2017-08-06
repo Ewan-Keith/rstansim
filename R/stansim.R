@@ -119,30 +119,11 @@ stansim <- function(sim_name = paste0("Stansim_", Sys.time()),
                    stan_warnings, cache, stansim_seed,
                    sim_name)
 
-  # coerce sim_name to character if need be
-  if (!is.character(sim_name))
-    sim_name <- as.character(sim_name)
-
   ## -------------------------------------------------
   ## if stansim_data object used then convert to same format as string vector
   if (class(sim_data) == "stansim_data") {
-
     # replace sim_data with sim_data$data
-    sim_data <- sim_data$data
-
-    # set indicator for use of stansim_data methods
-    stansim_data_used <- TRUE
-
-    # prepare data_names if using a stansim_data object
-    data_names <- names(sim_data)
-
-  } else {
-
-    # set indicator for use of stansim_data methods
-    stansim_data_used <- FALSE
-
-    # set up empty data_names that will go unusued
-    data_names <- rep("not used name", length(sim_data))
+    sim_data <- sim_data$datasets
   }
 
   ## -------------------------------------------------
@@ -155,7 +136,6 @@ stansim <- function(sim_name = paste0("Stansim_", Sys.time()),
 
   # define datafile locally first to avoid R CMD Check Note
   datafile <- NULL
-  data_name <- NULL
 
   ##-------------------------------------------------
   ## pre-compile stan model
@@ -192,10 +172,10 @@ stansim <- function(sim_name = paste0("Stansim_", Sys.time()),
   # parallel loop over datasets, default list combine used
   # note, .export only called to enable mocking of single_sim in testing
   sim_estimates <-
-    foreach::foreach(datafile = sim_data, data_name = data_names,
+    foreach::foreach(datafile = sim_data,
                      .export = "single_sim") %doparal%
     single_sim(datafile, stan_args, calc_loo,
-               parameters, probs, estimates, stan_warnings, cache, stansim_data_used, data_name = data_name)
+               parameters, probs, estimates, stan_warnings, cache)
 
   # de-register the parallel background once done
   parallel::stopCluster(cl)

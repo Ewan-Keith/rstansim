@@ -173,8 +173,8 @@ test_that("stansim_simulate returns correct output", {
   expect_length(output1$datasets, 5)
 
   # expect data list names
-  expect_equal(output1$datasets, c("test data_1.rds", "test data_2.rds", "test data_3.rds",
-                               "test data_4.rds", "test data_5.rds"))
+  expect_equal(output1$datasets, c("testdir/test data_1.rds", "testdir/test data_2.rds", "testdir/test data_3.rds",
+                               "testdir/test data_4.rds", "testdir/test data_5.rds"))
 
   ## for each data list
   for (dnames in dir("testdir", full.names = TRUE)) {

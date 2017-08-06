@@ -32,9 +32,7 @@ test_that("single_sim should return correct object (mocked stan fit)", {
       estimates = c("mean", "se_mean",
                     "sd", "n_eff", "Rhat"),
       stan_warnings = "suppress",
-      cache = F,
-      stansim_data_used = F,
-      data_name = NULL
+      cache = F
     ),
 
     # should be list
@@ -154,9 +152,7 @@ test_that("single_sim should return correct object (mocked stan fit)", {
       estimates = c("mean", "se_mean",
                     "sd", "n_eff", "Rhat"),
       stan_warnings = "print",
-      cache = F,
-      stansim_data_used = F,
-      data_name = NULL
+      cache = F
     ),
 
     # should be list
@@ -185,9 +181,7 @@ test_that("single_sim should return correct object (mocked stan fit)", {
       estimates = c("mean", "se_mean",
                     "sd", "n_eff", "Rhat"),
       stan_warnings = "suppress",
-      cache = F,
-      stansim_data_used = F,
-      data_name = NULL
+      cache = F
     ),
 
     # should be list
@@ -236,9 +230,7 @@ test_that("single_sim warnings behave as expectated", {
       estimates = c("mean", "se_mean",
                     "sd", "n_eff", "Rhat"),
       stan_warnings = "catch",
-      cache = F,
-      stansim_data_used = F,
-      data_name = NULL
+      cache = F
     ),
 
     # warnings caught should be list
@@ -296,9 +288,7 @@ test_that("written cache folder and files are correct", {
       estimates = c("mean", "se_mean",
                     "sd", "n_eff", "Rhat"),
       stan_warnings = "catch",
-      cache = T,
-      stansim_data_used = F,
-      data_name = NULL
+      cache = T
     ),
 
     # cache file should have been written
@@ -430,11 +420,37 @@ test_that("written cache folder and files are correct", {
 #### single_sim testing ####
 test_that("single_sim testing with stansim_data input", {
 
+  # check that testdir doesn't already exist
+  expect_false(dir.exists("testdir"))
+
   catch <-
     capture_output(# read in prepared stanfit object
-      test_stanfit <- stan_model(file = 'data-raw/simtestreg.stan'))
+      test_stanfit <- rstan::stan_model(file = 'data-raw/simtestreg.stan'))
 
-  ss_data <- readRDS("objects/stansim_data_for_method_tests.rds")$data[[1]]
+  reg_sim <- function(N = 100) {
+    list("N" = N, "x" = rep(0, N), "y" = rep(0, N))
+  }
+
+  reg_data <- reg_sim(100)
+
+  test_vals <- list("alpha" = 100, "beta" = -5, "sigma" = 20)
+
+  catch <-
+    capture_output(
+      ss_data <- stansim_simulate(
+        file = 'data-raw/simtestreg.stan',
+        data_name = "saved stansim_data",
+        input_data = reg_data,
+        datasets = 1,
+        path = "testdir",
+        param_values = test_vals,
+        vars = c("sim_x", "sim_y", "N"),
+        use_cores = 4
+      )$datasets
+    )
+
+  # check that testdir now exist
+  expect_true(dir.exists("testdir"))
 
     test_stan_args <-
       list(
@@ -449,14 +465,12 @@ test_that("single_sim testing with stansim_data input", {
           datafile = ss_data,
           stan_args = test_stan_args,
           calc_loo = F,
-          parameters = "all",
+          parameters = c("alpha", "beta", "sigma"),
           probs = c(.025, .25, .5, .75, .975),
           estimates = c("mean", "se_mean",
                         "sd", "n_eff", "Rhat"),
           stan_warnings = "suppress",
-          cache = F,
-          stansim_data_used = T,
-          data_name = "test name"
+          cache = F
         )
       )
 
@@ -563,5 +577,13 @@ test_that("single_sim testing with stansim_data input", {
     # model code is character
     expect_type(catch_out$model_code, "character")
 
+    # check testdir is still there
+    expect_true(dir.exists("testdir"))
+
+    # delete testdir
+    unlink("testdir", recursive = T)
+
+    # check testdir does't exist
+    expect_false(dir.exists("testdir"))
 
 })

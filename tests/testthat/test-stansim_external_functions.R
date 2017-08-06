@@ -771,13 +771,34 @@ test_that("stansim test with stansim_data object; cache FALSE, loo FALSE", {
         chains = 4
       )
 
-    test_sim_data <- readRDS("objects/stansim_data_for_method_tests.rds")
+    reg_sim <- function(N = 100) {
+      list("N" = N, "x" = rep(0, N), "y" = rep(0, N))
+    }
+
+    reg_data <- reg_sim(100)
+
+    test_vals <- list("alpha" = 100, "beta" = -5, "sigma" = 20)
+
+    # check that testdir doesn't already exist
+    expect_false(dir.exists("testdir"))
+
+    ss_data <- stansim_simulate(file = 'data-raw/simtestreg.stan',
+                                data_name = "saved stansim_data",
+                                input_data = reg_data,
+                                datasets = 1,
+                                path = "testdir",
+                                param_values = test_vals,
+                                vars = c("sim_x", "sim_y", "N"),
+                                use_cores = 4)$datasets
+
+    # check that testdir now exist
+    expect_true(dir.exists("testdir"))
 
     catch <-
       capture_output(
         stansim_output <- stansim(
           stan_args = test_stan_args,
-          sim_data = test_sim_data,
+          sim_data = ss_data,
           cache = FALSE,
           parameters = c("alpha", "beta", "sigma"),
           sim_name = "stansim no cache & loo test",
@@ -834,7 +855,7 @@ test_that("stansim test with stansim_data object; cache FALSE, loo FALSE", {
       expect_equal(length(instance), 7)
 
       # data name should be correct format
-      expect_true(grepl("saved stansim_data\\d+", instance$data_name))
+      expect_true(grepl("testdir/saved stansim_data_\\d+.rds", instance$data_name))
 
       # ran_at should be of type date
       expect_true(is_date(instance$ran_at))
@@ -913,4 +934,13 @@ test_that("stansim test with stansim_data object; cache FALSE, loo FALSE", {
     }
 
     lapply(test_instances, instance_check)
+
+    # check that testdir still  exist
+    expect_true(dir.exists("testdir"))
+
+    # delete testthat
+    unlink("testdir", recursive = T)
+
+    # check that testdir now gone
+    expect_false(dir.exists("testdir"))
 })

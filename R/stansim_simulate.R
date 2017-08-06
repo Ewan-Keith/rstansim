@@ -119,22 +119,12 @@ stansim_simulate <-
 
   #-----------------------------------------------------------------
   #### create list of data with datafile name ####
-  # prep name stem
-  name_stem <- data_name
-
-  # write names vector for all objects
-  names_vector <- paste0(name_stem, "_", seq(length(data_list)), ".rds")
-
-  # attach names to all object data
-  named_data <- stats::setNames(data_list, names_vector)
-
-  #-----------------------------------------------------------------
-  #### write data to rds files ####
-
   # create directory if doesn't exist
-  if(!is.null(path) & !dir.exists(path))
-    dir.create(path = path, recursive = recursive)
-
+  if (!is.null(path)) {
+    if (!dir.exists(path)) {
+      dir.create(path = path, recursive = recursive)
+    }
+  }
   # setup path for save
   if (is.null(path)) {
     path <- ""
@@ -142,9 +132,21 @@ stansim_simulate <-
     path <- paste0(path, "/")
   }
 
+  # prep name stem
+  name_stem <- data_name
+
+  # write names vector for all objects
+  names_vector <- paste0(path, name_stem, "_", seq(length(data_list)), ".rds")
+
+  # attach names to all object data
+  named_data <- stats::setNames(data_list, names_vector)
+
+  #-----------------------------------------------------------------
+  #### write data to rds files ####
+
   # function to write each file
   write_named_data <- function(name_list, obj_list){
-    saveRDS(obj_list[[name_list]], file = paste0(path, name_list))
+    saveRDS(obj_list[[name_list]], file = name_list)
   }
   catch <- lapply(names(named_data), write_named_data, named_data)
 
