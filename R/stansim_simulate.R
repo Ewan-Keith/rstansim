@@ -82,6 +82,10 @@ stansim_simulate <-
   if(datasets < 1 | datasets %% 1 != 0)
     stop("datasets must be a positive integer")
 
+  # use_cores must be a positive integer
+  if(use_cores < 1 | use_cores %% 1 != 0)
+    stop("use_cores must be a positive integer")
+
   # return_object must be logical
   if(typeof(return_object) != "logical")
     stop("return_object must be of type logical")
@@ -153,8 +157,13 @@ stansim_simulate <-
   #-----------------------------------------------------------------
   #### return stansim_data object or not ####
   if (return_object) {
-    stansim_data(data_name = data_name,
-                 datasets = names_vector,
-                 compiled_model = compiled_model)
+    return(
+      stansim_data(
+        data_name = data_name,
+        datasets = names_vector,
+        compiled_model = compiled_model
+      )
+    )
   }
+
 }

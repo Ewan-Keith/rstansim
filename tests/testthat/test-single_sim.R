@@ -445,9 +445,11 @@ test_that("single_sim testing with stansim_data input", {
         path = "testdir",
         param_values = test_vals,
         vars = c("sim_x", "sim_y", "N"),
-        use_cores = 4
-      )$datasets
+        use_cores = 1
+      )
     )
+
+  ss_data <- ss_data$datasets
 
   # check that testdir now exist
   expect_true(dir.exists("testdir"))
