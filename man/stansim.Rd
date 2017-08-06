@@ -18,9 +18,10 @@ assigned, especially if \code{stansim_simulation} objects are to be
 combined in to a \code{stansim_collection} object for management of
 results.}
 
-\item{sim_data}{A list of strings pointing to the location of .rds files
-containing the simulation data. See the vignette on producing simulation
-data for details on the formatting of these datasets.}
+\item{sim_data}{Either an object of class \code{stansim_data} or a vector of
+strings pointing to the location of .rds files containing the simulation
+data. See the vignette on producing simulation data for details on the
+formatting of these datasets.}
 
 \item{stan_args}{A list of function arguments to be used by the internal
 \code{rstan::sampling} function when fitting the models. If not specified

@@ -33,7 +33,8 @@ test_that("single_sim should return correct object (mocked stan fit)", {
                     "sd", "n_eff", "Rhat"),
       stan_warnings = "suppress",
       cache = F,
-      stansim_data_used = F
+      stansim_data_used = F,
+      data_name = NULL
     ),
 
     # should be list
@@ -154,7 +155,8 @@ test_that("single_sim should return correct object (mocked stan fit)", {
                     "sd", "n_eff", "Rhat"),
       stan_warnings = "print",
       cache = F,
-      stansim_data_used = F
+      stansim_data_used = F,
+      data_name = NULL
     ),
 
     # should be list
@@ -184,7 +186,8 @@ test_that("single_sim should return correct object (mocked stan fit)", {
                     "sd", "n_eff", "Rhat"),
       stan_warnings = "suppress",
       cache = F,
-      stansim_data_used = F
+      stansim_data_used = F,
+      data_name = NULL
     ),
 
     # should be list
@@ -234,7 +237,8 @@ test_that("single_sim warnings behave as expectated", {
                     "sd", "n_eff", "Rhat"),
       stan_warnings = "catch",
       cache = F,
-      stansim_data_used = F
+      stansim_data_used = F,
+      data_name = NULL
     ),
 
     # warnings caught should be list
@@ -293,7 +297,8 @@ test_that("written cache folder and files are correct", {
                     "sd", "n_eff", "Rhat"),
       stan_warnings = "catch",
       cache = T,
-      stansim_data_used = F
+      stansim_data_used = F,
+      data_name = NULL
     ),
 
     # cache file should have been written
@@ -420,3 +425,142 @@ test_that("written cache folder and files are correct", {
   )
 })
 
+
+#-----------------------------------------------------------------
+#### single_sim testing ####
+test_that("single_sim testing with stansim_data input", {
+
+  # read in prepared stanfit object
+  test_stanfit <- readRDS("objects/sim_compiled.rds")
+
+  ss_data <- readRDS("objects/stansim_data_for_method_tests.rds")$data[[1]]
+
+    test_stan_args <-
+      list(
+        object = test_stanfit,
+        iter = 500,
+        chains = 4
+      )
+
+    catch <-
+      capture_output(
+        catch_out <- rstansim:::single_sim(
+          datafile = ss_data,
+          stan_args = test_stan_args,
+          calc_loo = F,
+          parameters = "all",
+          probs = c(.025, .25, .5, .75, .975),
+          estimates = c("mean", "se_mean",
+                        "sd", "n_eff", "Rhat"),
+          stan_warnings = "suppress",
+          cache = F,
+          stansim_data_used = T,
+          data_name = "test name"
+        )
+      )
+
+    # should be list
+    expect_type(catch_out, "list")
+
+    # should be class stansim_uni
+    expect_s3_class(catch_out, "stansim_uni")
+
+    # should have ten items
+    expect_equal(length(catch_out), 10)
+
+    # check list item names are correct
+    expect_equal(names(catch_out),
+                 c("data_name", "ran_at", "elapsed_time", "stan_inits",
+                   "stan_args", "seed", "out_data", "model_name",
+                   "model_code", "warnings"))
+
+    # data name should be character
+    expect_type(catch_out$data_name, "character")
+
+    is_date <- function(mydate, date.format = "%d/%m/%y") {
+      tryCatch(!is.na(as.Date(mydate, date.format, tz = "UTC")),
+               error = function(err) FALSE)
+    }
+
+    # ran at should be date
+    expect_true(is_date(catch_out$ran_at))
+
+    # elapsed_time should have c(chains, 2) dim
+    expect_equal(dim(catch_out$elapsed_time),
+                 c(test_stan_args$chains, 2))
+
+    # elapsed_time should correct colnames
+    expect_equal(colnames(catch_out$elapsed_time),
+                 c("warmup", "sample"))
+
+    # stan inits should be list
+    expect_type(catch_out$stan_inits, "list")
+
+    # stan inits should have record for each chain
+    expect_equal(length(catch_out$stan_inits), 4)
+
+    # stan args that should be same across chains are
+    ident <- function(...) {
+      args <- c(...)
+      if (length(args) > 2L) {
+        #  recursively call ident()
+        out <- c(identical(args[1], args[2]), ident(args[-1]))
+      } else{
+        out <- identical(args[1], args[2])
+      }
+      return(all(out))
+    }
+
+    # iter same
+    expect_true(ident(catch_out$stan_args[[1]]$iter,
+                      catch_out$stan_args[[2]]$iter,
+                      catch_out$stan_args[[3]]$iter,
+                      catch_out$stan_args[[4]]$iter))
+
+    # thin
+    expect_true(ident(catch_out$stan_args[[1]]$thin,
+                      catch_out$stan_args[[2]]$thin,
+                      catch_out$stan_args[[3]]$thin,
+                      catch_out$stan_args[[4]]$thin))
+
+    # warmup
+    expect_true(ident(catch_out$stan_args[[1]]$warmup,
+                      catch_out$stan_args[[2]]$warmup,
+                      catch_out$stan_args[[3]]$warmup,
+                      catch_out$stan_args[[4]]$warmup))
+
+    # init
+    expect_true(ident(catch_out$stan_args[[1]]$init,
+                      catch_out$stan_args[[2]]$init,
+                      catch_out$stan_args[[3]]$init,
+                      catch_out$stan_args[[4]]$init))
+
+    # algorithm
+    expect_true(ident(catch_out$stan_args[[1]]$algorithm,
+                      catch_out$stan_args[[2]]$algorithm,
+                      catch_out$stan_args[[3]]$algorithm,
+                      catch_out$stan_args[[4]]$algorithm))
+
+    # check_unknown_args
+    expect_true(ident(catch_out$stan_args[[1]]$check_unknown_args,
+                      catch_out$stan_args[[2]]$check_unknown_args,
+                      catch_out$stan_args[[3]]$check_unknown_args,
+                      catch_out$stan_args[[4]]$check_unknown_args))
+
+    # sampling
+    expect_true(ident(catch_out$stan_args[[1]]$sampling,
+                      catch_out$stan_args[[2]]$sampling,
+                      catch_out$stan_args[[3]]$sampling,
+                      catch_out$stan_args[[4]]$sampling))
+
+    # seed is integer
+    expect_type(catch_out$seed, "integer")
+
+    # model name is right
+    expect_equal(catch_out$model_name, "simtestreg")
+
+    # model code is character
+    expect_type(catch_out$model_code, "character")
+
+
+})

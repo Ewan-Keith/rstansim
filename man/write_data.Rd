@@ -4,7 +4,7 @@
 \alias{write_data}
 \title{Write data from a \code{stansim_data} object to .rds files}
 \usage{
-write_data(object, path, data_name = NULL, recursive = FALSE)
+write_data(object, path, data_name = NULL, recursive = TRUE)
 }
 \arguments{
 \item{object}{An object of S3 class stansim_data.}

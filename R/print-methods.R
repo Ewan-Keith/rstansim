@@ -187,7 +187,7 @@ print.stansim_data <- function(x, ...){
                "\n"))
   }
 
-  variables <- names(output1$data[[1]])
+  variables <- names(x$data[[1]])
 
   print_tidy_matrix(matrix(variables[1:50], ncol = 5, byrow = TRUE))
 }

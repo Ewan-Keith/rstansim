@@ -100,7 +100,7 @@ test_that("write_data functions correctly with pre-existing directory", {
 
   for (i in list.files("testdir")) {
     # test that all files have the correct stem
-    expect_match(i, "^Simdata_.*\\.rds$")
+    expect_match(i, "^saved stansim_data_\\d+\\.rds$")
 
     # read in one of the files
     rds_test <- readRDS(paste0("testdir/", i))

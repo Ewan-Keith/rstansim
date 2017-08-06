@@ -10,7 +10,7 @@
 single_sim <- function(datafile, stan_args,
                        calc_loo, parameters, probs,
                        estimates, stan_warnings, cache,
-                       stansim_data_used){
+                       stansim_data_used, data_name){
 
   # garbage collect on start
   gc()
@@ -20,6 +20,9 @@ single_sim <- function(datafile, stan_args,
   # read in the data varying from model to model
   if (stansim_data_used) {
     stan_args$data <- datafile
+
+    # replace with name for later
+    datafile <- data_name
 
   } else {
     stan_args$data <- readRDS(datafile)

@@ -133,10 +133,16 @@ stansim <- function(sim_name = paste0("Stansim_", Sys.time()),
     # set indicator for use of stansim_data methods
     stansim_data_used <- TRUE
 
+    # prepare data_names if using a stansim_data object
+    data_names <- names(sim_data)
+
   } else {
 
     # set indicator for use of stansim_data methods
     stansim_data_used <- FALSE
+
+    # set up empty data_names that will go unusued
+    data_names <- rep("not used name", length(sim_data))
   }
 
   ## -------------------------------------------------
@@ -185,10 +191,10 @@ stansim <- function(sim_name = paste0("Stansim_", Sys.time()),
   # parallel loop over datasets, default list combine used
   # note, .export only called to enable mocking of single_sim in testing
   sim_estimates <-
-    foreach::foreach(datafile = sim_data,
+    foreach::foreach(datafile = sim_data, data_name = data_names,
                      .export = "single_sim") %doparal%
     single_sim(datafile, stan_args, calc_loo,
-               parameters, probs, estimates, stan_warnings, cache, stansim_data_used)
+               parameters, probs, estimates, stan_warnings, cache, stansim_data_used, data_name)
 
   # de-register the parallel background once done
   parallel::stopCluster(cl)

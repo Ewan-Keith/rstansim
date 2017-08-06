@@ -200,10 +200,11 @@ test_vals <- list("alpha" = 100, "beta" = -5, "sigma" = 20)
 file <- 'data-raw/simtestreg.stan'
 
 fit <- stansim_simulate(file = file,
-                        holding_data = reg_data,
+                        data_name = "saved stansim_data",
+                        input_data = reg_data,
                         datasets = 100,
                         param_values = test_vals,
-                        sim_params = c("sim_x", "sim_y", "N"),
+                        vars = c("sim_x", "sim_y", "N"),
                         use_cores = 4)
 
 saveRDS(fit, "objects/stansim_data_for_method_tests.rds")
