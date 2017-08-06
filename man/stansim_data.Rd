@@ -4,7 +4,7 @@
 \alias{stansim_data}
 \title{Construct an S3 object of type stansim_data}
 \usage{
-stansim_data(data_name, data, compiled_model)
+stansim_data(data_name, datasets, compiled_model)
 }
 \arguments{
 \item{data_name}{A name attached to the \code{stansim_data} object to help
@@ -12,7 +12,7 @@ identify it. This also forms the stem of the individual .rds file names
 after a call to \code{write_data()}. It is strongly recomended that an
 informative name is assigned.}
 
-\item{data}{A list of lists containing simulated data.}
+\item{datasets}{A vector of names of simulated datasets.}
 
 \item{compiled_model}{An object of S4 class \code{stanmodel}, this should be
 the model provided to \code{stansim_simulate()} to simulate data from.}

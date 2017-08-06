@@ -6,14 +6,15 @@
 \usage{
 stansim_simulate(file, data_name = paste0("Simdata_", Sys.time()),
   input_data = NULL, vars = "all", param_values = NULL, datasets = 1,
-  save_dir = NULL, return_object = TRUE, use_cores = 1, sim_drop = TRUE)
+  path = NULL, return_object = TRUE, use_cores = 1, sim_drop = TRUE,
+  recursive = TRUE)
 }
 \arguments{
 \item{file}{A character string or a connection that R supports specifying the Stan model specification in Stan's modeling language.}
 
 \item{data_name}{A name attached to the \code{stansim_data} object to
 help identify it. It is strongly recomended that an informative name is
-assigned. If \code{save_dir} isn't NULL, this will also be the name stem for the saved .rds files.}
+assigned. If \code{path} isn't NULL, this will also be the name stem for the saved .rds files.}
 
 \item{input_data}{Values for the data field in the provided stan model. Values must be provided for all
 entries even if they are not used in the 'generate quantities' model section producing the simulated data.}
@@ -25,23 +26,28 @@ value is not specified here it will be initialised randomly. Recommended to spec
 
 \item{datasets}{The number of simulated datasets to produce.}
 
-\item{save_dir}{The name of the directory to save the simulated data to, if this doesn't exist it will be created. Defaults to NULL in which case no data is saved.}
+\item{path}{The name of the directory to save the simulated data to, if this doesn't exist it will be created. Defaults to NULL in which the datasets are saved to the working directory}
 
-\item{return_object}{if FALSE the no \code{stansim_data} object is returned. Use along with \code{save_dir} to write output data
-that is too large to store and manipulate in memory.}
+\item{return_object}{if FALSE then no \code{stansim_data} object is returned.}
 
 \item{use_cores}{Number of cores to use when running in parallel.}
 
-\item{sim_drop}{If TRUE then any simulated data objects beginning in "sim_" will have this removed. So "sim_x" becomes "x".}
+\item{sim_drop}{If TRUE then any simulated data objects beginning in "sim_"
+will have this removed. So "sim_x" becomes "x".}
+
+\item{recursive}{logical. Should elements of the path other than the last be
+created? If true, like the Unix command mkdir -p.}
 }
 \value{
 An object of S3 class stansim_data or NULL.
 }
 \description{
 \code{stansim_simulate()} takes a specified stan model and allows the user to simulate data from it
-based on specified parameter values. The user then specified which data they wish to return and how many simulations
-they wish to run. By default an object of class \code{stansim_data} will be returned, but if a character is provided to
-\code{save_dir} then the data will be saved as individual .rds files in the specified directory.
+based on specified parameter values. The user then specifies which data they wish to save and how many simulations
+they wish to run. The data will be saved as individual .rds files in the directory specified by \code{path}.
+
+By default an object of class \code{stansim_data} will be returned, providing an index of the saved data that can then be provided
+directly to a \code{stansim()} call.
 
 To allow for simulated data to be directly fed into stan model that simulated them as input data, the sim_drop argument is provided.
 If \code{sim_drop} is true then any stan data object with a name beginning with "sim_" wil have this string removed from it's name.

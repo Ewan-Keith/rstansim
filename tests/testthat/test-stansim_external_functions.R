@@ -789,7 +789,7 @@ test_that("stansim test with stansim_data object; cache FALSE, loo FALSE", {
                                 path = "testdir",
                                 param_values = test_vals,
                                 vars = c("sim_x", "sim_y", "N"),
-                                use_cores = 4)$datasets
+                                use_cores = 1)$datasets
 
     # check that testdir now exist
     expect_true(dir.exists("testdir"))
