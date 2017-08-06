@@ -430,8 +430,9 @@ test_that("written cache folder and files are correct", {
 #### single_sim testing ####
 test_that("single_sim testing with stansim_data input", {
 
-  # read in prepared stanfit object
-  test_stanfit <- readRDS("objects/sim_compiled.rds")
+  catch <-
+    capture_output(# read in prepared stanfit object
+      test_stanfit <- stan_model(file = 'data-raw/simtestreg.stan'))
 
   ss_data <- readRDS("objects/stansim_data_for_method_tests.rds")$data[[1]]
 
