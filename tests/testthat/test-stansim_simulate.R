@@ -41,15 +41,15 @@ test_that("stansim_simulate fails as expected with bad input", {
                                 data_name = 55),
                "data_name must be of type character")
 
-  # save_dir must be type character [1]
+  # path must be type character [1]
   expect_error(stansim_simulate(file = "test",
-                                save_dir = 55),
-               "save_dir must be NULL or of type character")
+                                path = 55),
+               "path must be NULL or of type character")
 
-  # save_dir must be type character [2]
+  # path must be type character [2]
   expect_error(stansim_simulate(file = "test",
-                                save_dir = NA),
-               "save_dir must be NULL or of type character")
+                                path = NA),
+               "path must be NULL or of type character")
 
   # input_data must be NULL or list [1]
   expect_error(stansim_simulate(file = "test",
@@ -125,6 +125,9 @@ test_that("stansim_simulate fails as expected with bad input", {
 
 test_that("stansim_simulate returns correct output", {
 
+  # check that testdir doesn't already exist
+  expect_false(dir.exists("testdir"))
+
   ## prep arguments
   reg_data <- list("N" = 100, "x" = rep(0, 100), "y" = rep(0, 100))
   test_vals <- list("alpha" = 100, "beta" = -5, "sigma" = 20)
@@ -136,10 +139,14 @@ test_that("stansim_simulate returns correct output", {
         data_name = "test data",
         input_data = reg_data,
         vars = c("sim_x", "sim_y", "N"),
+        path = "testdir",
         param_values = test_vals,
         datasets = 5
       )
     )
+
+  # check that testdir now exists
+  expect_true(dir.exists("testdir"))
 
   # expect class
   expect_s3_class(output1, "stansim_data")
@@ -151,7 +158,7 @@ test_that("stansim_simulate returns correct output", {
   expect_length(output1, 4)
 
   # expect dim names
-  expect_named(output1, c("data_name", "data", "model_name", "model_code"))
+  expect_named(output1, c("data_name", "datasets", "model_name", "model_code"))
 
   # expect data_name type
   expect_type(output1$data_name, "character")
@@ -159,18 +166,21 @@ test_that("stansim_simulate returns correct output", {
   # expect data name value
   expect_equal(output1$data_name, "test data")
 
-  # expect data is list
-  expect_type(output1$data, "list")
+  # expect data is character
+  expect_type(output1$datasets, "character")
 
-  # expect data length
-  expect_length(output1$data, 5)
+  # expect datasets length
+  expect_length(output1$datasets, 5)
 
   # expect data list names
-  expect_named(output1$data, c("test data1", "test data2", "test data3",
-                               "test data4", "test data5"))
+  expect_equal(output1$datasets, c("test data_1.rds", "test data_2.rds", "test data_3.rds",
+                               "test data_4.rds", "test data_5.rds"))
 
   ## for each data list
-  for (d in output1$data) {
+  for (dnames in dir("testdir", full.names = TRUE)) {
+
+    d <- readRDS(dnames)
+
     # expect a list
     expect_type(d, "list")
 
@@ -212,4 +222,13 @@ test_that("stansim_simulate returns correct output", {
   expect_match(
     output1$model_code,
     "data \\{\\nint<lower=0> N;\\nvector\\[N\\] x;\\nvector\\[N\\] y;\\n\\}")
+
+  # check that testdir still exists
+  expect_true(dir.exists("testdir"))
+
+  # delete testdir
+  unlink("testdir", recursive = TRUE)
+
+  # check that testdir doesn't exist
+  expect_false(dir.exists("testdir"))
   })

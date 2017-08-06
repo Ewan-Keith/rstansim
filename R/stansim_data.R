@@ -11,7 +11,7 @@
 #'   identify it. This also forms the stem of the individual .rds file names
 #'   after a call to \code{write_data()}. It is strongly recomended that an
 #'   informative name is assigned.
-#' @param data A list of lists containing simulated data.
+#' @param datasets A vector of names of simulated datasets.
 #' @param compiled_model An object of S4 class \code{stanmodel}, this should be
 #'   the model provided to \code{stansim_simulate()} to simulate data from.
 #'
@@ -19,17 +19,15 @@
 #'
 #' @export
 stansim_data <- function(data_name,
-                         data,
+                         datasets,
                          compiled_model) {
 
-  # set the names on data
-  data <- stats::setNames(data, paste0(data_name, seq(length(data))))
 
   # create s3 object
   structure(
     list(
       "data_name" = data_name,
-      "data" = data,
+      "datasets" = datasets,
       "model_name" = compiled_model@model_name,
       "model_code" = compiled_model@model_code
     ),

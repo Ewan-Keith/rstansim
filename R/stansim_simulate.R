@@ -3,9 +3,11 @@
 #' Simulate datasets from a stan model
 #'
 #' @description \code{stansim_simulate()} takes a specified stan model and allows the user to simulate data from it
-#' based on specified parameter values. The user then specified which data they wish to return and how many simulations
-#' they wish to run. By default an object of class \code{stansim_data} will be returned, but if a character is provided to
-#' \code{save_dir} then the data will be saved as individual .rds files in the specified directory.
+#' based on specified parameter values. The user then specifies which data they wish to save and how many simulations
+#' they wish to run. The data will be saved as individual .rds files in the directory specified by \code{path}.
+#'
+#' By default an object of class \code{stansim_data} will be returned, providing an index of the saved data that can then be provided
+#' directly to a \code{stansim()} call.
 #'
 #' To allow for simulated data to be directly fed into stan model that simulated them as input data, the sim_drop argument is provided.
 #' If \code{sim_drop} is true then any stan data object with a name beginning with "sim_" wil have this string removed from it's name.
@@ -15,18 +17,20 @@
 #' @param file A character string or a connection that R supports specifying the Stan model specification in Stan's modeling language.
 #' @param data_name A name attached to the \code{stansim_data} object to
 #'   help identify it. It is strongly recomended that an informative name is
-#'   assigned. If \code{save_dir} isn't NULL, this will also be the name stem for the saved .rds files.
+#'   assigned. If \code{path} isn't NULL, this will also be the name stem for the saved .rds files.
 #' @param input_data Values for the data field in the provided stan model. Values must be provided for all
 #' entries even if they are not used in the 'generate quantities' model section producing the simulated data.
 #' @param vars The names of the stan variables to return. Defaults to "all", otherwise a vector of variable names should be provided.
 #' @param param_values A list containing the named values for the stan model parameters used to simulate data. If a parameter's
 #' value is not specified here it will be initialised randomly. Recommended to specify all parameter values.
 #' @param datasets The number of simulated datasets to produce.
-#' @param save_dir The name of the directory to save the simulated data to, if this doesn't exist it will be created. Defaults to NULL in which case no data is saved.
-#' @param return_object if FALSE the no \code{stansim_data} object is returned. Use along with \code{save_dir} to write output data
-#' that is too large to store and manipulate in memory.
+#' @param path The name of the directory to save the simulated data to, if this doesn't exist it will be created. Defaults to NULL in which the datasets are saved to the working directory
+#' @param return_object if FALSE then no \code{stansim_data} object is returned.
 #' @param use_cores Number of cores to use when running in parallel.
-#' @param sim_drop If TRUE then any simulated data objects beginning in "sim_" will have this removed. So "sim_x" becomes "x".
+#' @param sim_drop If TRUE then any simulated data objects beginning in "sim_"
+#'   will have this removed. So "sim_x" becomes "x".
+#' @param recursive logical. Should elements of the path other than the last be
+#'   created? If true, like the Unix command mkdir -p.
 #' @return An object of S3 class stansim_data or NULL.
 #'
 #' @export
@@ -37,10 +41,11 @@ stansim_simulate <-
            vars = "all",
            param_values = NULL,
            datasets = 1,
-           save_dir = NULL,
+           path = NULL,
            return_object = TRUE,
            use_cores = 1,
-           sim_drop = TRUE) {
+           sim_drop = TRUE,
+           recursive = TRUE) {
 
 
   #-----------------------------------------------------------------
@@ -53,9 +58,9 @@ stansim_simulate <-
   if (!is.character(data_name))
     stop("data_name must be of type character")
 
-  # save_dir must be character or NULL
-  if(typeof(save_dir) != "character" & !(is.null(save_dir)))
-    stop("save_dir must be NULL or of type character")
+  # path must be character or NULL
+  if(typeof(path) != "character" & !(is.null(path)))
+    stop("path must be NULL or of type character")
 
   # input_data must be NULL or list
   if(!(is.null(input_data) | typeof(input_data) == "list"))
@@ -80,7 +85,6 @@ stansim_simulate <-
   # return_object must be logical
   if(typeof(return_object) != "logical")
     stop("return_object must be of type logical")
-
 
   # sim_drop must be logical
   if(typeof(sim_drop) != "logical")
@@ -113,18 +117,42 @@ stansim_simulate <-
   # de-register the parallel background once done
   parallel::stopCluster(cl)
 
-  # store in stansim_data object
-  data_object <- stansim_data(data_name = data_name,
-                              data = data_list,
-                              compiled_model = compiled_model)
+  #-----------------------------------------------------------------
+  #### create list of data with datafile name ####
+  # prep name stem
+  name_stem <- data_name
+
+  # write names vector for all objects
+  names_vector <- paste0(name_stem, "_", seq(length(data_list)), ".rds")
+
+  # attach names to all object data
+  named_data <- stats::setNames(data_list, names_vector)
 
   #-----------------------------------------------------------------
-  #### return or save output ####
-  if(is.null(save_dir)){
-    # return
-    return(data_object)
-  } else {
-    write_data(data_object, path = save_dir, data_name = data_name)
+  #### write data to rds files ####
+
+  # create directory if doesn't exist
+  if(!is.null(path) & !dir.exists(path))
+    dir.create(path = path, recursive = recursive)
+
+  # setup path for save
+  if (is.null(path)) {
+    path <- ""
+  } else{
+    path <- paste0(path, "/")
   }
 
+  # function to write each file
+  write_named_data <- function(name_list, obj_list){
+    saveRDS(obj_list[[name_list]], file = paste0(path, name_list))
+  }
+  catch <- lapply(names(named_data), write_named_data, named_data)
+
+  #-----------------------------------------------------------------
+  #### return stansim_data object or not ####
+  if (return_object) {
+    stansim_data(data_name = data_name,
+                 datasets = names_vector,
+                 compiled_model = compiled_model)
+  }
 }

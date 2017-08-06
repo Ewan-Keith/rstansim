@@ -1,15 +1,16 @@
 #-----------------------------------------------------------------
-#### write_data function ####
+#### internal write_data function ####
 #' Write data from a \code{stansim_data} object to .rds files
 #'
-#' @description \code{write_data()} takes a \code{stansim_data} and a directory
-#'   name and writes each of the objects' simulated datasets to an individual
-#'   .rds file in the given directory.
+#' @description \code{write_data()} takes a \code{stansim_data} object and
+#'   writes each of the objects' simulated datasets to an individual .rds file
+#'   in a given directory.
 #'
 #' @param object An object of S3 class stansim_data.
 #' @param path The name of the directory to write the .rds datafiles to. If the
-#'   directory does not exist it will be created. it's recommended that this is
-#'   the name of an empty or non-existant directory
+#'   directory does not exist it will be created, if NULL then the current
+#'   working directory is used. it's recommended that this is the name of an
+#'   empty or non-existant directory.
 #' @param data_name Controls the name stem for all saved .rds files. If NULL
 #'   this will be the \code{data_name} property from the provided
 #'   \code{stansim_data} object, otherwise it will be the provided character.
@@ -24,8 +25,8 @@
 #' write_data(object = data_object, path = "save_to_dir", data_name = "simdata")
 #' }
 #'
-#' @export
-write_data <- function(object, path, data_name = NULL, recursive = TRUE) {
+#'
+write_data <- function(object, path = NULL, data_name = NULL, recursive = TRUE) {
 
   #-----------------------------------------------------------------
   #### input checks ####
@@ -47,7 +48,7 @@ write_data <- function(object, path, data_name = NULL, recursive = TRUE) {
 
   #-----------------------------------------------------------------
   #### create directory if doesn't exist ####
-  if(!dir.exists(path))
+  if(!is.null(path) & !dir.exists(path))
     dir.create(path = path, recursive = recursive)
 
   #-----------------------------------------------------------------
