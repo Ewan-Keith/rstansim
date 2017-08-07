@@ -24,8 +24,8 @@ data. See the vignette on producing simulation data for details on the
 formatting of these datasets.}
 
 \item{stan_args}{A list of function arguments to be used by the internal
-\code{rstan::sampling} function when fitting the models. If not specified
-then the \code{rstan::sampling} function defaults are used.}
+\code{rstan::sampling()} function when fitting the models. If not specified
+then the \code{rstan::sampling()} function defaults are used.}
 
 \item{calc_loo}{If \code{TRUE} then model fit statisics will be calculated
 using the \code{loo} package. If \code{TRUE} there must be a valid log_lik
@@ -59,12 +59,12 @@ recording them.}
 \item{cache}{If \code{TRUE} then the results for each instance are written to
 a local, temporary file so that data is not lost should the function not
 terminate properly. This temporary data is removed upon the model
-terminating as expected. if \code{FALSE} no data is written and results are
+terminating as expected. If \code{FALSE} no data is written and results are
 only returned upon the correct termination of the whole function. The
 default value of \code{TRUE} is recommended unless there are relevant
 write-permission restrictions.}
 
-\item{stansim_seed}{Set a seed for the \code{stansim} function.}
+\item{stansim_seed}{Set a seed for the function.}
 }
 \value{
 An S3 object of class \code{stansim_simulation} recording relevant
@@ -100,12 +100,12 @@ StanArgs <- list(file = '8schools.stan',
 core_num <- parallel::detectCores()
 
 # get the list of data file locations
-datafiles <- dir("data/repo", full.names = TRUE)
+datasets <- dir("data/repo", full.names = TRUE)
 
-# fit the model to all datafiles using specified stan arguments
+# fit the model to all datasets using specified stan arguments
 # store the specified estimates for all parameters
 simulation <- stansim(sim_name = "stansim simulation",
-                      sim_data = datafiles,
+                      sim_data = datasets,
                       stan_args = StanArgs,
                       calc_loo = T,
                       use_cores = core_num,

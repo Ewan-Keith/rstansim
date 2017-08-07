@@ -6,31 +6,31 @@ test_that("refit.stansim_simulation fails correctly", {
   stansim_obj <-
     readRDS("objects/test_stansim.rds")
 
-  # datafiles must be character
-  expect_error(refit(stansim_obj, datafiles = 5),
-               "datafiles argument must be of type character")
+  # datasets must be character
+  expect_error(refit(stansim_obj, datasets = 5),
+               "datasets argument must be of type character")
 
-  ## all datafile must exist in the file structure
+  ## all datasets must exist in the file structure
   expect_error(refit(stansim_obj,
-                     datafiles =
+                     datasets =
                        "data-raw/data/schoolsdat5.rds"),
-               paste0("datafile \"",
+               paste0("dataset \"",
                       "data-raw/data/schoolsdat5.rds",
                       "\" could not be found. Check your file structure"
                ))
 
-  ## all_datafiles must be found in the original stansim_simulation
+  ## all_datasets must be found in the original stansim_simulation
   # remove schoolsdat4 data records for test
   df_not_found <- stansim_obj
   df_not_found$data <- stansim_obj$data[
-    stansim_obj$data[, "datafile"] !=
+    stansim_obj$data[, "dataset"] !=
       "data-raw/data/schoolsdat4.rds", ]
 
   expect_error(
     refit(df_not_found,
-          datafiles = "data-raw/data/schoolsdat4.rds"),
+          datasets = "data-raw/data/schoolsdat4.rds"),
     paste0(
-      "datafiles argument \"",
+      "datasets argument \"",
       "data-raw/data/schoolsdat4.rds",
       "\" not found in provided stansim_object data"
     )
@@ -54,7 +54,7 @@ test_that("refit.stansim_simulation updates stansim_simulation obj correctly", {
   # refit
   new_stansim <-
     refit(stansim_obj,
-          datafiles = c("data-raw/data/schoolsdat1.rds",
+          datasets = c("data-raw/data/schoolsdat1.rds",
                         "data-raw/data/schoolsdat3.rds")),
 
   ## general object tests
@@ -92,16 +92,16 @@ test_that("refit.stansim_simulation updates stansim_simulation obj correctly", {
   expect_false(identical(stansim_obj$data, new_stansim$data)),
 
   # non-refited subset data should be same as original
-  old_subset <- stansim_obj$data[stansim_obj$data$datafile %in%
+  old_subset <- stansim_obj$data[stansim_obj$data$dataset %in%
                                    c("data-raw/data/schoolsdat2.rds",
                                      "data-raw/data/schoolsdat4.rds"), ],
 
-  old_subset <- old_subset[with(old_subset, order(datafile, parameter, estimate, value)), ],
+  old_subset <- old_subset[with(old_subset, order(dataset, parameter, estimate, value)), ],
 
-  new_subset <- new_stansim$data[new_stansim$data$datafile %in%
+  new_subset <- new_stansim$data[new_stansim$data$dataset %in%
                                   c("data-raw/data/schoolsdat2.rds",
                                     "data-raw/data/schoolsdat4.rds"), ],
-  new_subset <- new_subset[with(new_subset, order(datafile, parameter, estimate, value)), ],
+  new_subset <- new_subset[with(new_subset, order(dataset, parameter, estimate, value)), ],
 
   expect_equal(sum(old_subset != new_subset), 0),
 

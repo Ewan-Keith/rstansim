@@ -11,8 +11,8 @@
 #'   object to help identify it. It is strongly recomended that an informative
 #'   name is assigned.
 #' @param data The tidy dataframe containing data from all grouped simulations.
-#' @param refitted A dataframe containing a row for every refitted datafile,
-#'   listing the simulation to which it belonged and the datafile name.
+#' @param refitted A dataframe containing a row for every refitted dataset,
+#'   listing the simulation to which it belonged and the dataset name.
 #' @param simulations A list of all simulation data other than estimated values
 #'   and the list of refitted data.
 #'

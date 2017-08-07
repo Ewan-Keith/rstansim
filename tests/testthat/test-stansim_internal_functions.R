@@ -87,11 +87,11 @@ test_that("param_extract should return a correct dataframe", {
 
   ## colnames should be as expected
   expect_equal(colnames(test_param_extract),
-               c("datafile", "parameter", "estimate", "value"))
+               c("dataset", "parameter", "estimate", "value"))
 
   # column types should be as expected
   expect_equal(sapply(test_param_extract, typeof),
-               c("datafile" = "character",
+               c("dataset" = "character",
                  "parameter" = "character",
                  "estimate" = "character",
                  "value" = "double"))
@@ -231,11 +231,11 @@ test_that("param_extract with LOO mocked should return correct data", {
 
   ## colnames should be as expected
   expect_equal(colnames(loo_extract),
-               c("datafile", "parameter", "estimate", "value"))
+               c("dataset", "parameter", "estimate", "value"))
 
   # column types should be as expected
   expect_equal(sapply(loo_extract, typeof),
-               c("datafile" = "character",
+               c("dataset" = "character",
                  "parameter" = "character",
                  "estimate" = "character",
                  "value" = "double"))

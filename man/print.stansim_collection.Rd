@@ -14,7 +14,7 @@
 \description{
 Print basic information regarding a stansim_collection object,
   including collection title, the simulations within the collection, and any
-  datafiles that have been refitted.
+  datasets that have been refitted.
 }
 \examples{
 \dontrun{

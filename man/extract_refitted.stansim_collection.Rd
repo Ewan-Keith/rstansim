@@ -2,10 +2,10 @@
 % Please edit documentation in R/extract_refitted-methods.R
 \name{extract_refitted.stansim_collection}
 \alias{extract_refitted.stansim_collection}
-\title{Extract details of refitted datafiles from a stansim_collection object}
+\title{Extract details of refitted datasets from a stansim_collection object}
 \usage{
 \method{extract_refitted}{stansim_collection}(object, sim_names = "all",
-  datafiles = "all", ...)
+  datasets = "all", ...)
 }
 \arguments{
 \item{object}{An object of S3 class stansim_collection.}
@@ -15,20 +15,20 @@
 \code{"all"}. The former will only return values for the corresponding
 simulations, the latter applies no filtering on stansim simulations.}
 
-\item{datafiles}{Either a character vector containing the names of datafiles
+\item{datasets}{Either a character vector containing the names of datasets
 (as provided to the original \code{stansim} call) fitted, or the string
 \code{"all"}. The former will only return values for the corresponding
-datafiles, the latter applies no filtering on stansim datafiles.}
+datasets, the latter applies no filtering on stansim datasets.}
 
 \item{...}{other arguments not used by this method.}
 }
 \value{
-A dataframe with the simulation titles and datafile names of refitted
-  datfiles.
+A dataframe with the simulation titles and dataset names of refitted
+  datasets.
 }
 \description{
 Applied to an object of type stansim_collection,
-  \code{extract_refitted()} will return a dataframe of simulation-datafile
+  \code{extract_refitted()} will return a dataframe of simulation-dataset
   pairings that have been refitted since the initial simulation.
 }
 \examples{
@@ -36,11 +36,11 @@ Applied to an object of type stansim_collection,
 # extract all refitted indicators
 extract_refitted(collection)
 
-# extract only datafiles from "simulation1"
+# extract only datasets from "simulation1"
 extract_refitted(collection, sim_names = "simulation1")
 
-# extract only indicators for datafile "data-file_12.rds"
-extract_refitted(collection, datafiles = "data-file_12.rds")
+# extract only indicators for dataset "data-file_12.rds"
+extract_refitted(collection, datasets = "data-file_12.rds")
 
 }
 

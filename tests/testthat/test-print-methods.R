@@ -65,7 +65,7 @@ test_that(
     # add > 50 estimates to data
     temp_data <- extract_test_data$data
     temp_data <- rbind(temp_data,
-                       cbind("datafile" = NA,
+                       cbind("dataset" = NA,
                              "parameter" = 1:50,
                              "estimate" = 1:50,
                              "value" = NA))

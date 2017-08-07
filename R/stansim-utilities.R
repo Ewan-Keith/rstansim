@@ -7,7 +7,7 @@
 # to be called by stan_sim using the foreach package. One instance
 # of single_sim will be ran for every dataset provided to stan_sim
 # with the sim_data parameter.
-single_sim <- function(datafile, stan_args,
+single_sim <- function(dataset, stan_args,
                        calc_loo, parameters, probs,
                        estimates, stan_warnings, cache){
 
@@ -17,7 +17,7 @@ single_sim <- function(datafile, stan_args,
   ##-------------------------------------------------
   ## setup stan data properly
   # read in the data varying from model to model
-  stan_args$data <- readRDS(datafile)
+  stan_args$data <- readRDS(dataset)
 
   # fix stan's use of cores to 1
   stan_args$cores <- 1L
@@ -62,7 +62,7 @@ single_sim <- function(datafile, stan_args,
   ## extract all param values
   extracted_data <- param_extract(fitted_stan, calc_loo,
                                   parameters, probs, estimates,
-                                  data = datafile)
+                                  data = dataset)
 
   # garbage collect after para, extraction
   rm(calc_loo, parameters, probs, estimates)
@@ -72,17 +72,17 @@ single_sim <- function(datafile, stan_args,
   ## package into internal stansim_uni object
   single_out <- stansim_uni(
     fit = fitted_stan,
-    data_name = datafile,
+    data_name = dataset,
     ran_at = start_time,
     long_data = extracted_data,
     stan_warnings = my_warnings
   )
 
   ##-------------------------------------------------
-  ## if cache is true then write to .sim_cache folder, cleaning datafile first
+  ## if cache is true then write to .sim_cache folder, cleaning dataset first
   if (cache){
-    cleaned_datafile <- sub(".rds", "", sub("(.*)/", "", datafile))
-    saveRDS(single_out, paste0(".cache/", cleaned_datafile, "_cached.rds"))
+    cleaned_dataset <- sub(".rds", "", sub("(.*)/", "", dataset))
+    saveRDS(single_out, paste0(".cache/", cleaned_dataset, "_cached.rds"))
     }
 
   ##-------------------------------------------------
@@ -187,7 +187,7 @@ param_extract <- function(fitted_stan, calc_loo, parameters,
 
   ##-------------------------------------------------
   ## add an indicator for dataset and sort rows
-  indicator_data <- cbind("datafile" = data, long_output)
+  indicator_data <- cbind("dataset" = data, long_output)
 
   # order output
   ordered_data <-

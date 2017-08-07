@@ -10,8 +10,8 @@ test_that(paste("extract_data.stansim_simulation function should return",
                   expect_error(extract_data(extract_test_data, values = 5),
                                "value argument must be NULL or a function")
 
-                  expect_error(extract_data(extract_test_data, datafiles = 5),
-                               "datafiles argument must be of type character")
+                  expect_error(extract_data(extract_test_data, datasets = 5),
+                               "datasets argument must be of type character")
 
                   expect_error(extract_data(extract_test_data, parameters = 5),
                                "parameter argument must be of type character")
@@ -25,13 +25,13 @@ test_that(paste("extract_data.stansim_simulation function should return",
 
                   expect_equal(dim(
                     extract_data(extract_test_data,
-                                 datafiles = "data-raw/data/schoolsdat2.rds")
+                                 datasets = "data-raw/data/schoolsdat2.rds")
                   ),
                   c(190, 4))
 
                   expect_equal(dim(
                     extract_data(extract_test_data,
-                                 datafiles = c("data-raw/data/schoolsdat2.rds",
+                                 datasets = c("data-raw/data/schoolsdat2.rds",
                                               "data-raw/data/schoolsdat3.rds"))
                   ),
                   c(380, 4))
@@ -129,7 +129,7 @@ test_that(paste("extract_data.stansim_simulation function should return",
                     extract_data(extract_test_data,
                                  values = function(x) x < 0)
                   ),
-                  c(161, 4))
+                  c(160, 4))
 
                   expect_equal(dim(
                     extract_data(extract_test_data,
@@ -143,15 +143,15 @@ test_that(paste("extract_data.stansim_simulation function should return",
                                  estimates = "Rhat",
                                  values = function(x) x < 1.1 & x > 1)
                   ),
-                  c(47, 4))
+                  c(45, 4))
 
                   ## if "all" is provided for an arg it must be alone
                   expect_error(extract_data(
                     extract_test_data,
-                    datafiles = c("all",
+                    datasets = c("all",
                                  "data-raw/data/schoolsdat2.rds")
                   ),
-                  "if datafiles argument contains \"any\", length\\(datafiles\\) must be 1")
+                  "if datasets argument contains \"any\", length\\(datasets\\) must be 1")
 
                   expect_error(extract_data(
                     extract_test_data,
@@ -186,8 +186,8 @@ test_that(paste("extract_data.stansim_collection function should return",
                   expect_error(extract_data(extract_test_data, sim_names = 5),
                                "sim_names argument must be of type character")
 
-                  expect_error(extract_data(extract_test_data, datafiles = 5),
-                               "datafiles argument must be of type character")
+                  expect_error(extract_data(extract_test_data, datasets = 5),
+                               "datasets argument must be of type character")
 
                   expect_error(extract_data(extract_test_data, parameters = 5),
                                "parameter argument must be of type character")
@@ -207,13 +207,13 @@ test_that(paste("extract_data.stansim_collection function should return",
 
                   expect_equal(dim(
                     extract_data(extract_test_data,
-                                 datafiles = "data-raw/data/schoolsdat2.rds")
+                                 datasets = "data-raw/data/schoolsdat2.rds")
                   ),
                   c(380, 5))
 
                   expect_equal(dim(
                     extract_data(extract_test_data,
-                                 datafiles = c("data-raw/data/schoolsdat2.rds",
+                                 datasets = c("data-raw/data/schoolsdat2.rds",
                                               "data-raw/data/schoolsdat3.rds"))
                   ),
                   c(760, 5))
@@ -311,7 +311,7 @@ test_that(paste("extract_data.stansim_collection function should return",
                     extract_data(extract_test_data,
                                  values = function(x) x < 0)
                   ),
-                  c(321, 5))
+                  c(324, 5))
 
                   expect_equal(dim(
                     extract_data(extract_test_data,
@@ -325,7 +325,7 @@ test_that(paste("extract_data.stansim_collection function should return",
                                  estimates = "Rhat",
                                  values = function(x) x < 1.1 & x > 1)
                   ),
-                  c(95, 5))
+                  c(81, 5))
 
                   ## if "all" is provided for an arg it must be alone
                   expect_error(extract_data(
@@ -337,10 +337,10 @@ test_that(paste("extract_data.stansim_collection function should return",
 
                   expect_error(extract_data(
                     extract_test_data,
-                    datafiles = c("all",
+                    datasets = c("all",
                                  "data-raw/data/schoolsdat2.rds")
                   ),
-                  "if datafiles argument contains \"any\", length\\(datafiles\\) must be 1")
+                  "if datasets argument contains \"any\", length\\(datasets\\) must be 1")
 
                   expect_error(extract_data(
                     extract_test_data,

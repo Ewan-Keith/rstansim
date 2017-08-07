@@ -124,7 +124,7 @@ test_stan_args <-
   )
 
 single_out <- rstansim:::single_sim(
-  datafile = dir("data-raw/data",
+  dataset = dir("data-raw/data",
                  full.names = TRUE)[1],
   stan_args = test_stan_args,
   calc_loo = F,

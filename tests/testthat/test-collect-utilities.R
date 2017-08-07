@@ -45,7 +45,7 @@ test_that("collection_name, data, and refitted output is correct", {
   expect_equal(dim(collection$data), c(1520, 5))
 
   # check names are correct
-  expect_equal(names(collection$data), c("sim_name", "datafile",
+  expect_equal(names(collection$data), c("sim_name", "dataset",
                                          "parameter", "estimate",
                                          "value"))
 
@@ -56,10 +56,10 @@ test_that("collection_name, data, and refitted output is correct", {
   expect_equal(dim(collection$refitted), c(2, 2))
 
   # check names are correct
-  expect_equal(names(collection$refitted), c("sim_name", "datafile"))
+  expect_equal(names(collection$refitted), c("sim_name", "dataset"))
 
   # check refitted datafiles are correct
-  expect_equal(collection$refitted$datafile,
+  expect_equal(collection$refitted$dataset,
                c("data-raw/data/schoolsdat1.rds",
                  "data-raw/data/schoolsdat3.rds"))
 
@@ -77,7 +77,7 @@ test_that("test that the simualtions are correctly structured", {
 
   # names should be the simulation names
   expect_named(coll_sims,
-               c("Stansim_2017-07-18 20:21:21","refitted test sim"))
+               c("Stansim_2017-08-07 21:46:47","refitted test sim"))
 
   # break down into second simualtion
   sim_breakdown <- coll_sims$`refitted test sim`
@@ -258,7 +258,7 @@ test_that("collection_name, data, and refitted output is correct", {
   expect_equal(dim(collection$data), c(3040, 5))
 
   # check names are correct
-  expect_equal(names(collection$data), c("sim_name", "datafile",
+  expect_equal(names(collection$data), c("sim_name", "dataset",
                                          "parameter", "estimate",
                                          "value"))
 
@@ -269,10 +269,10 @@ test_that("collection_name, data, and refitted output is correct", {
   expect_equal(dim(collection$refitted), c(4, 2))
 
   # check names are correct
-  expect_equal(names(collection$refitted), c("sim_name", "datafile"))
+  expect_equal(names(collection$refitted), c("sim_name", "dataset"))
 
   # check refitted datafiles are correct
-  expect_equal(collection$refitted$datafile,
+  expect_equal(collection$refitted$dataset,
                rep(c("data-raw/data/schoolsdat1.rds",
                  "data-raw/data/schoolsdat3.rds"), 2))
 
@@ -290,8 +290,8 @@ test_that("test that the simualtions are correctly structured", {
 
   # names should be the simulation names
   expect_named(coll_sims,
-               c("Stansim_2017-07-18 20:21:21", "refitted test sim",
-                 "Stansim_2017-07-18 20:21:21", "refitted test sim"))
+               c("Stansim_2017-08-07 21:46:47", "refitted test sim",
+                 "Stansim_2017-08-07 21:46:47", "refitted test sim"))
 
   # break down into second simualtion
   sim_breakdown <- coll_sims$`refitted test sim`
@@ -474,7 +474,7 @@ test_that("collection_name, data, and refitted output is correct", {
   expect_equal(dim(collection$data), c(2280, 5))
 
   # check names are correct
-  expect_equal(names(collection$data), c("sim_name", "datafile",
+  expect_equal(names(collection$data), c("sim_name", "dataset",
                                          "parameter", "estimate",
                                          "value"))
 
@@ -485,10 +485,10 @@ test_that("collection_name, data, and refitted output is correct", {
   expect_equal(dim(collection$refitted), c(2, 2))
 
   # check names are correct
-  expect_equal(names(collection$refitted), c("sim_name", "datafile"))
+  expect_equal(names(collection$refitted), c("sim_name", "dataset"))
 
   # check refitted datafiles are correct
-  expect_equal(collection$refitted$datafile,
+  expect_equal(collection$refitted$dataset,
                c("data-raw/data/schoolsdat1.rds",
                      "data-raw/data/schoolsdat3.rds"))
 
@@ -506,7 +506,7 @@ test_that("test that the simualtions are correctly structured", {
 
   # names should be the simulation names
   expect_named(coll_sims,
-               c("new sim name", "Stansim_2017-07-18 20:21:21", "refitted test sim"))
+               c("new sim name", "Stansim_2017-08-07 21:46:47", "refitted test sim"))
 
   # break down into first simualtion
   sim_breakdown <- coll_sims$`new sim name`

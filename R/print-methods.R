@@ -79,7 +79,7 @@ print.stansim_simulation <- function(x, ...){
 #'
 #' @description Print basic information regarding a stansim_collection object,
 #'   including collection title, the simulations within the collection, and any
-#'   datafiles that have been refitted.
+#'   datasets that have been refitted.
 #'
 #' @param x An object of S3 class stansim_collection.
 #' @param ... other arguments not used by this method
@@ -117,11 +117,11 @@ print.stansim_collection <- function(x, ...){
 
   # print out refitted datasets
   if (nrow(x$refitted) > 5) {
-    cat(paste0("\n\nDatafiles Refitted: ",
+    cat(paste0("\n\nDatasets Refitted: ",
                nrow(x$refitted),
                " (first 5 shown)\n"))
   } else {
-    cat(paste0("\n\nDatafiles Refitted: ",
+    cat(paste0("\n\nDatasets Refitted: ",
                nrow(x$refitted),
                "\n"))
   }

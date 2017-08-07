@@ -2,17 +2,17 @@
 % Please edit documentation in R/refit.R
 \name{refit}
 \alias{refit}
-\title{Refit specified datafiles in a stansim_simulation object}
+\title{Refit specified datasets in a stansim_simulation object}
 \usage{
-refit(object, datafiles, stan_args = list(), calc_loo = FALSE,
+refit(object, datasets, stan_args = list(), calc_loo = FALSE,
   use_cores = 1L, cache = TRUE, stansim_seed = floor(stats::runif(1, 1,
   1e+05)))
 }
 \arguments{
 \item{object}{An object of S3 class stansim_simulation.}
 
-\item{datafiles}{The full names of the data files to be refitted. These must
-be consistent both with the datafile names stored within the
+\item{datasets}{The full names of the data files to be refitted. These must
+be consistent both with the dataset names stored within the
 \code{stansim_simulation} object, and with the copies of the data files
 relative to the current working directory. This is best ensured by running
 refit from the same working directory as the original \code{stansim} call.}
@@ -46,7 +46,7 @@ An S3 object of class \code{stansim_simulation} recording relevant
 }
 \description{
 \code{refit} Takes a \code{stansim_simulation} object and a
-  vector of characters corresponding to the names of datafiles fitted within
+  vector of characters corresponding to the names of datasets fitted within
   the \code{stansim_simulation} object, and refits the stan model for each of
   these instances. This allows users to refit any specific models using new
   stan arguments if need be (e.g. if the model fails to converge in the
@@ -54,14 +54,14 @@ An S3 object of class \code{stansim_simulation} recording relevant
 }
 \examples{
 \dontrun{
-# refit datafiles "data_file-12.rds" & "data_file-08.rds"
+# refit datasets "data_file-12.rds" & "data_file-08.rds"
 refit(simulation,
-      datafiles = c("data_file-12.rds", "data_file-08.rds")
+      datasets = c("data_file-12.rds", "data_file-08.rds")
       use_cores = 4)
 
-# refit datafile "data_file-12.rds" using a larger number of samples
+# refit dataset "data_file-12.rds" using a larger number of samples
 refit(simulation,
-      datafiles = "data_file-12.rds",
+      datasets = "data_file-12.rds",
       stan_args = list(iter = 4000),
       use_cores = 4)
 }

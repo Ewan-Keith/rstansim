@@ -20,18 +20,18 @@ extract_refitted <- function (object, ...) {
 
 #-----------------------------------------------------------------
 #### extract_refitted.stansim_simulation method ####
-#' Extract names of refitted datafiles from a stansim_simulation object
+#' Extract names of refitted datasets from a stansim_simulation object
 #'
 #' @description Applied to an object of type stansim_simulation,
-#'   \code{extract_refitted()} will return a vector of the names of datafiles
+#'   \code{extract_refitted()} will return a vector of the names of datasets
 #'   that have been refitted since the initial simulation.
 #'
 #' @param object An object of S3 class stansim_simulation.
 #' @param ... other arguments not used by this method.
-#' @return A character vector of the refitted datafile names.
+#' @return A character vector of the refitted dataset names.
 #' @examples
 #' \dontrun{
-#' # extract names of refitted datafiles
+#' # extract names of refitted datasets
 #' extract_refitted(simulation)
 #' }
 #'
@@ -42,10 +42,10 @@ extract_refitted.stansim_simulation <- function(object, ...) {
 
 #-----------------------------------------------------------------
 #### extract_refitted.stansim_collection method ####
-#' Extract details of refitted datafiles from a stansim_collection object
+#' Extract details of refitted datasets from a stansim_collection object
 #'
 #' @description Applied to an object of type stansim_collection,
-#'   \code{extract_refitted()} will return a dataframe of simulation-datafile
+#'   \code{extract_refitted()} will return a dataframe of simulation-dataset
 #'   pairings that have been refitted since the initial simulation.
 #'
 #' @param object An object of S3 class stansim_collection.
@@ -53,34 +53,34 @@ extract_refitted.stansim_simulation <- function(object, ...) {
 #'   \code{stansim_simulation} objects grouped in the collection, or the string
 #'   \code{"all"}. The former will only return values for the corresponding
 #'   simulations, the latter applies no filtering on stansim simulations.
-#' @param datafiles Either a character vector containing the names of datafiles
+#' @param datasets Either a character vector containing the names of datasets
 #'   (as provided to the original \code{stansim} call) fitted, or the string
 #'   \code{"all"}. The former will only return values for the corresponding
-#'   datafiles, the latter applies no filtering on stansim datafiles.
+#'   datasets, the latter applies no filtering on stansim datasets.
 #' @param ... other arguments not used by this method.
-#' @return A dataframe with the simulation titles and datafile names of refitted
-#'   datfiles.
+#' @return A dataframe with the simulation titles and dataset names of refitted
+#'   datasets.
 #'
 #' @examples
 #' \dontrun{
 #' # extract all refitted indicators
 #' extract_refitted(collection)
 #'
-#' # extract only datafiles from "simulation1"
+#' # extract only datasets from "simulation1"
 #' extract_refitted(collection, sim_names = "simulation1")
 #'
-#' # extract only indicators for datafile "data-file_12.rds"
-#' extract_refitted(collection, datafiles = "data-file_12.rds")
+#' # extract only indicators for dataset "data-file_12.rds"
+#' extract_refitted(collection, datasets = "data-file_12.rds")
 #'
 #' }
 #'
 #' @export
 extract_refitted.stansim_collection <-
-  function(object, sim_names = "all", datafiles = "all", ...) {
+  function(object, sim_names = "all", datasets = "all", ...) {
 
     ## carry out basic input validation
-    if (!is.character(datafiles))
-      stop("datafiles argument must be of type character")
+    if (!is.character(datasets))
+      stop("datasets argument must be of type character")
 
     if (!is.character(sim_names))
       stop("sim_names argument must be of type character")
@@ -89,13 +89,13 @@ extract_refitted.stansim_collection <-
     refit_extract <- object$refitted
 
     ## filter on dataset
-    if ("all" %in% datafiles) {
-      if (length(datafiles) > 1) {
-        stop(paste("if datafiles argument contains \"any\",",
-                   "length(datafiles) must be 1"))
+    if ("all" %in% datasets) {
+      if (length(datasets) > 1) {
+        stop(paste("if datasets argument contains \"any\",",
+                   "length(datasets) must be 1"))
       }
     } else {
-      refit_extract <- refit_extract[refit_extract$datafile %in% datafiles, ]
+      refit_extract <- refit_extract[refit_extract$dataset %in% datasets, ]
     }
 
     ## filter on dataset

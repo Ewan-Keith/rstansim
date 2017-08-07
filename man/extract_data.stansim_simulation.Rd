@@ -4,17 +4,17 @@
 \alias{extract_data.stansim_simulation}
 \title{Extract data from a stansim_simulation object}
 \usage{
-\method{extract_data}{stansim_simulation}(object, datafiles = "all",
+\method{extract_data}{stansim_simulation}(object, datasets = "all",
   parameters = "all", estimates = "all", values = NULL,
   param_expand = TRUE, ...)
 }
 \arguments{
 \item{object}{An object of S3 class stansim_simulation.}
 
-\item{datafiles}{Either a character vector containing the names of datafiles
+\item{datasets}{Either a character vector containing the names of datasets
 (as provided to the original \code{stansim()} call) fitted, or the string
 \code{"all"}. The former will only return values for the corresponding
-datafiles, the latter applies no filtering on datafiles}
+datasets, the latter applies no filtering on datasets}
 
 \item{parameters}{Either a character vector containing the names of stan
 model parameters present in the fitted stan models, or the string
@@ -68,8 +68,8 @@ extract_data(simulation, parameters = "eta")
 extract_data(simulation, parameters = "eta[1]",
              param_expand = FALSE)
 
-# extract all rows for datafile "data_file-12.rds"
-extract_data(simulation, datafiles = "data_file-12.rds")
+# extract all rows for dataset "data_file-12.rds"
+extract_data(simulation, datasets = "data_file-12.rds")
 }
 
 }

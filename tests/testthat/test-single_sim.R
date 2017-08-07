@@ -23,7 +23,7 @@ test_that("single_sim should return correct object (mocked stan fit)", {
       ),
 
     catch_out <- rstansim:::single_sim(
-      datafile = dir("data-raw/data",
+      dataset = dir("data-raw/data",
                      full.names = TRUE)[1],
       stan_args = test_stan_args,
       calc_loo = F,
@@ -143,7 +143,7 @@ test_that("single_sim should return correct object (mocked stan fit)", {
 
     # just test that alternative warning values do run correctly
     print_out <- rstansim:::single_sim(
-      datafile = dir("data-raw/data",
+      dataset = dir("data-raw/data",
                      full.names = TRUE)[1],
       stan_args = test_stan_args,
       calc_loo = F,
@@ -172,7 +172,7 @@ test_that("single_sim should return correct object (mocked stan fit)", {
 
     # just test that alternative warning values do run correctly
     suppress_out <- rstansim:::single_sim(
-      datafile = dir("data-raw/data",
+      dataset = dir("data-raw/data",
                      full.names = TRUE)[1],
       stan_args = test_stan_args,
       calc_loo = F,
@@ -221,7 +221,7 @@ test_that("single_sim warnings behave as expectated", {
       ),
 
     catch_out <- rstansim:::single_sim(
-      datafile = dir("data-raw/data",
+      dataset = dir("data-raw/data",
                      full.names = TRUE)[1],
       stan_args = test_stan_args,
       calc_loo = F,
@@ -279,7 +279,7 @@ test_that("written cache folder and files are correct", {
     dir.create(".cache"),
 
     catch_out <- rstansim:::single_sim(
-      datafile = dir("data-raw/data",
+      dataset = dir("data-raw/data",
                      full.names = TRUE)[1],
       stan_args = test_stan_args,
       calc_loo = F,
@@ -441,7 +441,7 @@ test_that("single_sim testing with stansim_data input", {
         file = 'data-raw/simtestreg.stan',
         data_name = "saved stansim_data",
         input_data = reg_data,
-        datasets = 1,
+        dataset = 1,
         path = "testdir",
         param_values = test_vals,
         vars = c("sim_x", "sim_y", "N"),
@@ -449,7 +449,7 @@ test_that("single_sim testing with stansim_data input", {
       )
     )
 
-  ss_data <- ss_data$datasets
+  ss_data <- ss_data$dataset
 
   # check that testdir now exist
   expect_true(dir.exists("testdir"))
@@ -464,7 +464,7 @@ test_that("single_sim testing with stansim_data input", {
     catch <-
       capture_output(
         catch_out <- rstansim:::single_sim(
-          datafile = ss_data,
+          dataset = ss_data,
           stan_args = test_stan_args,
           calc_loo = F,
           parameters = c("alpha", "beta", "sigma"),

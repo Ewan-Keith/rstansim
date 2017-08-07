@@ -122,7 +122,7 @@ stansim_simulate <-
   parallel::stopCluster(cl)
 
   #-----------------------------------------------------------------
-  #### create list of data with datafile name ####
+  #### create list of data with dataset name ####
   # create directory if doesn't exist
   if (!is.null(path)) {
     if (!dir.exists(path)) {

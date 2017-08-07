@@ -31,8 +31,8 @@
 #'   data. See the vignette on producing simulation data for details on the
 #'   formatting of these datasets.
 #' @param stan_args A list of function arguments to be used by the internal
-#'   \code{rstan::sampling} function when fitting the models. If not specified
-#'   then the \code{rstan::sampling} function defaults are used.
+#'   \code{rstan::sampling()} function when fitting the models. If not specified
+#'   then the \code{rstan::sampling()} function defaults are used.
 #' @param calc_loo If \code{TRUE} then model fit statisics will be calculated
 #'   using the \code{loo} package. If \code{TRUE} there must be a valid log_lik
 #'   quantity specified in the generated quantities section of the provided stan
@@ -59,11 +59,11 @@
 #' @param cache If \code{TRUE} then the results for each instance are written to
 #'   a local, temporary file so that data is not lost should the function not
 #'   terminate properly. This temporary data is removed upon the model
-#'   terminating as expected. if \code{FALSE} no data is written and results are
+#'   terminating as expected. If \code{FALSE} no data is written and results are
 #'   only returned upon the correct termination of the whole function. The
 #'   default value of \code{TRUE} is recommended unless there are relevant
 #'   write-permission restrictions.
-#' @param stansim_seed Set a seed for the \code{stansim} function.
+#' @param stansim_seed Set a seed for the function.
 #' @return An S3 object of class \code{stansim_simulation} recording relevant
 #'   simulation data.
 #'
@@ -77,12 +77,12 @@
 #' core_num <- parallel::detectCores()
 #'
 #' # get the list of data file locations
-#' datafiles <- dir("data/repo", full.names = TRUE)
+#' datasets <- dir("data/repo", full.names = TRUE)
 #'
-#' # fit the model to all datafiles using specified stan arguments
+#' # fit the model to all datasets using specified stan arguments
 #' # store the specified estimates for all parameters
 #' simulation <- stansim(sim_name = "stansim simulation",
-#'                       sim_data = datafiles,
+#'                       sim_data = datasets,
 #'                       stan_args = StanArgs,
 #'                       calc_loo = T,
 #'                       use_cores = core_num,
@@ -134,8 +134,8 @@ stansim <- function(sim_name = paste0("Stansim_", Sys.time()),
   # define %dopar% alias
   `%doparal%` <- foreach::`%dopar%`
 
-  # define datafile locally first to avoid R CMD Check Note
-  datafile <- NULL
+  # define dataset locally first to avoid R CMD Check Note
+  dataset <- NULL
 
   ##-------------------------------------------------
   ## pre-compile stan model
@@ -151,7 +151,7 @@ stansim <- function(sim_name = paste0("Stansim_", Sys.time()),
     if (dir.exists(".cache/") &
        length(dir(".cache/")) != 0){
 
-      # remove already ran cached data from datafile
+      # remove already ran cached data from dataset
       cache_files <- dir(".cache", full.names = TRUE)
       clean_cache_files <-
         sub("_cached.rds", "", sub("\\.cache/", "", cache_files))
@@ -172,9 +172,9 @@ stansim <- function(sim_name = paste0("Stansim_", Sys.time()),
   # parallel loop over datasets, default list combine used
   # note, .export only called to enable mocking of single_sim in testing
   sim_estimates <-
-    foreach::foreach(datafile = sim_data,
+    foreach::foreach(dataset = sim_data,
                      .export = "single_sim") %doparal%
-    single_sim(datafile, stan_args, calc_loo,
+    single_sim(dataset, stan_args, calc_loo,
                parameters, probs, estimates, stan_warnings, cache)
 
   # de-register the parallel background once done
@@ -185,13 +185,6 @@ stansim <- function(sim_name = paste0("Stansim_", Sys.time()),
   if (cache)
     sim_estimates <- lapply(dir(".cache/", full.names = TRUE),
                             function (x) readRDS(x))
-
-  ##-------------------------------------------------
-  ## in case of refit, store all call info for re-use
-  # call <- list()
-  # call$raw_call <- match.call()
-  # call$stan_args <- stan_args
-  # call$sim_data <- sim_data
 
   ##-------------------------------------------------
   ## collect stansim_uni objects into stansim obj and return

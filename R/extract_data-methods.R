@@ -25,10 +25,10 @@ extract_data <- function (object, ...) {
 #'   dataframe, subject to the filtering specified by the function arguments.
 #'
 #' @param object An object of S3 class stansim_simulation.
-#' @param datafiles Either a character vector containing the names of datafiles
+#' @param datasets Either a character vector containing the names of datasets
 #'   (as provided to the original \code{stansim()} call) fitted, or the string
 #'   \code{"all"}. The former will only return values for the corresponding
-#'   datafiles, the latter applies no filtering on datafiles
+#'   datasets, the latter applies no filtering on datasets
 #' @param parameters Either a character vector containing the names of stan
 #'   model parameters present in the fitted stan models, or the string
 #'   \code{"all"}. The former will only return values for the corresponding
@@ -71,14 +71,14 @@ extract_data <- function (object, ...) {
 #' extract_data(simulation, parameters = "eta[1]",
 #'              param_expand = FALSE)
 #'
-#' # extract all rows for datafile "data_file-12.rds"
-#' extract_data(simulation, datafiles = "data_file-12.rds")
+#' # extract all rows for dataset "data_file-12.rds"
+#' extract_data(simulation, datasets = "data_file-12.rds")
 #' }
 #'
 #' @export
 extract_data.stansim_simulation <-
   function(object,
-           datafiles = "all",
+           datasets = "all",
            parameters = "all",
            estimates = "all",
            values = NULL,
@@ -88,8 +88,8 @@ extract_data.stansim_simulation <-
     if (!is.function(values) & !is.null(values))
       stop("value argument must be NULL or a function")
 
-    if (!is.character(datafiles))
-      stop("datafiles argument must be of type character")
+    if (!is.character(datasets))
+      stop("datasets argument must be of type character")
 
     if (!is.character(parameters))
       stop("parameter argument must be of type character")
@@ -131,13 +131,13 @@ extract_data.stansim_simulation <-
 
 
     ## filter on dataset
-    if ("all" %in% datafiles) {
-      if (length(datafiles) > 1) {
-        stop(paste("if datafiles argument contains \"any\",",
-                   "length(datafiles) must be 1"))
+    if ("all" %in% datasets) {
+      if (length(datasets) > 1) {
+        stop(paste("if datasets argument contains \"any\",",
+                   "length(datasets) must be 1"))
       }
     } else {
-      data_extract <- data_extract[data_extract$data %in% datafiles, ]
+      data_extract <- data_extract[data_extract$data %in% datasets, ]
     }
 
     # filter on parameter
@@ -189,10 +189,10 @@ extract_data.stansim_simulation <-
 #'   \code{stansim_simulation} objects grouped in the collection, or the string
 #'   \code{"all"}. The former will only return values for the corresponding
 #'   simulations, the latter applies no filtering on stansim simulations.
-#' @param datafiles Either a character vector containing the names of datafiles
+#' @param datasets Either a character vector containing the names of datasets
 #'   (as provided to the original \code{stansim()} call) fitted, or the string
 #'   \code{"all"}. The former will only return values for the corresponding
-#'   datafiles, the latter applies no filtering on datafiles
+#'   datasets, the latter applies no filtering on datasets
 #' @param parameters Either a character vector containing the names of stan
 #'   model parameters present in the fitted stan models, or the string
 #'   \code{"all"}. The former will only return values for the corresponding
@@ -235,8 +235,8 @@ extract_data.stansim_simulation <-
 #' extract_data(collection, parameters = "eta[1]",
 #'              param_expand = FALSE)
 #'
-#' # extract all rows for datafile "data_file-12.rds"
-#' extract_data(collection, datafiles = "data_file-12.rds")
+#' # extract all rows for dataset "data_file-12.rds"
+#' extract_data(collection, datasets = "data_file-12.rds")
 #' # extract all rows for sim_names "simulation1"
 #' extract_data(collection, sim_names = "simulation1")
 #' }
@@ -245,7 +245,7 @@ extract_data.stansim_simulation <-
 extract_data.stansim_collection <-
   function(object,
            sim_names = "all",
-           datafiles = "all",
+           datasets = "all",
            parameters = "all",
            estimates = "all",
            values = NULL,
@@ -259,8 +259,8 @@ extract_data.stansim_collection <-
     if (!is.character(sim_names))
       stop("sim_names argument must be of type character")
 
-    if (!is.character(datafiles))
-      stop("datafiles argument must be of type character")
+    if (!is.character(datasets))
+      stop("datasets argument must be of type character")
 
     if (!is.character(parameters))
       stop("parameter argument must be of type character")
@@ -312,13 +312,13 @@ extract_data.stansim_collection <-
 
 
     ## filter on dataset
-    if ("all" %in% datafiles) {
-      if (length(datafiles) > 1) {
-        stop(paste("if datafiles argument contains \"any\",",
-                   "length(datafiles) must be 1"))
+    if ("all" %in% datasets) {
+      if (length(datasets) > 1) {
+        stop(paste("if datasets argument contains \"any\",",
+                   "length(datasets) must be 1"))
       }
     } else {
-      data_extract <- data_extract[data_extract$data %in% datafiles, ]
+      data_extract <- data_extract[data_extract$data %in% datasets, ]
     }
 
     # filter on parameter

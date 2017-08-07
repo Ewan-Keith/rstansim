@@ -21,7 +21,7 @@ simulation runs internal to the \code{stansim()} function.}
 returned.}
 
 \item{raw_call}{The values of all arguments provided to \code{stansim()} when
-first ran. This is used for any refitting of datafiles using the
+first ran. This is used for any refitting of datasets using the
 \code{refit()} method.}
 
 \item{stansim_seed}{The global seed for the \code{stansim()} call.}

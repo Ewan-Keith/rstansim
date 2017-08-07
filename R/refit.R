@@ -1,17 +1,17 @@
 #-----------------------------------------------------------------
 #### refit function ####
-#' Refit specified datafiles in a stansim_simulation object
+#' Refit specified datasets in a stansim_simulation object
 #'
 #' @description \code{refit} Takes a \code{stansim_simulation} object and a
-#'   vector of characters corresponding to the names of datafiles fitted within
+#'   vector of characters corresponding to the names of datasets fitted within
 #'   the \code{stansim_simulation} object, and refits the stan model for each of
 #'   these instances. This allows users to refit any specific models using new
 #'   stan arguments if need be (e.g. if the model fails to converge in the
 #'   original run).
 #'
 #' @param object An object of S3 class stansim_simulation.
-#' @param datafiles The full names of the data files to be refitted. These must
-#'   be consistent both with the datafile names stored within the
+#' @param datasets The full names of the data files to be refitted. These must
+#'   be consistent both with the dataset names stored within the
 #'   \code{stansim_simulation} object, and with the copies of the data files
 #'   relative to the current working directory. This is best ensured by running
 #'   refit from the same working directory as the original \code{stansim} call.
@@ -38,14 +38,14 @@
 #'
 #' @examples
 #' \dontrun{
-#' # refit datafiles "data_file-12.rds" & "data_file-08.rds"
+#' # refit datasets "data_file-12.rds" & "data_file-08.rds"
 #' refit(simulation,
-#'       datafiles = c("data_file-12.rds", "data_file-08.rds")
+#'       datasets = c("data_file-12.rds", "data_file-08.rds")
 #'       use_cores = 4)
 #'
-#' # refit datafile "data_file-12.rds" using a larger number of samples
+#' # refit dataset "data_file-12.rds" using a larger number of samples
 #' refit(simulation,
-#'       datafiles = "data_file-12.rds",
+#'       datasets = "data_file-12.rds",
 #'       stan_args = list(iter = 4000),
 #'       use_cores = 4)
 #' }
@@ -53,7 +53,7 @@
 #' @export
 refit <-
   function(object,
-           datafiles,
+           datasets,
            stan_args = list(),
            calc_loo = FALSE,
            use_cores = 1L,
@@ -66,27 +66,27 @@ refit <-
   if (class(object) != "stansim_simulation")
     stop("object must be of class stansim_simulation")
 
-  if(typeof(datafiles) != "character")
-    stop("datafiles argument must be of type character")
+  if(typeof(datasets) != "character")
+    stop("datasets argument must be of type character")
 
-  # check all datafile args exist and can be found
-  file_exists <- function(datafile)
-    if (!file.exists(datafile)) {
-      stop(paste0("datafile \"", datafile,
+  # check all dataset args exist and can be found
+  file_exists <- function(dataset)
+    if (!file.exists(dataset)) {
+      stop(paste0("dataset \"", dataset,
         "\" could not be found. Check your file structure"
       ))
     }
-  lapply(datafiles, file_exists)
+  lapply(datasets, file_exists)
 
-  # check all datafile args are in the stansim_simulation object
-  data_exists <- function(datafile, object_data){
-    if(!(datafile %in% object_data$datafile))
+  # check all dataset args are in the stansim_simulation object
+  data_exists <- function(dataset, object_data){
+    if(!(dataset %in% object_data$dataset))
       stop(paste0(
-        "datafiles argument \"",
-        datafile,
+        "datasets argument \"",
+        dataset,
         "\" not found in provided stansim_object data"))
   }
-  lapply(datafiles, data_exists, object_data = object$data)
+  lapply(datasets, data_exists, object_data = object$data)
 
   ####-----------------------------------------------------------------
   ## prepare relevant call args
@@ -106,7 +106,7 @@ refit <-
   call_args$use_cores <- use_cores
   call_args$cache <- cache
   call_args$stansim_seed <- stansim_seed
-  call_args$sim_data <- datafiles
+  call_args$sim_data <- datasets
 
   ####-----------------------------------------------------------------
   ## refitting datasets
@@ -124,7 +124,7 @@ refit <-
     data_name <- new_object$instances[[i]]$data_name
 
     # if instance name is one to be replaced
-    if(data_name %in% datafiles){
+    if(data_name %in% datasets){
 
       # find the matching instance data_name in the new stansim obj
       new_instance_index <- which(sapply(
@@ -141,13 +141,13 @@ refit <-
   ## update the data field with new data
   # remove the to be replaced data
   trimmed_data <-
-    new_object$data[!(new_object$data$data %in% datafiles), ]
+    new_object$data[!(new_object$data$data %in% datasets), ]
 
   # add the new replacement data
   new_object$data <- rbind(trimmed_data, refitted_stansim$data)
 
   ## update the refitted field with new data
-  new_object$refitted <- unique(c(new_object$refitted, datafiles))
+  new_object$refitted <- unique(c(new_object$refitted, datasets))
 
 
   ####-----------------------------------------------------------------
