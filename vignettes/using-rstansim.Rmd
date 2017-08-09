@@ -94,7 +94,7 @@ regression_corr_params <-list("alpha" = 5, "beta" = c(0, 0, .8, .6, .4),
 
 With our input values set up we can now simulate data easily.
 
-```{R, eval = FALSE}
+```{R}
 library(rstansim)
 
 # simulate data with uncorrelated predictors
