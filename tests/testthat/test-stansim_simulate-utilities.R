@@ -19,9 +19,13 @@ test_that("simulate_internal returns correctly formatted output (sim_drop = T)",
         reg_data,
         c("sim_x", "sim_y", "N"),
         test_vals,
+        use_cores = 1,
+        nsim = 1,
         sim_drop = T
       )
     )
+
+  sim_out <- sim_out[[1]]
 
   # expect a list
   expect_type(sim_out, "list")
@@ -63,9 +67,13 @@ test_that("simulate_internal returns correctly formatted output (sim_drop = F)",
         reg_data,
         c("sim_x", "sim_y", "N"),
         test_vals,
+        use_cores = 1,
+        nsim = 1,
         sim_drop = FALSE
       )
     )
+
+  sim_out <- sim_out[[1]]
 
   # expect a list
   expect_type(sim_out, "list")

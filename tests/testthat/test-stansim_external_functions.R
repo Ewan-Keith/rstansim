@@ -22,11 +22,11 @@ test_that("stansim test; cache FALSE, loo FALSE", {
 
     test_sim_data <- dir("data-raw/data", full.names = TRUE),
 
-    stansim_output <- stansim(stan_args = test_stan_args,
+    stansim_output <- fit_models(stan_args = test_stan_args,
                               sim_data = test_sim_data,
                               cache = FALSE,
                               sim_name = "stansim no cache & loo test",
-                              stansim_seed = 500),
+                              seed = 500),
 
     # output should be a list
     expect_type(stansim_output, "list"),
@@ -40,7 +40,7 @@ test_that("stansim test; cache FALSE, loo FALSE", {
     # item names should be as expected
     expect_equal(names(stansim_output),
                  c("sim_name", "start_time", "end_time", "model_name",
-                   "model_code", "sim_seed", "instances", "data", "raw_call",
+                   "model_code", "seed", "instances", "data", "raw_call",
                    "refitted")),
 
     # sim_name should be correct
@@ -62,7 +62,7 @@ test_that("stansim test; cache FALSE, loo FALSE", {
     expect_equal(nchar(stansim_output$model_code), 418),
 
     # sim_seed should be correct
-    expect_equal(stansim_output$sim_seed, 500),
+    expect_equal(stansim_output$seed, 500),
 
     ## extract the instances for testing
     test_instances <- stansim_output$instances,
@@ -210,11 +210,11 @@ test_that("stansim test; cache TRUE, loo FALSE", {
 
     test_sim_data <- dir("data-raw/data", full.names = TRUE),
 
-    stansim_output <- stansim(stan_args = test_stan_args,
+    stansim_output <- fit_models(stan_args = test_stan_args,
                               sim_data = test_sim_data,
                               cache = TRUE,
                               sim_name = "stansim no loo test",
-                              stansim_seed = 500),
+                              seed = 500),
 
     # output should be a list
     expect_type(stansim_output, "list"),
@@ -228,7 +228,7 @@ test_that("stansim test; cache TRUE, loo FALSE", {
     # item names should be as expected
     expect_equal(names(stansim_output),
                  c("sim_name", "start_time", "end_time", "model_name",
-                   "model_code", "sim_seed", "instances", "data",
+                   "model_code", "seed", "instances", "data",
                    "raw_call", "refitted")),
 
     # sim_name should be correct
@@ -250,7 +250,7 @@ test_that("stansim test; cache TRUE, loo FALSE", {
     expect_equal(nchar(stansim_output$model_code), 418),
 
     # sim_seed should be correct
-    expect_equal(stansim_output$sim_seed, 500),
+    expect_equal(stansim_output$seed, 500),
 
     ## extract the instances for testing
     test_instances <- stansim_output$instances,
@@ -397,11 +397,11 @@ test_that("stansim test; cache TRUE, loo FALSE", {
 
     test_sim_data <- dir("data-raw/data", full.names = TRUE),
 
-    stansim_output <- stansim(stan_args = test_stan_args,
+    stansim_output <- fit_models(stan_args = test_stan_args,
                               sim_data = test_sim_data,
                               cache = TRUE,
                               sim_name = "stansim no loo test",
-                              stansim_seed = 500),
+                              seed = 500),
 
     # output should be a list
     expect_type(stansim_output, "list"),
@@ -415,7 +415,7 @@ test_that("stansim test; cache TRUE, loo FALSE", {
     # item names should be as expected
     expect_equal(names(stansim_output),
                  c("sim_name", "start_time", "end_time", "model_name",
-                   "model_code", "sim_seed", "instances", "data",
+                   "model_code", "seed", "instances", "data",
                    "raw_call", "refitted")),
 
     # sim_name should be correct
@@ -437,7 +437,7 @@ test_that("stansim test; cache TRUE, loo FALSE", {
     expect_equal(nchar(stansim_output$model_code), 418),
 
     # sim_seed should be correct
-    expect_equal(stansim_output$sim_seed, 500),
+    expect_equal(stansim_output$seed, 500),
 
     ## extract the instances for testing
     test_instances <- stansim_output$instances,
@@ -586,11 +586,11 @@ test_that("stansim test; cache TRUE, loo FALSE", {
 
     test_sim_data <- dir("data-raw/data", full.names = TRUE),
 
-    stansim_output <- stansim(stan_args = test_stan_args,
+    stansim_output <- fit_models(stan_args = test_stan_args,
                               sim_data = test_sim_data,
                               cache = TRUE,
                               sim_name = "stansim no loo test",
-                              stansim_seed = 500),
+                              seed = 500),
 
     # output should be a list
     expect_type(stansim_output, "list"),
@@ -604,7 +604,7 @@ test_that("stansim test; cache TRUE, loo FALSE", {
     # item names should be as expected
     expect_equal(names(stansim_output),
                  c("sim_name", "start_time", "end_time", "model_name",
-                   "model_code", "sim_seed", "instances", "data",
+                   "model_code", "seed", "instances", "data",
                    "raw_call", "refitted")),
 
     # sim_name should be correct
@@ -626,7 +626,7 @@ test_that("stansim test; cache TRUE, loo FALSE", {
     expect_equal(nchar(stansim_output$model_code), 418),
 
     # sim_seed should be correct
-    expect_equal(stansim_output$sim_seed, 500),
+    expect_equal(stansim_output$seed, 500),
 
     ## extract the instances for testing
     test_instances <- stansim_output$instances,
@@ -782,27 +782,31 @@ test_that("stansim test with stansim_data object; cache FALSE, loo FALSE", {
     # check that testdir doesn't already exist
     expect_false(dir.exists("testdir"))
 
-    ss_data <- stansim_simulate(file = 'data-raw/simtestreg.stan',
-                                data_name = "saved stansim_data",
-                                input_data = reg_data,
-                                datasets = 1,
-                                path = "testdir",
-                                param_values = test_vals,
-                                vars = c("sim_x", "sim_y", "N"),
-                                use_cores = 1)$datasets
+    catch <- capture_output(
+      ss_data <- simulate_data(
+        file = 'data-raw/simtestreg.stan',
+        data_name = "saved stansim_data",
+        input_data = reg_data,
+        nsim = 1,
+        path = "testdir",
+        param_values = test_vals,
+        vars = c("sim_x", "sim_y", "N"),
+        use_cores = 1
+      )$datasets
+    )
 
     # check that testdir now exist
     expect_true(dir.exists("testdir"))
 
     catch <-
       capture_output(
-        stansim_output <- stansim(
+        stansim_output <- fit_models(
           stan_args = test_stan_args,
           sim_data = ss_data,
           cache = FALSE,
           parameters = c("alpha", "beta", "sigma"),
           sim_name = "stansim no cache & loo test",
-          stansim_seed = 500
+          seed = 500
         )
       )
 
@@ -818,7 +822,7 @@ test_that("stansim test with stansim_data object; cache FALSE, loo FALSE", {
     # item names should be as expected
     expect_equal(names(stansim_output),
                  c("sim_name", "start_time", "end_time", "model_name",
-                   "model_code", "sim_seed", "instances", "data", "raw_call",
+                   "model_code", "seed", "instances", "data", "raw_call",
                    "refitted"))
 
     # sim_name should be correct
@@ -840,7 +844,7 @@ test_that("stansim test with stansim_data object; cache FALSE, loo FALSE", {
     expect_equal(nchar(stansim_output$model_code), 338)
 
     # sim_seed should be correct
-    expect_equal(stansim_output$sim_seed, 500)
+    expect_equal(stansim_output$seed, 500)
 
     ## extract the instances for testing
     test_instances <- stansim_output$instances
@@ -967,27 +971,31 @@ test_that("stansim test with stansim_data object; cache TRUE, loo FALSE", {
   # check that testdir doesn't already exist
   expect_false(dir.exists("testdir"))
 
-  ss_data <- stansim_simulate(file = 'data-raw/simtestreg.stan',
-                              data_name = "saved stansim_data",
-                              input_data = reg_data,
-                              datasets = 1,
-                              path = "testdir",
-                              param_values = test_vals,
-                              vars = c("sim_x", "sim_y", "N"),
-                              use_cores = 1)$datasets
+  catch <- capture_output(
+    ss_data <- simulate_data(
+      file = 'data-raw/simtestreg.stan',
+      data_name = "saved stansim_data",
+      input_data = reg_data,
+      nsim = 1,
+      path = "testdir",
+      param_values = test_vals,
+      vars = c("sim_x", "sim_y", "N"),
+      use_cores = 1
+    )$datasets
+  )
 
   # check that testdir now exist
   expect_true(dir.exists("testdir"))
 
   catch <-
     capture_output(
-      stansim_output <- stansim(
+      stansim_output <- fit_models(
         stan_args = test_stan_args,
         sim_data = ss_data,
         cache = TRUE,
         parameters = c("alpha", "beta", "sigma"),
         sim_name = "stansim no cache & loo test",
-        stansim_seed = 500
+        seed = 500
       )
     )
 
@@ -1003,7 +1011,7 @@ test_that("stansim test with stansim_data object; cache TRUE, loo FALSE", {
   # item names should be as expected
   expect_equal(names(stansim_output),
                c("sim_name", "start_time", "end_time", "model_name",
-                 "model_code", "sim_seed", "instances", "data", "raw_call",
+                 "model_code", "seed", "instances", "data", "raw_call",
                  "refitted"))
 
   # sim_name should be correct
@@ -1025,7 +1033,7 @@ test_that("stansim test with stansim_data object; cache TRUE, loo FALSE", {
   expect_equal(nchar(stansim_output$model_code), 338)
 
   # sim_seed should be correct
-  expect_equal(stansim_output$sim_seed, 500)
+  expect_equal(stansim_output$seed, 500)
 
   ## extract the instances for testing
   test_instances <- stansim_output$instances

@@ -4,21 +4,21 @@
 #'
 #' @description A constructor function for creating S3 objects of class
 #'   \code{stansim_simulation}. \code{stansim_simulation} objects are the basic
-#'   unit of output from calls to the \code{stansim()} function and collects the
+#'   unit of output from calls to the \code{fit_models()} function and collects the
 #'   specified data for all stan models fitted.
 #'
 #' @param sim_name The name to be given to the simulation represented by the
 #'   \code{stansim_simulation} object.
 #' @param stansim_uni_list A list of objects with S3 class \code{stan_sim_uni}.
 #'   This is an unexported class used to store the outcomes of individual
-#'   simulation runs internal to the \code{stansim()} function.
-#' @param start_time System time when \code{stansim()} was called.
-#' @param end_time System time when the results from \code{stansim()} were
+#'   simulation runs internal to the \code{fit_models()} function.
+#' @param start_time System time when \code{fit_models()} was called.
+#' @param end_time System time when the results from \code{fit_models()} were
 #'   returned.
-#' @param raw_call The values of all arguments provided to \code{stansim()} when
+#' @param raw_call The values of all arguments provided to \code{fit_models()} when
 #'   first ran. This is used for any refitting of datasets using the
 #'   \code{refit()} method.
-#' @param stansim_seed The global seed for the \code{stansim()} call.
+#' @param seed The global seed for the \code{fit_models()} call.
 #'
 #' @return An S3 object of class \code{stansim_simulation} recording relevant
 #'   simulation data.
@@ -26,7 +26,7 @@
 #' @export
 stansim_simulation <-
   function(sim_name, stansim_uni_list, start_time,
-           end_time, raw_call, stansim_seed) {
+           end_time, raw_call, seed) {
 
     ## extract all individual stan instance level data
     # function for cleaning out simstan_uni elements for storage
@@ -60,7 +60,7 @@ stansim_simulation <-
         "end_time" = end_time,
         "model_name" = model_name,
         "model_code" = model_code,
-        "sim_seed" = stansim_seed,
+        "seed" = seed,
         "instances" = ind_runs,
         "data" = longer_data,
         "raw_call" = raw_call,

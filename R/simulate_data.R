@@ -1,30 +1,44 @@
 #-----------------------------------------------------------------
-#### stansim_simulate ####
+#### simulate_data ####
 #' Simulate datasets from a stan model
 #'
-#' @description \code{stansim_simulate()} takes a specified stan model and allows the user to simulate data from it
-#' based on specified parameter values. The user then specifies which data they wish to save and how many simulations
-#' they wish to run. The data will be saved as individual .rds files in the directory specified by \code{path}.
+#' @description \code{simulate_data()} takes a specified stan model and allows
+#'   the user to simulate data from it based on specified parameter values. The
+#'   user then specifies which data they wish to save and how many simulations
+#'   they wish to run. The data will be saved as individual .rds files in the
+#'   directory specified by \code{path}.
 #'
-#' By default an object of class \code{stansim_data} will be returned, providing an index of the saved data that can then be provided
-#' directly to a \code{stansim()} call.
+#'   By default an object of class \code{stansim_data} will be returned,
+#'   providing an index of the saved data that can then be provided directly to
+#'   a \code{stansim()} call.
 #'
-#' To allow for simulated data to be directly fed into stan model that simulated them as input data, the sim_drop argument is provided.
-#' If \code{sim_drop} is true then any stan data object with a name beginning with "sim_" wil have this string removed from it's name.
-#' For example, the simulated data "sim_x" would be returned simply as "x". This helps avoid the issue of overlapping data names for both
-#' input and output
+#'   To allow for simulated data to be directly fed into stan model that
+#'   simulated them as input data, the sim_drop argument is provided. If
+#'   \code{sim_drop} is true then any stan data object with a name beginning
+#'   with "sim_" wil have this string removed from it's name. For example, the
+#'   simulated data "sim_x" would be returned simply as "x". This helps avoid
+#'   the issue of overlapping data names for both input and output
 #'
-#' @param file A character string or a connection that R supports specifying the Stan model specification in Stan's modeling language.
-#' @param data_name A name attached to the \code{stansim_data} object to
-#'   help identify it. It is strongly recomended that an informative name is
-#'   assigned. If \code{path} isn't NULL, this will also be the name stem for the saved .rds files.
-#' @param input_data Values for the data field in the provided stan model. Values must be provided for all
-#' entries even if they are not used in the 'generate quantities' model section producing the simulated data.
-#' @param vars The names of the stan variables to return. Defaults to "all", otherwise a vector of variable names should be provided.
-#' @param param_values A list containing the named values for the stan model parameters used to simulate data. If a parameter's
-#' value is not specified here it will be initialised randomly. Recommended to specify all parameter values.
-#' @param datasets The number of simulated datasets to produce.
-#' @param path The name of the directory to save the simulated data to, if this doesn't exist it will be created. Defaults to NULL in which the datasets are saved to the working directory
+#' @param file A character string containing either the file location of the
+#'   model code (ending in ".stan"), a character string containing the model
+#'   specification or the name of a character string object in the workspace.
+#' @param data_name A name attached to the \code{stansim_data} object to help
+#'   identify it. It is strongly recomended that an informative name is
+#'   assigned. If \code{path} isn't NULL, this will also be the name stem for
+#'   the saved .rds files.
+#' @param input_data Values for the data field in the provided stan model.
+#'   Values must be provided for all entries even if they are not used in the
+#'   'generate quantities' model section producing the simulated data.
+#' @param vars The names of the stan variables to return. Defaults to "all",
+#'   otherwise a vector of variable names should be provided.
+#' @param param_values A list containing the named values for the stan model
+#'   parameters used to simulate data. If a parameter's value is not specified
+#'   here it will be initialised randomly. Recommended to specify all parameter
+#'   values.
+#' @param nsim The number of simulated datasets to produce.
+#' @param path The name of the directory to save the simulated data to, if this
+#'   doesn't exist it will be created. Defaults to NULL in which the datasets
+#'   are saved to the working directory
 #' @param return_object if FALSE then no \code{stansim_data} object is returned.
 #' @param use_cores Number of cores to use when running in parallel.
 #' @param sim_drop If TRUE then any simulated data objects beginning in "sim_"
@@ -34,13 +48,13 @@
 #' @return An object of S3 class stansim_data or NULL.
 #'
 #' @export
-stansim_simulate <-
+simulate_data <-
   function(file,
            data_name = paste0("Simdata_", Sys.time()),
            input_data = NULL,
            vars = "all",
            param_values = NULL,
-           datasets = 1,
+           nsim = 1,
            path = NULL,
            return_object = TRUE,
            use_cores = 1,
@@ -78,9 +92,9 @@ stansim_simulate <-
   if(!(is.null(param_values) | typeof(param_values) == "list"))
     stop("param_values must be NULL or of type list")
 
-  # datasets must be a positive integer
-  if(datasets < 1 | datasets %% 1 != 0)
-    stop("datasets must be a positive integer")
+  # nsim must be a positive integer
+  if(nsim < 1 | nsim %% 1 != 0)
+    stop("nsim must be a positive integer")
 
   # use_cores must be a positive integer
   if(use_cores < 1 | use_cores %% 1 != 0)
@@ -94,32 +108,28 @@ stansim_simulate <-
   if(typeof(sim_drop) != "logical")
     stop("sim_drop must be of type logical")
 
-  # ----------------------------------------------------------------
-  #### set up for parallel running ####
-  cl <- parallel::makeCluster(use_cores)
-  doParallel::registerDoParallel(cl)
-
-  # define %dopar% alias
-  `%doparal%` <- foreach::`%dopar%`
-
   # -----------------------------------------------------------------
   ## pre-compile stan model
-  compiled_model <- rstan::stan_model(file = file)
+  # if file ends in '.stan' assume it's a file connection
+  if(grepl("\\.stan$", file)){
+    compiled_model <- rstan::stan_model(file = file)
+  } else {
+    compiled_model <- rstan::stan_model(model_code = file)
+  }
+
 
   #-----------------------------------------------------------------
   #### run simulations ####
   data_list <-
-    foreach::foreach(1:datasets) %doparal%
     simulate_internal(
       cmodel = compiled_model,
       input_data = input_data,
       vars = vars,
       param_values = param_values,
+      nsim = nsim,
+      use_cores = use_cores,
       sim_drop = sim_drop
     )
-
-  # de-register the parallel background once done
-  parallel::stopCluster(cl)
 
   #-----------------------------------------------------------------
   #### create list of data with dataset name ####

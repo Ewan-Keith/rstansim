@@ -210,13 +210,13 @@ param_extract <- function(fitted_stan, calc_loo, parameters,
 
 
 #-----------------------------------------------------------------
-#### stansim_checker ####
-# stansim_checker runs several tests on input to stan_sim() to
+#### fit_models_checker ####
+# fit_models_checker runs several tests on input to fit_models() to
 # check for input validity early in the function. Only basic type
 # checks are made.
-stansim_checker <- function(sim_data, calc_loo, use_cores,
+fit_models_checker <- function(sim_data, calc_loo, use_cores,
                              parameters, probs, estimates, stan_args,
-                             stan_warnings, cache, stansim_seed,
+                             stan_warnings, cache, seed,
                              sim_name){
 
 
@@ -298,7 +298,7 @@ stansim_checker <- function(sim_data, calc_loo, use_cores,
   # stan_args$cores will just be overwritten
   # if specified warn user
   if ("cores" %in% names(stan_args))
-    warning(paste("stan_sim is parallel across stan instances,",
+    warning(paste("fit_models is parallel across stan instances,",
                    "not within. stan_arg$cores is fixed to 1"))
 
   # stan_warnings must be one of print, catch, suppress

@@ -5,8 +5,7 @@
 \title{Refit specified datasets in a stansim_simulation object}
 \usage{
 refit(object, datasets, stan_args = list(), calc_loo = FALSE,
-  use_cores = 1L, cache = TRUE, stansim_seed = floor(stats::runif(1, 1,
-  1e+05)))
+  use_cores = 1L, cache = TRUE, seed = floor(stats::runif(1, 1, 1e+05)))
 }
 \arguments{
 \item{object}{An object of S3 class stansim_simulation.}
@@ -15,7 +14,7 @@ refit(object, datasets, stan_args = list(), calc_loo = FALSE,
 be consistent both with the dataset names stored within the
 \code{stansim_simulation} object, and with the copies of the data files
 relative to the current working directory. This is best ensured by running
-refit from the same working directory as the original \code{stansim} call.}
+refit from the same working directory as the original \code{fit_models()} call.}
 
 \item{stan_args}{A list of function arguments to be used by the internal
 \code{rstan::sampling()} function when fitting the models. If not specified
@@ -38,7 +37,7 @@ only returned upon the correct termination of the whole function. The
 default value of \code{TRUE} is recommended unless there are relevant
 write-permission restrictions.}
 
-\item{stansim_seed}{Set a seed for the \code{stansim} function.}
+\item{seed}{Set a seed for the \code{fit_models()} function.}
 }
 \value{
 An S3 object of class \code{stansim_simulation} recording relevant

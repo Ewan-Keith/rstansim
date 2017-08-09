@@ -437,11 +437,11 @@ test_that("single_sim testing with stansim_data input", {
 
   catch <-
     capture_output(
-      ss_data <- stansim_simulate(
+      ss_data <- simulate_data(
         file = 'data-raw/simtestreg.stan',
         data_name = "saved stansim_data",
         input_data = reg_data,
-        dataset = 1,
+        nsim = 1,
         path = "testdir",
         param_values = test_vals,
         vars = c("sim_x", "sim_y", "N"),

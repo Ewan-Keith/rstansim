@@ -171,7 +171,7 @@ print.stansim_data <- function(x, ...){
   cat(paste0("Stansim Data Title: ", x$data_name, "\n"))
 
   # number of datasets recorded
-  cat(paste0("Number of datasets simulated: ", length(x$data), "\n\n"))
+  cat(paste0("Number of datasets simulated: ", length(x$datasets), "\n\n"))
 
   # model simulated from
   cat(paste0("Simulated from model: ", x$model_name, "\n\n"))

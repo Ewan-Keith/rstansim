@@ -14,6 +14,8 @@ Encoding: UTF-8
 LazyData: true
 Imports: loo (>= 1.0.0),
     foreach (>= 1.4.3),
+    doSNOW (>= 1.0.14),
+    doRNG (>= 1.6.6),
     doParallel (>= 1.0.10),
     rstan (>= 2.14.1)
 Depends: R (>= 3.2.3),
@@ -21,7 +23,8 @@ Depends: R (>= 3.2.3),
 RoxygenNote: 6.0.1
 Suggests: testthat,
     knitr,
-    rmarkdown
+    rmarkdown,
+    stanhl
 VignetteBuilder: knitr
 URL: https://github.com/Ewan-Keith/rstansim#rstansim
 BugReports: https://github.com/Ewan-Keith/rstansim/issues

@@ -1,8 +1,8 @@
 #-----------------------------------------------------------------
-#### stansim ####
+#### fit_models ####
 #' Fit a stan model to multiple datasets
 #'
-#' @description \code{stansim} fits a stan model across multiple datasets,
+#' @description \code{fit_models()} fits a stan model across multiple datasets,
 #'   collates, and returns summary information and data for all fitted models as
 #'   a \code{stansim_simulation} object. All fitted models have basic
 #'   reproducability information recorded; such as parameter inits and seeds,
@@ -63,7 +63,7 @@
 #'   only returned upon the correct termination of the whole function. The
 #'   default value of \code{TRUE} is recommended unless there are relevant
 #'   write-permission restrictions.
-#' @param stansim_seed Set a seed for the function.
+#' @param seed Set a seed for the function.
 #' @return An S3 object of class \code{stansim_simulation} recording relevant
 #'   simulation data.
 #'
@@ -81,42 +81,43 @@
 #'
 #' # fit the model to all datasets using specified stan arguments
 #' # store the specified estimates for all parameters
-#' simulation <- stansim(sim_name = "stansim simulation",
-#'                       sim_data = datasets,
-#'                       stan_args = StanArgs,
-#'                       calc_loo = T,
-#'                       use_cores = core_num,
-#'                       probs =  c(.025, .5, .975),
-#'                       estimates = c("mean", "n_eff", "Rhat"))
+#' simulation <- fit_models(
+#'   sim_name = "stansim simulation",
+#'   sim_data = datasets,
+#'   stan_args = StanArgs,
+#'   calc_loo = T,
+#'   use_cores = core_num,
+#'   probs =  c(.025, .5, .975),
+#'   estimates = c("mean", "n_eff", "Rhat")
+#' )
 #' }
 #'
 #' @export
-stansim <- function(sim_name = paste0("Stansim_", Sys.time()),
-                    sim_data = NULL,
-                    stan_args = list(),
-                    calc_loo = FALSE,
-                    use_cores = 1L,
-                    parameters = "all",
-                    probs = c(.025, .25, .5, .75, .975),
-                    estimates = c("mean", "se_mean", "sd", "n_eff", "Rhat"),
-                    stan_warnings = "catch",
-                    # options print, catch, suppress
-                    cache = TRUE,
-                    stansim_seed = floor(stats::runif(1, 1, 100000))) {
+fit_models <- function(sim_name = paste0("Stansim_", Sys.time()),
+                       sim_data = NULL,
+                       stan_args = list(),
+                       calc_loo = FALSE,
+                       use_cores = 1L,
+                       parameters = "all",
+                       probs = c(.025, .25, .5, .75, .975),
+                       estimates = c("mean", "se_mean", "sd", "n_eff", "Rhat"),
+                       stan_warnings = "catch",
+                       # options print, catch, suppress
+                       cache = TRUE,
+                       seed = floor(stats::runif(1, 1, 100000))) {
 
 
   # store raw arguments in case of refitting
   raw_call <- as.list(environment())
 
   start_time <- Sys.time()
-  set.seed(stansim_seed)
 
   ## -------------------------------------------------
   ## error checks
   # carry out basic input validation
-  stansim_checker(sim_data, calc_loo, use_cores,
+  fit_models_checker(sim_data, calc_loo, use_cores,
                    parameters, probs, estimates, stan_args,
-                   stan_warnings, cache, stansim_seed,
+                   stan_warnings, cache, seed,
                    sim_name)
 
   ## -------------------------------------------------
@@ -125,17 +126,6 @@ stansim <- function(sim_name = paste0("Stansim_", Sys.time()),
     # replace sim_data with sim_data$data
     sim_data <- sim_data$datasets
   }
-
-  ## -------------------------------------------------
-  ## set up for parallel running
-  cl <- parallel::makeCluster(use_cores)
-  doParallel::registerDoParallel(cl)
-
-  # define %dopar% alias
-  `%doparal%` <- foreach::`%dopar%`
-
-  # define dataset locally first to avoid R CMD Check Note
-  dataset <- NULL
 
   ##-------------------------------------------------
   ## pre-compile stan model
@@ -166,17 +156,44 @@ stansim <- function(sim_name = paste0("Stansim_", Sys.time()),
     }
   }
 
+  ## -------------------------------------------------
+  ## set up for parallel running
+  cl <- parallel::makeCluster(use_cores)
+  doSNOW::registerDoSNOW(cl)
+
+  # define %dopar% alias
+  `%dopar%` <- foreach::`%dopar%`
+
+  # define %dorng% alias
+  `%dorng%` <- doRNG::`%dorng%`
+
+  # define dataset locally first to avoid R CMD Check Note
+  dataset <- NULL
+
+  set.seed(seed)
+
   ##-------------------------------------------------
   ## run over the datasets
 
-  # parallel loop over datasets, default list combine used
-  # note, .export only called to enable mocking of single_sim in testing
-  sim_estimates <-
-    foreach::foreach(dataset = sim_data,
-                     .export = "single_sim") %doparal%
-    single_sim(dataset, stan_args, calc_loo,
-               parameters, probs, estimates, stan_warnings, cache)
+  # if datasets is empty (can happen if full .cache results are there)
+  # then skip fitting
+  if (length(sim_data > 0)) {
 
+    # parallel loop over datasets, default list combine used
+    # note, .export only called to enable mocking of single_sim in testing
+    sim_estimates <-
+      foreach::foreach(dataset = sim_data,
+                       .export = "single_sim") %dorng%
+      single_sim(dataset,
+                 stan_args,
+                 calc_loo,
+                 parameters,
+                 probs,
+                 estimates,
+                 stan_warnings,
+                 cache)
+
+  }
   # de-register the parallel background once done
   parallel::stopCluster(cl)
 
@@ -196,7 +213,7 @@ stansim <- function(sim_name = paste0("Stansim_", Sys.time()),
       stansim_uni_list = sim_estimates,
       start_time = start_time,
       end_time = end_time,
-      stansim_seed = stansim_seed,
+      seed = seed,
       raw_call = raw_call
     )
 

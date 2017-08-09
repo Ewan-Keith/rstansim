@@ -151,7 +151,7 @@ test_that("stansim_simulation object constructor returns correct values", {
       stansim_uni_list = test_stansim_uni_list,
       start_time = Sys.time(),
       end_time = Sys.time(),
-      stansim_seed = 500,
+      seed = 500,
       raw_call = "raw call values"
     )
 
@@ -167,7 +167,7 @@ test_that("stansim_simulation object constructor returns correct values", {
   # item names should be as expected
   expect_equal(names(stansim_simulation_test),
                c("sim_name", "start_time", "end_time", "model_name",
-                 "model_code", "sim_seed", "instances", "data",
+                 "model_code", "seed", "instances", "data",
                  "raw_call", "refitted"))
 
   # sim_name should be correct
@@ -189,7 +189,7 @@ test_that("stansim_simulation object constructor returns correct values", {
   expect_equal(nchar(stansim_simulation_test$model_code), 418)
 
   # sim_seed should be correct
-  expect_equal(stansim_simulation_test$sim_seed, 500)
+  expect_equal(stansim_simulation_test$seed, 500)
 
   # raw_call should be correct
   expect_equal(stansim_simulation_test$raw_call, "raw call values")

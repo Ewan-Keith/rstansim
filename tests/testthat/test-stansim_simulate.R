@@ -1,4 +1,4 @@
-context("stansim_simulate functions as expected")
+context("simulate_data functions as expected")
 
 #### current workings ####
 
@@ -12,7 +12,7 @@ context("stansim_simulate functions as expected")
 #
 # file <- 'data-raw/simtestreg.stan'
 #
-# fit <- stansim_simulate(file = file,
+# fit <- simulate_data(file = file,
 #                         input_data = reg_data,
 #                         datasets = 100,
 #                         param_values = test_vals,
@@ -30,91 +30,91 @@ context("stansim_simulate functions as expected")
 #-----------------------------------------------------------------
 #### input verification ####
 
-test_that("stansim_simulate fails as expected with bad input", {
+test_that("simulate_data fails as expected with bad input", {
 
   # file must be type character
-  expect_error(stansim_simulate(file = 55),
+  expect_error(simulate_data(file = 55),
                "file must be of type character")
 
   # data name must be character
-  expect_error(stansim_simulate(file = "test",
+  expect_error(simulate_data(file = "test",
                                 data_name = 55),
                "data_name must be of type character")
 
   # path must be type character [1]
-  expect_error(stansim_simulate(file = "test",
+  expect_error(simulate_data(file = "test",
                                 path = 55),
                "path must be NULL or of type character")
 
   # path must be type character [2]
-  expect_error(stansim_simulate(file = "test",
+  expect_error(simulate_data(file = "test",
                                 path = NA),
                "path must be NULL or of type character")
 
   # input_data must be NULL or list [1]
-  expect_error(stansim_simulate(file = "test",
+  expect_error(simulate_data(file = "test",
                                 input_data = 55),
                "input_data must be NULL or of type list")
 
   # input_data must be NULL or list [2]
-  expect_error(stansim_simulate(file = "test",
+  expect_error(simulate_data(file = "test",
                                 input_data = "test"),
                "input_data must be NULL or of type list")
 
   # vars must be type character [1]
-  expect_error(stansim_simulate(file = "test",
+  expect_error(simulate_data(file = "test",
                                 vars = 55),
                "vars must be of type character")
 
   # datasets must be positive integer [1]
-  expect_error(stansim_simulate(file = "test",
-                                datasets = -1),
-               "datasets must be a positive integer")
+  expect_error(simulate_data(file = "test",
+                                nsim = -1),
+               "nsim must be a positive integer")
 
   # datasets must be positive integer [2]
-  expect_error(stansim_simulate(file = "test",
-                                datasets = 2.1),
-               "datasets must be a positive integer")
+  expect_error(simulate_data(file = "test",
+                                nsim = 2.1),
+               "nsim must be a positive integer")
 
   # vars must be type character [2]
-  expect_error(stansim_simulate(file = "test",
+  expect_error(simulate_data(file = "test",
                                 vars = NA),
                "vars must be of type character")
 
   # if "all" provided to vars it must be alone
   expect_error(
-    stansim_simulate(file = "test",
+    simulate_data(file = "test",
                      vars = c("all", "test")),
     "if vars argument contains \"all\", length\\(vars\\) must be 1"
   )
 
   # param_values must be NULL or list [1]
-  expect_error(stansim_simulate(file = "test",
+  expect_error(simulate_data(file = "test",
                                 param_values = 55),
                "param_values must be NULL or of type list")
 
   # param_values must be NULL or list [2]
-  expect_error(stansim_simulate(file = "test",
+  expect_error(simulate_data(file = "test",
                                 param_values = "test"),
                "param_values must be NULL or of type list")
 
   # return_object must of type logical [1]
-  expect_error(stansim_simulate(file = "test",
+  expect_error(simulate_data(file = "test",
                                 return_object = 55),
                "return_object must be of type logical")
 
   # return_object must of type logical [2]
-  expect_error(stansim_simulate(file = "test",
+  expect_error(simulate_data(file = "test",
                                 return_object = "test"),
                "return_object must be of type logical")
 
   # sim_drop must of type logical [1]
-  expect_error(stansim_simulate(file = "test",
+  expect_error(simulate_data(file = "test",
                                 sim_drop = 55),
                "sim_drop must be of type logical")
 
   # sim_drop must of type logical [2]
-  expect_error(stansim_simulate(file = "test",
+  expect_error(simulate_data(file = "test",
                                 sim_drop = "test"),
                "sim_drop must be of type logical")
 
@@ -123,7 +123,7 @@ test_that("stansim_simulate fails as expected with bad input", {
 #-----------------------------------------------------------------
 #### output verification ####
 
-test_that("stansim_simulate returns correct output", {
+test_that("simulate_data returns correct output", {
 
   # check that testdir doesn't already exist
   expect_false(dir.exists("testdir"))
@@ -134,14 +134,14 @@ test_that("stansim_simulate returns correct output", {
 
   catch <-
     capture_output(
-      output1 <- stansim_simulate(
+      output1 <- simulate_data(
         file = 'data-raw/simtestreg.stan',
         data_name = "test data",
         input_data = reg_data,
         vars = c("sim_x", "sim_y", "N"),
         path = "testdir",
         param_values = test_vals,
-        datasets = 5
+        nsim = 5
       )
     )
 

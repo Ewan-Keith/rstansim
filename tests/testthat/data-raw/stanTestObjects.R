@@ -199,7 +199,7 @@ test_vals <- list("alpha" = 100, "beta" = -5, "sigma" = 20)
 
 file <- 'data-raw/simtestreg.stan'
 
-fit <- stansim_simulate(file = file,
+fit <- simulate_data(file = file,
                         data_name = "saved stansim_data",
                         input_data = reg_data,
                         datasets = 100,

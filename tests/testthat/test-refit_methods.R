@@ -32,7 +32,7 @@ test_that("refit.stansim_simulation fails correctly", {
     paste0(
       "datasets argument \"",
       "data-raw/data/schoolsdat4.rds",
-      "\" not found in provided stansim_object data"
+      "\" not found in provided stansim_simulation object data"
     )
   )
 })
@@ -47,7 +47,7 @@ test_that("refit.stansim_simulation updates stansim_simulation obj correctly", {
 
 
   with_mock(
-    `rstansim::stansim` = function(...){
+    `rstansim::fit_models` = function(...){
       readRDS("objects/test_stansim_refit.rds")
     },
 

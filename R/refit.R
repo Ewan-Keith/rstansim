@@ -14,7 +14,7 @@
 #'   be consistent both with the dataset names stored within the
 #'   \code{stansim_simulation} object, and with the copies of the data files
 #'   relative to the current working directory. This is best ensured by running
-#'   refit from the same working directory as the original \code{stansim} call.
+#'   refit from the same working directory as the original \code{fit_models()} call.
 #' @param stan_args A list of function arguments to be used by the internal
 #'   \code{rstan::sampling()} function when fitting the models. If not specified
 #'   then the \code{sampling()}  defaults are used.
@@ -32,7 +32,7 @@
 #'   only returned upon the correct termination of the whole function. The
 #'   default value of \code{TRUE} is recommended unless there are relevant
 #'   write-permission restrictions.
-#' @param stansim_seed Set a seed for the \code{stansim} function.
+#' @param seed Set a seed for the \code{fit_models()} function.
 #' @return An S3 object of class \code{stansim_simulation} recording relevant
 #'   simulation data.
 #'
@@ -58,7 +58,7 @@ refit <-
            calc_loo = FALSE,
            use_cores = 1L,
            cache = TRUE,
-           stansim_seed = floor(stats::runif(1, 1, 1e+05))) {
+           seed = floor(stats::runif(1, 1, 1e+05))) {
 
 
   ## input checks
@@ -84,14 +84,14 @@ refit <-
       stop(paste0(
         "datasets argument \"",
         dataset,
-        "\" not found in provided stansim_object data"))
+        "\" not found in provided stansim_simulation object data"))
   }
   lapply(datasets, data_exists, object_data = object$data)
 
   ####-----------------------------------------------------------------
   ## prepare relevant call args
 
-  # get call arguments to rerun stansim
+  # get call arguments to rerun fit_models
   call_args <- object$raw_call
 
   # overwrite old stan args with any new ones
@@ -105,13 +105,13 @@ refit <-
   call_args$calc_loo <- calc_loo
   call_args$use_cores <- use_cores
   call_args$cache <- cache
-  call_args$stansim_seed <- stansim_seed
+  call_args$seed <- seed
   call_args$sim_data <- datasets
 
   ####-----------------------------------------------------------------
   ## refitting datasets
   # refit the specified simulations
-  refitted_stansim <- do.call(stansim, call_args)
+  refitted_stansim <- do.call(fit_models, call_args)
 
   ####-----------------------------------------------------------------
   ## replace the relevant entries of the original object

@@ -5,7 +5,7 @@
 \title{Construct an S3 object of type stansim_simulation}
 \usage{
 stansim_simulation(sim_name, stansim_uni_list, start_time, end_time, raw_call,
-  stansim_seed)
+  seed)
 }
 \arguments{
 \item{sim_name}{The name to be given to the simulation represented by the
@@ -13,18 +13,18 @@ stansim_simulation(sim_name, stansim_uni_list, start_time, end_time, raw_call,
 
 \item{stansim_uni_list}{A list of objects with S3 class \code{stan_sim_uni}.
 This is an unexported class used to store the outcomes of individual
-simulation runs internal to the \code{stansim()} function.}
+simulation runs internal to the \code{fit_models()} function.}
 
-\item{start_time}{System time when \code{stansim()} was called.}
+\item{start_time}{System time when \code{fit_models()} was called.}
 
-\item{end_time}{System time when the results from \code{stansim()} were
+\item{end_time}{System time when the results from \code{fit_models()} were
 returned.}
 
-\item{raw_call}{The values of all arguments provided to \code{stansim()} when
+\item{raw_call}{The values of all arguments provided to \code{fit_models()} when
 first ran. This is used for any refitting of datasets using the
 \code{refit()} method.}
 
-\item{stansim_seed}{The global seed for the \code{stansim()} call.}
+\item{seed}{The global seed for the \code{fit_models()} call.}
 }
 \value{
 An S3 object of class \code{stansim_simulation} recording relevant
@@ -33,6 +33,6 @@ An S3 object of class \code{stansim_simulation} recording relevant
 \description{
 A constructor function for creating S3 objects of class
   \code{stansim_simulation}. \code{stansim_simulation} objects are the basic
-  unit of output from calls to the \code{stansim()} function and collects the
+  unit of output from calls to the \code{fit_models()} function and collects the
   specified data for all stan models fitted.
 }
