@@ -92,7 +92,7 @@ split_sims <- function(param2split){
 # below Stack Overflow saved my life here
 # https://stackoverflow.com/questions/20198751/three-dimensional-array-to-list
 split_along_dim <- function(stan_array, split_dim) {
-  setNames(lapply(
+  stats::setNames(lapply(
     split(stan_array, arrayInd(
       seq_along(stan_array), dim(stan_array)
     )[, split_dim]),

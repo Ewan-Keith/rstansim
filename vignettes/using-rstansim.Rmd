@@ -9,8 +9,7 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 ```{r,echo=FALSE,results='asis'}
-library(stanhl)
-stanhl_html()
+knitr::opts_chunk$set(collapse = T)
 ```
 
 ## Introduction
@@ -31,14 +30,53 @@ Any simulation study needs to start with a question about the behaviour of certa
 
 In the section on regression models, the first example of a multiple regression model in stan is a straightforward vectorised implementation, shown below.
 
-```{R, echo=FALSE, results='asis'}
-stanhl_file("simple_reg_model.stan")
+```{R, engine = 'cat', engine.opts = list(file = "simple_reg_model.stan", lang = "stan")}
+// saved as simple_reg_model.stan
+data {
+  int<lower=0> N; // number of data items
+  int<lower=0> K; // number of predictors
+  matrix[N, K] x; // predictor matrix
+  vector[N] y; // outcome vector
+}
+parameters {
+  real alpha; // intercept
+  vector[K] beta; // coefficients for predictors
+  real<lower=0> sigma; // error scale
+}
+model {
+  y ~ normal(x * beta + alpha, sigma); // likelihood
+}
 ```
 
 However immediately after this is introduced another way to format a multiple regression, named the QR Reparameterization, is introduced. Again this is shown below.
 
-```{R, echo=FALSE, results='asis'}
-stanhl_file("qr_reg_model.stan")
+```{R, engine = 'cat', engine.opts = list(file = "qr_reg_model.stan", lang = "stan")}
+// saved as qr_reg_model.stan
+data {
+  int<lower=0> N; // number of data items
+  int<lower=0> K; // number of predictors
+}
+transformed data {
+  matrix[N, K] Q_ast;
+  matrix[K, K] R_ast;
+  matrix[K, K] R_ast_inverse;
+  // thin and scale the QR decomposition
+  Q_ast = qr_Q(x)[, 1:K] * sqrt(N - 1);
+  R_ast = qr_R(x)[1:K, ] / sqrt(N - 1);
+  R_ast_inverse = inverse(R_ast);
+}
+parameters {
+  real alpha; // intercept
+  vector[K] theta; // coefficients on Q_ast
+  real<lower=0> sigma; // error scale
+}
+model {
+  y ~ normal(Q_ast * theta + alpha, sigma); // likelihood
+}
+generated quantities {
+  vector[K] beta;
+  beta = R_ast_inverse * theta; // coefficients on x
+}
 ```
 
 The stan manual provides more detail on the derivation of the QR parameterization, and the reasons for it's efficiency. In short the reasons given to use the QR model are that it:
@@ -55,8 +93,30 @@ In order to test our above hypotheses we'll be simulating data two generative mo
 
 One of the advantages of using rstansim to generate data for a simulation study is that it lets you use a stan model to specify the data, this gives you a huge degree of flexibility in how the simulated data will look, and can even let you draw your posterior samples using the same code that generated your data. For clarity here though we've generated a small stan model purely for the purposes of generating our simulated data, it's shown below.
 
-```{R, echo=FALSE, results='asis'}
-stanhl_file("sim_data_model.stan")
+```{R, engine = 'cat', engine.opts = list(file = "sim_data_model.stan", lang = "stan")}
+// saved as sim_data_model.stan
+data {
+  int<lower=0> N; // number of data items
+  int<lower=0> K; // number of predictors
+}
+parameters {
+  real alpha; // intercept
+  vector[K] beta; // coefficients for predictors
+  real<lower=0> sigma; // error scale
+  corr_matrix[K] omega;
+}
+transformed parameters{
+  cov_matrix[K] cov_omega;
+
+  cov_omega = quad_form_diag(omega, rep_vector(1, K));
+}
+generated quantities {
+  matrix[N, K] sim_x; // simulated predictor data
+  vector[N] sim_y; // simulated outcome vector
+
+  for(i in 1:N) sim_x[i,] = multi_normal_rng(rep_vector(0, K), cov_omega)';
+  for(i in 1:N) sim_y[i] = normal_rng(alpha + sim_x[i] * beta, sigma)';
+}
 ```
 
 This model is cut down to only be used for simulating the desired data. The important points to note are:
@@ -69,7 +129,7 @@ The `simulate_data()` function can take this model, along with data and paramete
 
 For the purposes of our simulation we want to simulate 100 datasets, 50 of which will have uncorrelated `x` columns, and 50 of which will have correlations varying between 0 and 0.4. It's expected that the benefits of the QR model will be greater for the correlated predictors datasets. The input data and parameters for these are specified below.
 
-```{R, warning = F, collapse = T}
+```{R}
 # set up independent covariance matrix
 omega_uncorr <- diag(5)
 omega_uncorr
@@ -94,7 +154,7 @@ regression_corr_params <-list("alpha" = 5, "beta" = c(0, 0, .8, .6, .4),
 
 With our input values set up we can now simulate data easily.
 
-```{R}
+```{R, results = "hide", message = F, warning = F}
 library(rstansim)
 
 # simulate data with uncorrelated predictors
@@ -123,7 +183,7 @@ correlated_data <- simulate_data(
 
 Looking in our working directory shows that the specified folders have been created and filled with our simulated datasets.
 
-```{R, collapse = T}
+```{R}
 # see folders inside reg_data/
 dir("reg_data")
 
@@ -134,7 +194,7 @@ dir("reg_data/correlated")[1:5]
 
 For a quick check that things have run as expected we'll take a look at a given simuldated data file.
 
-```{R, collapse = T}
+```{R}
 str(readRDS("reg_data/correlated/correlated multi-regression_1.rds"))
 
 ```
@@ -144,3 +204,20 @@ str(readRDS("reg_data/correlated/correlated multi-regression_1.rds"))
 ## Collecting the results
 
 ## Analysing results
+
+```{r,echo=FALSE,results='asis'}
+## clean up all created files from vignetes/
+# remove stan models
+if(file.exists("simple_reg_model.stan"))
+  unlink("simple_reg_model.stan")
+
+if(file.exists("qr_reg_model.stan"))
+  unlink("qr_reg_model.stan")
+
+if(file.exists("sim_data_model.stan"))
+  unlink("sim_data_model.stan")
+
+# if simulated data dir has been created, delete it
+if(dir.exists("reg_data"))
+  unlink("reg_data", recursive = T)
+```
