@@ -171,7 +171,10 @@ simulate_data <-
       stansim_data(
         data_name = data_name,
         datasets = names_vector,
-        compiled_model = compiled_model
+        compiled_model = compiled_model,
+        input_data = input_data,
+        param_values = param_values,
+        vars = vars
       )
     )
   }

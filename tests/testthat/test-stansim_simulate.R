@@ -155,10 +155,11 @@ test_that("simulate_data returns correct output", {
   expect_type(output1, "list")
 
   # expect length
-  expect_length(output1, 4)
+  expect_length(output1, 7)
 
   # expect dim names
-  expect_named(output1, c("data_name", "datasets", "model_name", "model_code"))
+  expect_named(output1, c("data_name", "datasets", "model_name", "model_code",
+                          "input_data", "param_values", "vars"))
 
   # expect data_name type
   expect_type(output1$data_name, "character")

@@ -55,6 +55,8 @@ However immediately after this is introduced another way to format a multiple re
 data {
   int<lower=0> N; // number of data items
   int<lower=0> K; // number of predictors
+  matrix[N, K] x; // predictor matrix
+  vector[N] y; // outcome vector
 }
 transformed data {
   matrix[N, K] Q_ast;
@@ -201,11 +203,95 @@ str(readRDS("reg_data/correlated/correlated multi-regression_1.rds"))
 
 ## Fitting the models
 
+It's good practice to check that the simulated data returns sensible parameter estimates when fitted to a single model before investing the time and resources into fitting models to every dataset.
+
+```{R, message = F, warning = FALSE}
+# set the number of available cores to use
+core_num <- parallel::detectCores() - 1
+
+test_data <- readRDS("reg_data/uncorrelated/uncorrelated multi-regression_1.rds")
+
+test_fit <- rstan::stan(file = "simple_reg_model.stan", data = test_data, cores = core_num)
+
+rstan::summary(test_fit)$summary
+
+```
+
+These values are all in the region we'd expect. The `fit_models()` function is used to fit a given stan model to multiple datasets, we can use the `stansim_data` object produced above as input pointing to our simulated datasets. Our study questions has a 2x2 design so fit_models needs called 4 times.
+
+```{R}
+
+# fit simple model to uncorrelated data
+stansim_output1 <- fit_models(sim_name = "simple - uncorrelated simulation",
+                              sim_data = uncorrelated_data,
+                              stan_args = list(file = "simple_reg_model.stan"), 
+                              use_cores = core_num)
+
+# fit simple model to correlated data
+stansim_output2 <- fit_models(sim_name = "simple - correlated simulation",
+                              sim_data = correlated_data,
+                              stan_args = list(file = "simple_reg_model.stan"), 
+                              use_cores = core_num)
+
+# fit QR model to uncorrelated data
+stansim_output3 <- fit_models(sim_name = "QR - uncorrelated simulation",
+                              sim_data = uncorrelated_data,
+                              stan_args = list(file = "qr_reg_model.stan"), 
+                              use_cores = core_num)
+
+# fit QR model to correlated data
+stansim_output4 <- fit_models(sim_name = "QR - correlated simulation",
+                              sim_data = correlated_data,
+                              stan_args = list(file = "qr_reg_model.stan"), 
+                              use_cores = core_num)
+
+```
+
 ## Collecting the results
+Given that a realistic simulation study may have many combinations of model and data to fit, it's likely that a large number of simulation objects will be created. To ease the analysis of results (and to make storage simpler) it's recommended that you collect these objects into one. All data held by the individual objects is retained.
+
+```{R}
+reg_study_col <- collect(collection_name = "regression study collection", 
+                         stansim_output1, stansim_output2, 
+                         stansim_output3, stansim_output4)
+```
 
 ## Analysing results
 
-```{r,echo=FALSE,results='asis'}
+Now that our simulations have been ran and collected we can easily explore the data across all models and datasets. A good first check is that no datasets have an R-hat value greater than 1.1 (a necessary but not sufficient condition for convergence). 
+
+```{R}
+high_rhats <- extract_data(reg_study_col, 
+                           estimates = "Rhat", 
+                           values = function(x) x > 1.1)
+
+high_rhats
+```
+
+This is a good first sign and suggests that all our datasets have converged. 
+
+The first of the hypotheses to be tested is that the simple regression model and the QR reparamatization produce equivalent parameter estimates. This is checked for both datasets below.
+
+```{R}
+# extract estimates for correlated datasets
+correlated_estimates <- extract_data(
+  reg_study_col,
+  sim_names = c("QR - correlated simulation",
+  "simple - correlated simulation")
+  )
+
+# load dlpyr to manipulate data
+library(dplyr)
+
+
+
+
+
+
+```
+
+
+```{r,echo=FALSE,results='asis', eval = FALSE}
 ## clean up all created files from vignetes/
 # remove stan models
 if(file.exists("simple_reg_model.stan"))

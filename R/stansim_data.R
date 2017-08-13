@@ -14,13 +14,20 @@
 #' @param datasets A vector of names of simulated datasets.
 #' @param compiled_model An object of S4 class \code{stanmodel}, this should be
 #'   the model provided to \code{stansim_simulate()} to simulate data from.
+#' @param input_data Values for the data field in the provided stan model.
+#' @param param_values A list containing the named values for the stan model
+#'   parameters used to simulate data.
+#' @param vars The names of the stan variables saved.
 #'
 #' @return An S3 object of class \code{stansim_data}.
 #'
 #' @export
 stansim_data <- function(data_name,
                          datasets,
-                         compiled_model) {
+                         compiled_model,
+                         input_data,
+                         param_values,
+                         vars) {
 
 
   # create s3 object
@@ -29,7 +36,10 @@ stansim_data <- function(data_name,
       "data_name" = data_name,
       "datasets" = datasets,
       "model_name" = compiled_model@model_name,
-      "model_code" = compiled_model@model_code
+      "model_code" = compiled_model@model_code,
+      "input_data" = input_data,
+      "param_values" = param_values,
+      "vars" = vars
     ),
     class = "stansim_data"
   )

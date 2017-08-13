@@ -22,11 +22,16 @@ test_that("stansim test; cache FALSE, loo FALSE", {
 
     test_sim_data <- dir("data-raw/data", full.names = TRUE),
 
-    stansim_output <- fit_models(stan_args = test_stan_args,
-                              sim_data = test_sim_data,
-                              cache = FALSE,
-                              sim_name = "stansim no cache & loo test",
-                              seed = 500),
+    catch <-
+      capture_output(
+        stansim_output <- fit_models(
+          stan_args = test_stan_args,
+          sim_data = test_sim_data,
+          cache = FALSE,
+          sim_name = "stansim no cache & loo test",
+          seed = 500
+        )
+      ),
 
     # output should be a list
     expect_type(stansim_output, "list"),
@@ -210,11 +215,16 @@ test_that("stansim test; cache TRUE, loo FALSE", {
 
     test_sim_data <- dir("data-raw/data", full.names = TRUE),
 
-    stansim_output <- fit_models(stan_args = test_stan_args,
-                              sim_data = test_sim_data,
-                              cache = TRUE,
-                              sim_name = "stansim no loo test",
-                              seed = 500),
+    catch <-
+      capture_output(
+        stansim_output <- fit_models(
+          stan_args = test_stan_args,
+          sim_data = test_sim_data,
+          cache = TRUE,
+          sim_name = "stansim no loo test",
+          seed = 500
+        )
+      ),
 
     # output should be a list
     expect_type(stansim_output, "list"),
@@ -397,11 +407,16 @@ test_that("stansim test; cache TRUE, loo FALSE", {
 
     test_sim_data <- dir("data-raw/data", full.names = TRUE),
 
-    stansim_output <- fit_models(stan_args = test_stan_args,
-                              sim_data = test_sim_data,
-                              cache = TRUE,
-                              sim_name = "stansim no loo test",
-                              seed = 500),
+    catch <-
+      capture_output(
+        stansim_output <- fit_models(
+          stan_args = test_stan_args,
+          sim_data = test_sim_data,
+          cache = TRUE,
+          sim_name = "stansim no loo test",
+          seed = 500
+        )
+      ),
 
     # output should be a list
     expect_type(stansim_output, "list"),
@@ -586,11 +601,16 @@ test_that("stansim test; cache TRUE, loo FALSE", {
 
     test_sim_data <- dir("data-raw/data", full.names = TRUE),
 
-    stansim_output <- fit_models(stan_args = test_stan_args,
-                              sim_data = test_sim_data,
-                              cache = TRUE,
-                              sim_name = "stansim no loo test",
-                              seed = 500),
+    catch <-
+      capture_output(
+        stansim_output <- fit_models(
+          stan_args = test_stan_args,
+          sim_data = test_sim_data,
+          cache = TRUE,
+          sim_name = "stansim no loo test",
+          seed = 500
+        )
+      ),
 
     # output should be a list
     expect_type(stansim_output, "list"),

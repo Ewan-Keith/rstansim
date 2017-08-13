@@ -4,7 +4,8 @@
 \alias{stansim_data}
 \title{Construct an S3 object of type stansim_data}
 \usage{
-stansim_data(data_name, datasets, compiled_model)
+stansim_data(data_name, datasets, compiled_model, input_data, param_values,
+  vars)
 }
 \arguments{
 \item{data_name}{A name attached to the \code{stansim_data} object to help
@@ -16,6 +17,13 @@ informative name is assigned.}
 
 \item{compiled_model}{An object of S4 class \code{stanmodel}, this should be
 the model provided to \code{stansim_simulate()} to simulate data from.}
+
+\item{input_data}{Values for the data field in the provided stan model.}
+
+\item{param_values}{A list containing the named values for the stan model
+parameters used to simulate data.}
+
+\item{vars}{The names of the stan variables saved.}
 }
 \value{
 An S3 object of class \code{stansim_data}.

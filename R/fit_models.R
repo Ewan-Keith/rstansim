@@ -179,11 +179,17 @@ fit_models <- function(sim_name = paste0("Stansim_", Sys.time()),
   # then skip fitting
   if (length(sim_data > 0)) {
 
+    # set up progress bar items
+    pb <- utils::txtProgressBar(max = length(sim_data), style = 3)
+    progress <- function(n){ utils::setTxtProgressBar(pb, n) }
+    opts <- list(progress = progress)
+
     # parallel loop over datasets, default list combine used
     # note, .export only called to enable mocking of single_sim in testing
     sim_estimates <-
       foreach::foreach(dataset = sim_data,
-                       .export = "single_sim") %dorng%
+                       .export = "single_sim",
+                       .options.snow = opts) %dorng%
       single_sim(dataset,
                  stan_args,
                  calc_loo,
@@ -193,9 +199,16 @@ fit_models <- function(sim_name = paste0("Stansim_", Sys.time()),
                  stan_warnings,
                  cache)
 
+    # close out progress bar
+    close(pb)
+
   }
+
+
+
   # de-register the parallel background once done
   parallel::stopCluster(cl)
+
 
   ##-------------------------------------------------
   ## if using the cache, use cached results instead
