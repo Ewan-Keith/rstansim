@@ -10,7 +10,7 @@ sim1 <-
 sim2 <-
   readRDS("objects/refitted_for_collection_tests.rds")
 
-collection <- collect("collection 1", sim1, sim2)
+collection <- collect_simulations("collection 1", sim1, sim2)
 
 
 test_that("collect_simulations output structure is right", {
@@ -224,7 +224,7 @@ coll2 <-
   rename(readRDS("objects/collection_for_method_tests.rds"),
          "test collection 2")
 
-collection <- collect("collection 2", coll1, coll2)
+collection <- collect_simulations("collection 2", coll1, coll2)
 
 test_that("collect_collections output structure is right", {
 
@@ -440,7 +440,7 @@ sim1 <-
 coll2 <-
   readRDS("objects/collection_for_method_tests.rds")
 
-collection <- collect("collection 3", sim1, coll2)
+collection <- collect_simulations("collection 3", sim1, coll2)
 
 test_that("collect_collections output structure is right", {
 

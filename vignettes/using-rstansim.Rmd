@@ -205,21 +205,22 @@ str(readRDS("reg_data/correlated/correlated multi-regression_1.rds"))
 
 It's good practice to check that the simulated data returns sensible parameter estimates when fitted to a single model before investing the time and resources into fitting models to every dataset.
 
-```{R, message = F, warning = FALSE}
+```{R, results = "hide", message = F, warning = FALSE}
 # set the number of available cores to use
 core_num <- parallel::detectCores() - 1
 
 test_data <- readRDS("reg_data/uncorrelated/uncorrelated multi-regression_1.rds")
 
 test_fit <- rstan::stan(file = "simple_reg_model.stan", data = test_data, cores = core_num)
+```
 
+```{R}
 rstan::summary(test_fit)$summary
-
 ```
 
 These values are all in the region we'd expect. The `fit_models()` function is used to fit a given stan model to multiple datasets, we can use the `stansim_data` object produced above as input pointing to our simulated datasets. Our study questions has a 2x2 design so fit_models needs called 4 times.
 
-```{R}
+```{R, results = "hide", message = F, warning = F}
 
 # fit simple model to uncorrelated data
 stansim_output1 <- fit_models(sim_name = "simple - uncorrelated simulation",
@@ -251,9 +252,12 @@ stansim_output4 <- fit_models(sim_name = "QR - correlated simulation",
 Given that a realistic simulation study may have many combinations of model and data to fit, it's likely that a large number of simulation objects will be created. To ease the analysis of results (and to make storage simpler) it's recommended that you collect these objects into one. All data held by the individual objects is retained.
 
 ```{R}
-reg_study_col <- collect(collection_name = "regression study collection", 
-                         stansim_output1, stansim_output2, 
-                         stansim_output3, stansim_output4)
+reg_study_col <- collect_simulations(
+  collection_name = "regression study collection",
+  stansim_output1,
+  stansim_output2,
+  stansim_output3,
+  stansim_output4)
 ```
 
 ## Analysing results
@@ -268,30 +272,65 @@ high_rhats <- extract_data(reg_study_col,
 high_rhats
 ```
 
-This is a good first sign and suggests that all our datasets have converged. 
+This is a good first sign and suggests that our models have converged. 
 
 The first of the hypotheses to be tested is that the simple regression model and the QR reparamatization produce equivalent parameter estimates. This is checked for both datasets below.
 
-```{R}
+```{R, message = F, warning = F, fig.width=7}
 # extract estimates for correlated datasets
-correlated_estimates <- extract_data(
+correlated_beta_estimates <- extract_data(
   reg_study_col,
-  sim_names = c("QR - correlated simulation",
-  "simple - correlated simulation")
-  )
+  sim_names = c("QR - correlated simulation", "simple - correlated simulation"), 
+  parameters = c("beta"), 
+  estimates = "mean")
 
-# load dlpyr to manipulate data
-library(dplyr)
+# extract estimates for uncorrelated datasets
+uncorrelated_beta_estimates <- extract_data(
+  reg_study_col,
+  sim_names = c("QR - uncorrelated simulation", "simple - uncorrelated simulation"), 
+  parameters = c("beta"), 
+  estimates = "mean")
 
+# plot beta estimates for correlated datasets
+library(ggplot2)
+library(ggjoy)
 
+ggplot(correlated_beta_estimates, aes(x=value, y = parameter)) + 
+  geom_joy() + 
+  facet_wrap(~sim_name)
 
+# plot beta estimates for uncorrelated datasets
+ggplot(uncorrelated_beta_estimates, aes(x=value, y = parameter)) + 
+  geom_joy() + 
+  facet_wrap(~sim_name)
+```
 
+We can see that the mean beta estimates are essentially identical over the two models, for both correlated values predictor variables and uncorrelated. In practice, you would want to run similar analysis across all parameters and estimates of relevance. Tail quantiles for example are less robust than mean estimates and so might show differences in chain behaviour that the above charts do not.
 
+The second hypothesis concerned the total time taken to fit a model, at a very high level we can check this by extracting the total time taken to carry out each `fit_models()` call.
+
+```{R}
+# simulation time for simple model on uncorrelated data
+reg_study_col$simulations$`simple - uncorrelated simulation`$end_time -
+  reg_study_col$simulations$`simple - uncorrelated simulation`$start_time
+
+# simulation time for QR model on uncorrelated data
+reg_study_col$simulations$`QR - uncorrelated simulation`$end_time -
+  reg_study_col$simulations$`QR - uncorrelated simulation`$start_time
+
+# simulation time for simple model on correlated data
+reg_study_col$simulations$`simple - correlated simulation`$end_time -
+  reg_study_col$simulations$`simple - correlated simulation`$start_time
+
+# simulation time for QR model on correlated data
+reg_study_col$simulations$`QR - correlated simulation`$end_time -
+  reg_study_col$simulations$`QR - correlated simulation`$start_time
 
 ```
 
 
-```{r,echo=FALSE,results='asis', eval = FALSE}
+
+```{r, echo=FALSE, results='asis', eval = FALSE}
 ## clean up all created files from vignetes/
 # remove stan models
 if(file.exists("simple_reg_model.stan"))

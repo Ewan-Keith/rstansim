@@ -1,6 +1,6 @@
 #-----------------------------------------------------------------
-#### collect_simulations ####
-collect_simulations <- function(collection_name, sim1, sim2){
+#### collect_simulations_internal ####
+collect_simulations_internal <- function(collection_name, sim1, sim2){
 
   #### extract and merge data with sim_name added ####
   # extract

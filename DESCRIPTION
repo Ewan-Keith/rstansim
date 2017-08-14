@@ -23,7 +23,9 @@ RoxygenNote: 6.0.1
 Suggests: testthat,
     knitr,
     rmarkdown,
-    parallel
+    parallel,
+    ggplot2,
+    ggjoy
 VignetteBuilder: knitr
 URL: https://github.com/Ewan-Keith/rstansim#rstansim
 BugReports: https://github.com/Ewan-Keith/rstansim/issues

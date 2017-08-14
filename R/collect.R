@@ -1,10 +1,11 @@
-#### collect ####
+#### collect_simulations ####
 #' Group stansim objects into a collection
 #'
-#' @description \code{collect()} groups together an arbitrary number of objects
-#'   with class \code{stansim_simulation} or \code{stansim_collection} into a
-#'   single \code{stansim_collection} object. Allows for multiple simulations to
-#'   be stored, saved, analysed and managed in a single object.
+#' @description \code{collect_simulations()} groups together an arbitrary number
+#'   of objects with class \code{stansim_simulation} or
+#'   \code{stansim_collection} into a single \code{stansim_collection} object.
+#'   Allows for multiple simulations to be stored, saved, analysed and managed
+#'   in a single object.
 #'
 #' @param collection_name A name attached to the \code{stansim_collection}
 #'   object to help identify it. It is strongly recommended that an informative
@@ -18,20 +19,20 @@
 #' @examples
 #' \dontrun{
 #' # group together stansim_simulation objects
-#' collection_basic <- collect("Linear Regression Study", simulation1,
+#' collection_basic <- collect_simulations("Linear Regression Study", simulation1,
 #'                             simulation2)
 #'
 #' # group together stansim_simulations and stansim_collections
-#' collection_extended <- collect("Extended Lin Reg Study", collection_basic,
+#' collection_extended <- collect_simulations("Extended Lin Reg Study", collection_basic,
 #'                                simulation3)
 #'
 #' # group together multiple stansim_collections
-#' merged_collections <- collect("merged collections", collection_extended,
+#' merged_collections <- collect_simulations("merged collections", collection_extended,
 #'                               collection_additional)
 #' }
 #'
 #' @export
-collect <- function(collection_name, object, ...) {
+collect_simulations <- function(collection_name, object, ...) {
 
   ## -------------------------------------------------
   ## input tests
@@ -90,7 +91,7 @@ collect <- function(collection_name, object, ...) {
     # if both simulation
     if (class(two_collect[[1]]) == "stansim_simulation" &
         class(two_collect[[2]]) == "stansim_simulation") {
-      two_grouped <- collect_simulations(collection_name,
+      two_grouped <- collect_simulations_internal(collection_name,
                                          two_collect[[1]],
                                          two_collect[[2]])
     } else
@@ -124,6 +125,6 @@ collect <- function(collection_name, object, ...) {
     collect_recurs_args <- c(named_recurs_args, collect_args[-c(1:2)])
 
     # recursive call
-    do.call(collect, collect_recurs_args)
+    do.call(collect_simulations, collect_recurs_args)
   }
 }
