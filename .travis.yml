@@ -5,6 +5,8 @@ cache: packages
 r_github_packages:
   - jimhester/covr
 
+r_build_args: '--no-build-vignettes'
+r_check_args: '--ignore-vignettes --no-examples'
 
 r:
 #  - oldrel
@@ -23,6 +25,11 @@ before_install:
   - if [[ $CXX = "clang++" ]] ;  then export CLANG_EXTRA_ARG=" -Qunused-arguments -fcolor-diagnostics " ; fi
   - sed -i.bak "s/ g++/ ${CXX}${CLANG_EXTRA_ARG}/" ~/.R/Makevars
   - sed -i.bak "s/O[0-3]/O$CXX_OLEVEL/" ~/.R/Makevars
+
+script:
+  - |
+    travis_wait 40 R CMD build .
+    travis_wait 40 R CMD check rstansim*tar.gz
 
 after_success:
   - Rscript -e 'covr::codecov()'
