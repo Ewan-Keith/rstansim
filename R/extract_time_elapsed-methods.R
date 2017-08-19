@@ -86,11 +86,15 @@ extract_time_elapsed.stansim_simulation <-
     if (!is.character(datasets))
       stop("datasets argument must be of type character")
 
-    if (!is.numeric(chains) & chains != "all")
+    if (!is.numeric(chains) &  !("all" %in% chains))
       stop("chains argument must be \"all\" or of type numeric")
 
     if (!is.character(stages))
       stop("stages argument must be of type character")
+
+    # stages must be warmup, sample or total
+    if (sum(!(stages %in% c("all", "warmup", "sample", "total"))) != 0)
+      stop("stages must be all, warmup, sample or total")
 
     ## -------------------------------------------------
     ## pull out raw elapsed times
@@ -156,21 +160,47 @@ extract_time_elapsed.stansim_simulation <-
     # carry out filtering from input
 
     # filter out datasets
-    if(!("all" %in% datasets))
-      named_time <- named_time[named_time$datasets %in% datasets, ]
+    if ("all" %in% datasets){
+      if (length(datasets) > 1) {
+        stop(paste(
+          "if datasets argument contains \"any\",",
+          "length(datasets) must be 1"
+        ))
+      }} else {
+        named_time <- named_time[named_time$datasets %in% datasets, ]
+      }
 
     # filter out chains
-    if(chains != "all")
+    if ("all" %in% chains){
+      if (length(chains) > 1) {
+        stop(paste(
+          "if chains argument contains \"any\",",
+          "length(chains) must be 1"
+        ))
+      }}
+    else {
       named_time <- named_time[named_time$chains %in% chains, ]
+    }
 
     # filter out stages
-    if("all" %in% stages)
-      named_time <- named_time[named_time$stages %in% stages, ]
+    if ("all" %in% stages){
+      if (length(stages) > 1) {
+        stop(paste(
+          "if stages argument contains \"any\",",
+          "length(stages) must be 1"
+        ))
+      }}
+    else {
+      named_time <- named_time[named_time$stages %in% stages,]
+    }
 
     # filter on elapsed
     if(!is.null(elapsed))
       named_time <- named_time[elapsed(named_time$elapsed), ]
 
+
+    # convert datasets to character from factor
+    named_time$datasets <- as.character(named_time$datasets)
 
     # return dataframe
     named_time

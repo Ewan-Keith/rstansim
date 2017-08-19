@@ -12,9 +12,9 @@
 \item{object}{An object of S3 class stansim_simulation.}
 
 \item{datasets}{Either a character vector containing the names of datasets
-(as provided to the original \code{stansim()} call) fitted, or the string
-\code{"all"}. The former will only return values for the corresponding
-datasets, the latter applies no filtering on datasets}
+(as provided to the original \code{fit_models()} call) fitted, or the
+string \code{"all"}. The former will only return values for the
+corresponding datasets, the latter applies no filtering on datasets}
 
 \item{parameters}{Either a character vector containing the names of stan
 model parameters present in the fitted stan models, or the string
