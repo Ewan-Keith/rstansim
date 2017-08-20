@@ -23,7 +23,6 @@ RoxygenNote: 6.0.1
 Suggests: testthat,
     knitr,
     rmarkdown,
-    parallel,
     ggplot2,
     ggjoy
 VignetteBuilder: knitr

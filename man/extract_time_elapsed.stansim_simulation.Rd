@@ -15,9 +15,9 @@
 string \code{"all"}. The former will only return values for the
 corresponding datasets, the latter applies no filtering on datasets}
 
-\item{chains}{Either a character vector containing the numbers of stan model
+\item{chains}{Either a character vector containing the numbers of the stan model
 chains to return, or the string \code{"all"} The former will only return
-values for the corresponding parameters, the latter applies no filtering on
+values for the corresponding chains, the latter applies no filtering on
 chains.}
 
 \item{stages}{Either a character vector containing the names of model fitting
@@ -44,24 +44,20 @@ Applied to an object of type stansim_simulation,
 \examples{
 \dontrun{
 # extract full dataset
-extract_data(simulation)
-
-# extract all parameter means, 2.5\% & 97.5\% percentiles
-extract_data(simulation, estimates = c("2.5\%", "mean", "97.5\%"))
-
-# extract all Rhat estimates greater than 1.1
-extract_data(simulation, estimates = "Rhat",
-             values = function(x) x > 1.1)
-
-# extract all "eta" parameters
-extract_data(simulation, parameters = "eta")
-
-# extract all "eta[1]" parameters
-extract_data(simulation, parameters = "eta[1]",
-             param_expand = FALSE)
+extract_time_elapsed(simulation)
 
 # extract all rows for dataset "data_file-12.rds"
-extract_data(simulation, datasets = "data_file-12.rds")
+extract_time_elapsed(simulation, datasets = "data_file-12.rds")
+
+# extract results for chains 1 and 3
+extract_time_elapsed(simulation, chains = c(1, 3))
+
+# extract results for only the warmup stage
+extract_time_elapsed(simulation, stages = "warmup")
+
+# extract all elapsed times greater than 60 seconds
+extract_time_elapsed(simulation,
+                     elapsed = function(x) x > 60)
 }
 
 }

@@ -207,11 +207,11 @@ It's good practice to check that the simulated data returns sensible parameter e
 
 ```{R, results = "hide", message = F, warning = FALSE}
 # set the number of available cores to use
-core_num <- parallel::detectCores() - 1
+# core_num <- parallel::detectCores() - 1
 
 test_data <- readRDS("reg_data/uncorrelated/uncorrelated multi-regression_1.rds")
 
-test_fit <- rstan::stan(file = "simple_reg_model.stan", data = test_data, cores = core_num)
+test_fit <- rstan::stan(file = "simple_reg_model.stan", data = test_data)
 ```
 
 ```{R}
@@ -225,26 +225,22 @@ These values are all in the region we'd expect. The `fit_models()` function is u
 # fit simple model to uncorrelated data
 stansim_output1 <- fit_models(sim_name = "simple - uncorrelated simulation",
                               sim_data = uncorrelated_data,
-                              stan_args = list(file = "simple_reg_model.stan"), 
-                              use_cores = core_num)
+                              stan_args = list(file = "simple_reg_model.stan"))
 
 # fit simple model to correlated data
 stansim_output2 <- fit_models(sim_name = "simple - correlated simulation",
                               sim_data = correlated_data,
-                              stan_args = list(file = "simple_reg_model.stan"), 
-                              use_cores = core_num)
+                              stan_args = list(file = "simple_reg_model.stan"))
 
 # fit QR model to uncorrelated data
 stansim_output3 <- fit_models(sim_name = "QR - uncorrelated simulation",
                               sim_data = uncorrelated_data,
-                              stan_args = list(file = "qr_reg_model.stan"), 
-                              use_cores = core_num)
+                              stan_args = list(file = "qr_reg_model.stan"))
 
 # fit QR model to correlated data
 stansim_output4 <- fit_models(sim_name = "QR - correlated simulation",
                               sim_data = correlated_data,
-                              stan_args = list(file = "qr_reg_model.stan"), 
-                              use_cores = core_num)
+                              stan_args = list(file = "qr_reg_model.stan"))
 
 ```
 

@@ -116,6 +116,113 @@ test_that(
                         "stage" = "character", "elapsed" = "double"))
 
       # only specified datasets should be returned
-      expect_equal(datasets_filter$datasets %in% )
+      expect_equal(sum(!(
+        datasets_filter$datasets %in% c(
+          "data-raw/data/schoolsdat1.rds",
+          "data-raw/data/schoolsdat3.rds"
+        )
+      )), 0)
 
     })
+
+test_that(
+  paste("extract_time_elapsed.stansim_simulation returns correct values",
+        "filtering on chains"), {
+
+          ## read in test stansim obj to extract from
+          extract_test_data <-
+            readRDS("objects/test_stansim.rds")
+
+         chains_filter <-
+            extract_time_elapsed(extract_test_data,
+                                 chains = c(1, 3))
+
+          ##  dataset filter should return correct object
+          # should be a dataframe
+          expect_true(is.data.frame(chains_filter))
+
+          # should have correct dimensions
+          expect_equal(dim(chains_filter), c(24, 4))
+
+          # should have correct colnames
+          expect_named(chains_filter, c("datasets", "chains", "stage", "elapsed"))
+
+          # all columns should be correct type
+          expect_equal(lapply(chains_filter, typeof),
+                       list("datasets" = "character", "chains" = "integer",
+                            "stage" = "character", "elapsed" = "double"))
+
+          # only specified chains should be returned
+          expect_equal(sum(!(
+            chains_filter$chains %in% c(
+              1, 3
+            )
+          )), 0)
+
+        })
+
+test_that(
+  paste("extract_time_elapsed.stansim_simulation returns correct values",
+        "filtering on stage"), {
+
+          ## read in test stansim obj to extract from
+          extract_test_data <-
+            readRDS("objects/test_stansim.rds")
+
+          stages_filter <-
+            extract_time_elapsed(extract_test_data, stages = "total")
+
+          ##  dataset filter should return correct object
+          # should be a dataframe
+          expect_true(is.data.frame(stages_filter))
+
+          # should have correct dimensions
+          expect_equal(dim(stages_filter), c(16, 4))
+
+          # should have correct colnames
+          expect_named(stages_filter, c("datasets", "chains", "stage", "elapsed"))
+
+          # all columns should be correct type
+          expect_equal(lapply(stages_filter, typeof),
+                       list("datasets" = "character", "chains" = "integer",
+                            "stage" = "character", "elapsed" = "double"))
+
+          # only specified stages should be returned
+          expect_equal(sum(!(
+            stages_filter$stage == "total"
+          )), 0)
+
+        })
+
+test_that(
+  paste("extract_time_elapsed.stansim_simulation returns correct values",
+        "filtering on elapsed"), {
+
+          ## read in test stansim obj to extract from
+          extract_test_data <-
+            readRDS("objects/test_stansim.rds")
+
+          elapsed_filter <-
+            extract_time_elapsed(extract_test_data, elapsed = function(x) x > .02)
+
+          ##  dataset filter should return correct object
+          # should be a dataframe
+          expect_true(is.data.frame(elapsed_filter))
+
+          # should have correct dimensions
+          expect_equal(dim(elapsed_filter), c(34, 4))
+
+          # should have correct colnames
+          expect_named(elapsed_filter, c("datasets", "chains", "stage", "elapsed"))
+
+          # all columns should be correct type
+          expect_equal(lapply(elapsed_filter, typeof),
+                       list("datasets" = "character", "chains" = "integer",
+                            "stage" = "character", "elapsed" = "double"))
+
+          # only specified stages should be returned
+          expect_equal(sum(!(
+            elapsed_filter$elapsed > .02
+          )), 0)
+
+        })

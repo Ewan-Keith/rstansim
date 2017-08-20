@@ -3,7 +3,7 @@
 #' Extract time_elapsed from rstansim objects
 #'
 #' @description Generic function for extracting the time taken to fit rstansim
-#'   objects. Default arguments will return full data as a dataframe, otherwise
+#'   models Default arguments will return full data as a dataframe, otherwise
 #'   rows will be filtered based on provided arguments.
 #'
 #' @param object An S3 object of class stansim_simulation or stansim_collection.
@@ -30,9 +30,9 @@ extract_time_elapsed <- function (object, ...) {
 #'   (as provided to the original \code{fit_models()} call) fitted, or the
 #'   string \code{"all"}. The former will only return values for the
 #'   corresponding datasets, the latter applies no filtering on datasets
-#' @param chains Either a character vector containing the numbers of stan model
+#' @param chains Either a character vector containing the numbers of the stan model
 #'   chains to return, or the string \code{"all"} The former will only return
-#'   values for the corresponding parameters, the latter applies no filtering on
+#'   values for the corresponding chains, the latter applies no filtering on
 #'   chains.
 #' @param stages Either a character vector containing the names of model fitting
 #'   stages, \code{c("warmup", "sample", "total")}, or the string \code{"all"}.
@@ -49,24 +49,20 @@ extract_time_elapsed <- function (object, ...) {
 #' @examples
 #' \dontrun{
 #' # extract full dataset
-#' extract_data(simulation)
-#'
-#' # extract all parameter means, 2.5% & 97.5% percentiles
-#' extract_data(simulation, estimates = c("2.5%", "mean", "97.5%"))
-#'
-#' # extract all Rhat estimates greater than 1.1
-#' extract_data(simulation, estimates = "Rhat",
-#'              values = function(x) x > 1.1)
-#'
-#' # extract all "eta" parameters
-#' extract_data(simulation, parameters = "eta")
-#'
-#' # extract all "eta[1]" parameters
-#' extract_data(simulation, parameters = "eta[1]",
-#'              param_expand = FALSE)
+#' extract_time_elapsed(simulation)
 #'
 #' # extract all rows for dataset "data_file-12.rds"
-#' extract_data(simulation, datasets = "data_file-12.rds")
+#' extract_time_elapsed(simulation, datasets = "data_file-12.rds")
+#'
+#' # extract results for chains 1 and 3
+#' extract_time_elapsed(simulation, chains = c(1, 3))
+#'
+#' # extract results for only the warmup stage
+#' extract_time_elapsed(simulation, stages = "warmup")
+#'
+#' # extract all elapsed times greater than 60 seconds
+#' extract_time_elapsed(simulation,
+#'                      elapsed = function(x) x > 60)
 #' }
 #'
 #' @export
@@ -116,7 +112,7 @@ extract_time_elapsed.stansim_simulation <-
     # function to reshape dfs to long
     times_to_long <- function(x) {
       # raw transform
-      raw_long <- reshape(x,
+      raw_long <- stats::reshape(x,
                           direction = "long",
                           varying = names(x),
                           sep = ".")
@@ -191,7 +187,7 @@ extract_time_elapsed.stansim_simulation <-
         ))
       }}
     else {
-      named_time <- named_time[named_time$stages %in% stages,]
+      named_time <- named_time[named_time$stage %in% stages,]
     }
 
     # filter on elapsed

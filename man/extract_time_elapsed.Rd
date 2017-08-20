@@ -17,6 +17,6 @@ A dataframe containing the specified data.
 }
 \description{
 Generic function for extracting the time taken to fit rstansim
-  objects. Default arguments will return full data as a dataframe, otherwise
+  models Default arguments will return full data as a dataframe, otherwise
   rows will be filtered based on provided arguments.
 }
