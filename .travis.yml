@@ -28,8 +28,8 @@ before_install:
 
 script:
   - |
-    travis_wait 40 R CMD build .
-    travis_wait 40 R CMD check rstansim*tar.gz
+    travis_wait 40 R CMD build . --no-build-vignettes
+    travis_wait 40 R CMD check rstansim*tar.gz --no-build-vignettes
 
 after_success:
   - Rscript -e 'covr::codecov()'
