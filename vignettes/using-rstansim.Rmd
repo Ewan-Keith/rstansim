@@ -261,11 +261,13 @@ reg_study_col <- collect_simulations(
 Now that our simulations have been ran and collected we can easily explore the data across all models and datasets. A good first check is that no datasets have an R-hat value greater than 1.1 (a necessary but not sufficient condition for convergence). 
 
 ```{R}
-high_rhats <- extract_data(reg_study_col, 
-                           estimates = "Rhat", 
-                           values = function(x) x > 1.1)
+extract_data(
+  reg_study_col,
+  estimates = "Rhat",
+  values = function(x)
+  x > 1.1
+  )
 
-high_rhats
 ```
 
 This is a good first sign and suggests that our models have converged. 
@@ -303,28 +305,66 @@ ggplot(uncorrelated_beta_estimates, aes(x=value, y = parameter)) +
 
 We can see that the mean beta estimates are essentially identical over the two models, for both correlated values predictor variables and uncorrelated. In practice, you would want to run similar analysis across all parameters and estimates of relevance. Tail quantiles for example are less robust than mean estimates and so might show differences in chain behaviour that the above charts do not.
 
-The second hypothesis concerned the total time taken to fit a model, at a very high level we can check this by extracting the total time taken to carry out each `fit_models()` call.
+The second hypothesis concerned the total time taken to fit a model, at a very high level we can check this by extracting the total time taken to carry out each `fit_models()` call. Elapsed run times can be extracted from simulation or collection objects with `extract_time_elapsed()`.
 
-```{R}
-# simulation time for simple model on uncorrelated data
-reg_study_col$simulations$`simple - uncorrelated simulation`$end_time -
-  reg_study_col$simulations$`simple - uncorrelated simulation`$start_time
+```{R, message = F, warning = F, fig.width=7}
+# extract total times (warmup and sampling) for correlated datasets
+correlated_time <- extract_time_elapsed(
+  reg_study_col,
+  sim_names = c("QR - correlated simulation", 
+                "simple - correlated simulation"),
+  stages = "total"
+  )
+  
+# extract total times (warmup and sampling) for correlated datasets
+uncorrelated_time <- extract_time_elapsed(
+  reg_study_col,
+  sim_names = c("QR - uncorrelated simulation",
+                "simple - uncorrelated simulation"),
+  stages = "total"
+  )
 
-# simulation time for QR model on uncorrelated data
-reg_study_col$simulations$`QR - uncorrelated simulation`$end_time -
-  reg_study_col$simulations$`QR - uncorrelated simulation`$start_time
+# plot total elapsed time for correlated datasets
+ggplot(correlated_time, aes(x=elapsed, y = sim_name)) + geom_joy()
 
-# simulation time for simple model on correlated data
-reg_study_col$simulations$`simple - correlated simulation`$end_time -
-  reg_study_col$simulations$`simple - correlated simulation`$start_time
-
-# simulation time for QR model on correlated data
-reg_study_col$simulations$`QR - correlated simulation`$end_time -
-  reg_study_col$simulations$`QR - correlated simulation`$start_time
+# plot total elapsed time for uncorrelated datasets
+ggplot(uncorrelated_time, aes(x=elapsed, y = sim_name)) + geom_joy()
 
 ```
 
+When concerned with total run time, QR models tended to perform slightly quicker than the simple model when predictor variables were correlated, and slightly slower in cases where the predictors were uncorrelated. In both cases the QR model had a longer right tail, showing slightly less stability in the total time taken to fit the models.
 
+Total time taken can be misleading when dealing with MCMC samples as it doesn't capture the amount of sampling information captured, which can vary a lot from model to model. It's easy to extract the number of effective samples for all four fitted models and compare them by parameter.
+
+```{R, message = F, warning = F, fig.width=7, fig.height = 7}
+# extract the effective number of parameters samples for correlated datasets
+n_eff_correlated <- extract_data(reg_study_col,
+  sim_names = c("QR - correlated simulation", "simple - correlated simulation"), 
+  parameters = c("beta", "sigma", "lp__"),
+  estimates = "n_eff")
+
+# extract the effective number of parameters samples for uncorrelated datasets
+n_eff_uncorrelated <- extract_data(reg_study_col,
+  sim_names = c("QR - uncorrelated simulation", "simple - uncorrelated simulation"),
+  parameters = c("beta", "sigma", "lp__"),
+  estimates = "n_eff")
+
+# plot correlated datasets effective samples by parameter
+ggplot(n_eff_correlated, aes(x = value, y = sim_name)) + 
+  geom_jitter() + 
+  facet_wrap(~parameter)
+
+# plot uncorrelated datasets effective samples by parameter
+ggplot(n_eff_uncorrelated, aes(x = value, y = sim_name)) + 
+  geom_jitter() + 
+  facet_wrap(~parameter)
+```
+
+The results are close to identical for both models, with all shared parameters showing a near perfect 4000 effective samples per model (4 chains * 1000 samples) with the exception of the log posterior. The only noticable difference between models is a very slightly higher number of effective samples of the log posterior for the QR model when fitting to datasets with correlated predictor variables.
+
+## Conclusions
+
+The data and models used here are intended primarily as an example of rstansim functionality, not as a rigourous exploration of the QR decomposition approach to Bayesian regression. Such a study would explore a wider range of conditions, especially higher correlations between predictor variable [where the difference between the straightforward and QR models becomes very apparent](http://mc-stan.org/users/documentation/case-studies/qr_regression.html). But at a minimum these results show that the QR regression is not necessary for good sampling behaviour when the sample size is high (N = 1000) and the predictor correlations small (< .4).
 
 ```{r, echo=FALSE, results='asis', eval = FALSE}
 ## clean up all created files from vignetes/
