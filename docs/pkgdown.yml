@@ -1,0 +1,9 @@
+urls:
+  reference: http://ewan-keith.github.io/rstansim/reference
+  article: http://ewan-keith.github.io/rstansim/articles
+articles:
+  managing-results: managing-results.html
+  model-fitting: model-fitting.html
+  simulating_data: simulating_data.html
+  using-rstansim: using-rstansim.html
+

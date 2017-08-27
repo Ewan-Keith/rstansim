@@ -45,3 +45,20 @@ The number of datasets to simulate.
 ### Other arguments
 
 The main arguments for the function are covered above, further detail can be found in the `simulate_data()` function documentation.
+
+## Simple example
+
+Below is a very simple example, simulating 10 datasets with 2 perfectly correlated variables, x and y, where y is double of x. First off, the stan model is defined.
+
+```{R, engine = 'cat', engine.opts = list(file = "basic_sim.stan", lang = "stan")}
+// saved as basic_sim.stan
+generated quantities {
+  vector[100] x; 
+  vector[100] y; 
+
+  for(i in 1:100) x[i] = normal_rng(100, 15);
+  for(i in 1:100) y[i] = 2 * x[i];
+}
+```
+
+

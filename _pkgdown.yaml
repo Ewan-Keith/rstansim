@@ -1,0 +1,40 @@
+title: rstansim
+url: http://ewan-keith.github.io/rstansim
+template:
+  params:
+    bootswatch: flatly
+reference:
+  - title: Simulate Data
+    desc: ~
+    contents:
+      - '`simulate_data`'
+  - title: Fit Models
+    desc: ~
+    contents:
+      - '`fit_models`'
+      - '`refit`'
+  - title: Manage Results
+    desc: ~
+    contents:
+      - '`collect_simulations`'
+      - '`extract_data`'
+      - '`extract_data.stansim_collection`'
+      - '`extract_data.stansim_simulation`'
+      - '`extract_refitted`'
+      - '`extract_refitted.stansim_collection`'
+      - '`extract_refitted.stansim_simulation`'
+      - '`extract_time_elapsed`'
+      - '`extract_time_elapsed.stansim_collection`'
+      - '`extract_time_elapsed.stansim_simulation`'
+      - '`rename`'
+      - '`rename.stansim_collection`'
+      - '`rename.stansim_simulation`'
+  - title: S3 Objects and Methods
+    desc: ~
+    contents:
+      - '`stansim_collection`'
+      - '`print.stansim_collection`'
+      - '`stansim_data`'
+      - '`print.stansim_data`'
+      - '`stansim_simulation`'
+      - '`print.stansim_simulation`'
