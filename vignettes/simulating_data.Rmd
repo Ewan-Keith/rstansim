@@ -25,6 +25,7 @@ The main argument is the stan model from which data is to be simulated. This can
 2. Input values must be provided for any data arguments. Even if the data values are not relevant to the data you wish to extract, the model will not run if valid inputs are not provided for all data arguments.
 3. By deafult, any object in the stan code with a name begining with "sim_", will have this removed from their name when returned, so "sim_x" would be returned as "x". This can be useful if you wish to feed the simulated data back in to the same model, to prevent name clashes between the input and simulated output variables.
 4. The stan model specifies how values should be estimated for a single dataset, the number of datasets to return is managed by the `nsim` argument. So when specifying the stan model only consider how you wish a single dataset to look.
+5. At least one model parameter must be specified in the stan code or the model will fail to sample.
 
 ### data_name
 
@@ -52,13 +53,54 @@ Below is a very simple example, simulating 10 datasets with 2 perfectly correlat
 
 ```{R, engine = 'cat', engine.opts = list(file = "basic_sim.stan", lang = "stan")}
 // saved as basic_sim.stan
+parameters {
+  real scale;
+}
 generated quantities {
   vector[100] x; 
   vector[100] y; 
 
   for(i in 1:100) x[i] = normal_rng(100, 15);
-  for(i in 1:100) y[i] = 2 * x[i];
+  for(i in 1:100) y[i] = scale * x[i];
 }
 ```
 
+This file is then fed to the `simulate_data()` function.
 
+```{R}
+small_simulation <- simulate_data(
+  file = "basic_sim.stan", 
+  param_values = list("scale" = 2),
+  vars = c("x", "y"),
+  data_name = "small_sim_example",
+  nsim = 10,
+  path = "sim_data/"
+  )
+```
+
+We can check the data now.
+
+```{R}
+# is the data saved?
+dir("sim_data")
+
+# is the data of the correct format?
+example_data <- readRDS("sim_data/small_sim_example_1.rds")
+str(example_data)
+
+library(ggplot2)
+ggplot(as.data.frame(example_data), aes(x = x, y = y)) + 
+  geom_point()
+
+```
+
+```{r, echo=FALSE, results='asis'}
+## clean up all created files from vignetes/
+# remove stan model
+if(file.exists("basic_sim.stan"))
+  unlink("basic_sim.stan")
+
+# if simulated data dir has been created, delete it
+if(dir.exists("sim_data"))
+  unlink("sim_data", recursive = T)
+```
