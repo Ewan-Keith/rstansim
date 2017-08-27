@@ -16,8 +16,7 @@ specification or the name of a character string object in the workspace.}
 
 \item{data_name}{A name attached to the \code{stansim_data} object to help
 identify it. It is strongly recomended that an informative name is
-assigned. If \code{path} isn't NULL, this will also be the name stem for
-the saved .rds files.}
+assigned. This will also be the name stem for the saved .rds files.}
 
 \item{input_data}{Values for the data field in the provided stan model.
 Values must be provided for all entries even if they are not used in the

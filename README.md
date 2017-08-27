@@ -14,7 +14,7 @@ Overview
 -   Model fitting and capture of relevant data.
 -   Management of simulation results.
 
-All simulation data is output in a tidy format, for ease of interaction with tidyverse packages for analysis and visualisation. Additionally reproducability information such as seeds, initial values, and data used, are stored alongside the data.
+All simulation data is output in a [tidy](https://cran.r-project.org/web/packages/tidyr/vignettes/tidy-data.html) format, for ease of interaction with [tidyverse](https://www.tidyverse.org/) packages for analysis and visualisation. Additionally reproducability information such as seeds, initial values, and data used, are stored alongside the data.
 
 Installation
 ------------
@@ -28,7 +28,12 @@ devtools::install_github("ewan-keith/rstansim")
 Usage
 -----
 
-\[still to be written, point to relevant vignettes.\]
+The four vignettes below provide exmples of how rstansim can be used to simplify simulation studies with stan. The first vignette provides a minimal, end to end example of a simualtion study and it is recommended that this is read first. The next three provide greater detail on the three primary aspects of running a simulation study listed above.
+
+-   Using rstansim to run a simulation study
+-   Simulating datasets using rstan and rstansim
+-   Model fitting and capture of relevant data
+-   Managing simulation results with rstansim
 
 Documentation
 -------------

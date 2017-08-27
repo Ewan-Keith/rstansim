@@ -1,0 +1,47 @@
+---
+title: "Simulating data using rstansim"
+author: "Ewan Keith"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Model Fitting}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+The flexibility of the stan modelling language makes it an attractive option for simulating data, whether to be used in a simulation study or for other uses. In order to use data simulated from stan as input to a stan model it needs to be reshaped and properly configured, the rstansim function `simulate_data()` is designed to make this process as simple as possibe.
+
+## The simulate_data() function
+
+The `simulate_data()` function takes a stan model and a set of further arguments and generates datasets according to the stan model, in a format where they are ready to be fed back in as input data for another stan model. By default the function has two effects; firstly it saves the simulated datasets as .rds files in a specified directory, and secondly it returns an object with S3 class `stansim_data`. This object stores summary information on the simulated datasets and can be fed directly to the `fit_models()` function to fit a stan model to all datasets.
+
+## Arguments
+
+### file
+
+The main argument is the stan model from which data is to be simulated. This can be specified either as an object in R, or by specifying a file location ending in ".stan". Any valid stan model is acceptable for this argument, but there are a few factors to consider in specifying it:
+
+1. Any object in the data, transformed data, parameters, transformed parameters, model, or generated quantities blocks can be returned by the function.
+2. Input values must be provided for any data arguments. Even if the data values are not relevant to the data you wish to extract, the model will not run if valid inputs are not provided for all data arguments.
+3. By deafult, any object in the stan code with a name begining with "sim_", will have this removed from their name when returned, so "sim_x" would be returned as "x". This can be useful if you wish to feed the simulated data back in to the same model, to prevent name clashes between the input and simulated output variables.
+4. The stan model specifies how values should be estimated for a single dataset, the number of datasets to return is managed by the `nsim` argument. So when specifying the stan model only consider how you wish a single dataset to look.
+
+### data_name
+
+This is a descriptive name to help identify the simulated data. It will be used as the stem_name for simulated datasets (e.g. `data_name = "correlated multi-regression"` would be saved as `uncorrelated multi-regression_1.rds`) which will in turn be saved into any simulation objects, so it is highly recomended that an informative value is set. If none is provided it will simply deafult to the sys.time when ran.
+
+### input_data
+
+As stated above, any data arguments in the stan model need to have valid values sepecified for them, whether or not they are relevant to the data to be simulated. These should be provided in the typical `rstan` form, as a named list.
+
+### param_values
+
+A named list as with `input_data`, this specifies the values of all fixed parameters in the simulation model. If any parameters aren't specified here there value will be randomly assigned, as this is rarely likely to be a desired behaviour it is recommended that all parameters have their values specified through this argument.
+
+### nsim
+
+The number of datasets to simulate.
+
+### Other arguments
+
+The main arguments for the function are covered above, further detail can be found in the `simulate_data()` function documentation.

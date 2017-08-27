@@ -19,7 +19,7 @@ This document gives an end to end example of using the rstansim package to carry
 After reading through this example, the below documents can provide further detailed documentation on specific elements:
 
 * Simulating data using rstansim. [ADD LINK]
-* Fitting models using rstansim. [ADD LINK]
+* [Fitting models using rstansim](model-fitting.html).
 * Managing results using rstansim. [ADD LINK]
 
 Beyond that function documentation can be found here. [ADD LINK]
@@ -87,7 +87,7 @@ The stan manual provides more detail on the derivation of the QR parameterizatio
 2. Can decrease the total elapsed time to fit a model.
 2. Can improve the effective sample size (ESS) for sampled parameter chains.
 
-This small simulation study will explore the above three advantages to see if they hold for the simulated data, and to assess the magnitude of any observed differences between the two models. 
+This small simulation study will explore the above three advantages to see if they hold in the case of small to medium predictor correlations, and to assess the magnitude of any observed differences between the two models. 
 
 ## Simulating the data
 
