@@ -51,6 +51,9 @@
       <a href="../articles/model-fitting.html">Model fitting and capture of relevant data</a>
     </li>
     <li>
+      <a href="../articles/reproducability.html">A Note on Reproducability</a>
+    </li>
+    <li>
       <a href="../articles/simulating_data.html">Simulating data using rstansim</a>
     </li>
     <li>
@@ -265,8 +268,8 @@ correlated_data &lt;-<span class="st"> </span><span class="kw"><a href="../refer
 ## List of 4
 ##  $ N: num 1000
 ##  $ K: num 5
-##  $ x: num [1:1000, 1:5] -0.84 -0.46 -0.199 0.312 -1.228 ...
-##  $ y: num [1:1000(1d)] 4.61 6.03 2.17 8.16 5.65 ...</code></pre></div>
+##  $ x: num [1:1000, 1:5] -0.682 -0.383 0.17 1.313 0.187 ...
+##  $ y: num [1:1000(1d)] 4.75 2.78 7.18 8.68 6.66 ...</code></pre></div>
 </div>
 <div id="fitting-the-models" class="section level2">
 <h2 class="hasAnchor">
@@ -280,23 +283,23 @@ test_data &lt;-<span class="st"> </span><span class="kw">readRDS</span>(<span cl
 test_fit &lt;-<span class="st"> </span>rstan<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/rstan/topics/stan">stan</a></span>(<span class="dt">file =</span> <span class="st">"simple_reg_model.stan"</span>, <span class="dt">data =</span> test_data)</code></pre></div>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">rstan<span class="op">::</span><span class="kw">summary</span>(test_fit)<span class="op">$</span>summary
 ##                  mean      se_mean         sd          2.5%           25%
-## alpha      5.02918443 0.0005047060 0.03192041    4.96652806  5.008403e+00
-## beta[1]    0.01413574 0.0005047888 0.03192565   -0.04804924 -6.879831e-03
-## beta[2]   -0.03200639 0.0005069801 0.03206424   -0.09518893 -5.345951e-02
-## beta[3]    0.78075568 0.0005055898 0.03197630    0.71894171  7.580776e-01
-## beta[4]    0.57939569 0.0004975865 0.03147013    0.51693836  5.583983e-01
-## beta[5]    0.35634474 0.0005043418 0.03189737    0.29359471  3.351066e-01
-## sigma      1.01643605 0.0003584309 0.02266916    0.97259692  1.001417e+00
-## lp__    -515.32673338 0.0445245628 1.86011780 -519.82362814 -5.163839e+02
+## alpha      4.95974474 0.0005237862 0.03312715    4.89277289  4.937515e+00
+## beta[1]    0.02072441 0.0005021008 0.03175565   -0.03953442 -1.558883e-03
+## beta[2]    0.02811948 0.0004950287 0.03130837   -0.03338096  7.499079e-03
+## beta[3]    0.78840015 0.0005518980 0.03490509    0.72072685  7.653889e-01
+## beta[4]    0.61422602 0.0005277756 0.03337946    0.54745242  5.920916e-01
+## beta[5]    0.49004206 0.0005293658 0.03348003    0.42402242  4.667845e-01
+## sigma      1.03148052 0.0003828094 0.02421099    0.98617097  1.014216e+00
+## lp__    -530.15631838 0.0398985633 1.84372050 -534.45772846 -5.312193e+02
 ##                   50%           75%         97.5%    n_eff      Rhat
-## alpha      5.02934948    5.05067240    5.09064888 4000.000 0.9991296
-## beta[1]    0.01383972    0.03561455    0.07558981 4000.000 0.9993478
-## beta[2]   -0.03236374   -0.01122098    0.03265877 4000.000 0.9994899
-## beta[3]    0.78107375    0.80217213    0.84493901 4000.000 0.9993495
-## beta[4]    0.57961643    0.60061130    0.64106705 4000.000 0.9993398
-## beta[5]    0.35641180    0.37772206    0.41981656 4000.000 1.0002782
-## sigma      1.01540885    1.03106474    1.06255911 4000.000 0.9999674
-## lp__    -514.96505844 -513.92621621 -512.71375756 1745.346 1.0005389</code></pre></div>
+## alpha      4.96001527    4.98196168    5.02382020 4000.000 0.9999800
+## beta[1]    0.02092415    0.04268594    0.08129792 4000.000 0.9995875
+## beta[2]    0.02838573    0.04816514    0.08963844 4000.000 0.9996937
+## beta[3]    0.78817918    0.81117845    0.85854840 4000.000 0.9993175
+## beta[4]    0.61442055    0.63689891    0.67961750 4000.000 0.9999816
+## beta[5]    0.48985479    0.51313756    0.55595078 4000.000 1.0002450
+## sigma      1.03097212    1.04868488    1.07882539 4000.000 0.9998746
+## lp__    -529.84787151 -528.78611516 -527.43777417 2135.382 1.0006760</code></pre></div>
 <p>These values are all in the region we’d expect. The <code><a href="../reference/fit_models.html">fit_models()</a></code> function is used to fit a given stan model to multiple datasets, we can use the <code>stansim_data</code> object produced above as input pointing to our simulated datasets. Our study questions has a 2x2 design so fit_models needs called 4 times.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">
 <span class="co"># fit simple model to uncorrelated data</span>

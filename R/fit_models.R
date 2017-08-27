@@ -129,7 +129,16 @@ fit_models <- function(sim_name = paste0("Stansim_", Sys.time()),
 
   ##-------------------------------------------------
   ## pre-compile stan model
-  compiled_model <- rstan::stan_model(file = stan_args$file)
+  #compiled_model <- rstan::stan_model(file = stan_args$file)
+
+  file <- stan_args$file
+
+  # if file ends in '.stan' assume it's a file connection
+  if(grepl("\\.stan$", file)){
+    compiled_model <- rstan::stan_model(file = file)
+  } else {
+    compiled_model <- rstan::stan_model(model_code = file)
+  }
 
   # tidy up
   stan_args$file <- NULL

@@ -1,0 +1,19 @@
+---
+title: "A Note on Reproducability"
+author: "Ewan Keith"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Model Fitting}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+```{r,echo=FALSE,results='asis'}
+knitr::opts_chunk$set(collapse = T)
+```
+
+By specifying seed values when calling functions dependent on random number generation (RNG) both rstan and rstansim allow for fully reproducable results to be produced. However, in cases where rstan is used to generate new values in the generated quantities code block (using "_rng" suffixed commands) a common seed is not sufficient to guarantee reproducability within the same R session (see [the discussion here](https://groups.google.com/forum/#!topic/stan-users/8ayvLs229Ow)). 
+
+This can be managed by restarting the R session in advance of calling any functions reliant on rstans RNG functions. If running rstudio this is easily achieved by calling `.rs.restartR()`.
+
+Manual tests of this behaviour are [available with this package](https://github.com/Ewan-Keith/rstansim/blob/master/tests/manual/test-reproducability.R) for examples of this in practice.

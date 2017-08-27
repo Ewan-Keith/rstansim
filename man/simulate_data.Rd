@@ -6,7 +6,8 @@
 \usage{
 simulate_data(file, data_name = paste0("Simdata_", Sys.time()),
   input_data = NULL, vars = "all", param_values = NULL, nsim = 1,
-  path = NULL, return_object = TRUE, use_cores = 1, sim_drop = TRUE,
+  path = NULL, seed = floor(stats::runif(1, 1, 1e+05)),
+  return_object = TRUE, use_cores = 1, sim_drop = TRUE,
   recursive = TRUE)
 }
 \arguments{
@@ -35,6 +36,8 @@ values.}
 \item{path}{The name of the directory to save the simulated data to, if this
 doesn't exist it will be created. Defaults to NULL in which the datasets
 are saved to the working directory}
+
+\item{seed}{Set a seed for the function.}
 
 \item{return_object}{if FALSE then no \code{stansim_data} object is returned.}
 

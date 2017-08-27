@@ -38,6 +38,7 @@
 #' @param path The name of the directory to save the simulated data to, if this
 #'   doesn't exist it will be created. Defaults to NULL in which the datasets
 #'   are saved to the working directory
+#' @param seed Set a seed for the function.
 #' @param return_object if FALSE then no \code{stansim_data} object is returned.
 #' @param use_cores Number of cores to use when running in parallel.
 #' @param sim_drop If TRUE then any simulated data objects beginning in "sim_"
@@ -55,6 +56,7 @@ simulate_data <-
            param_values = NULL,
            nsim = 1,
            path = NULL,
+           seed = floor(stats::runif(1, 1, 100000)),
            return_object = TRUE,
            use_cores = 1,
            sim_drop = TRUE,
@@ -127,7 +129,8 @@ simulate_data <-
       param_values = param_values,
       nsim = nsim,
       use_cores = use_cores,
-      sim_drop = sim_drop
+      sim_drop = sim_drop,
+      seed = seed
     )
 
   #-----------------------------------------------------------------

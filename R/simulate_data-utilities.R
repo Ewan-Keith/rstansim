@@ -1,5 +1,5 @@
 # simulate_internal
-simulate_internal <- function(cmodel, input_data, vars, param_values, nsim, use_cores, sim_drop) {
+simulate_internal <- function(cmodel, input_data, vars, param_values, nsim, use_cores, sim_drop, seed) {
 
   fitted <-
     rstan::sampling(
@@ -10,7 +10,8 @@ simulate_internal <- function(cmodel, input_data, vars, param_values, nsim, use_
       chains = 1,
       cores = use_cores,
       warmup = 0,
-      algorithm = "Fixed_param"
+      algorithm = "Fixed_param",
+      seed = seed
     )
 
   # extract parameter and generated quantities

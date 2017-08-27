@@ -10,7 +10,7 @@ Overview
 
 rstansim provides a set of helper and utility functions to simplify running simulation studies using R and [stan](http://mc-stan.org/). The package addresses three aspects of running a simulation study:
 
--   Data simulation.
+-   [Data simulation](simulating_data.html).
 -   Model fitting and capture of relevant data.
 -   Management of simulation results.
 
@@ -35,7 +35,9 @@ The four vignettes below provide exmples of how rstansim can be used to simplify
 -   Model fitting and capture of relevant data
 -   Managing simulation results with rstansim
 
+If looking to produce reproducable samples with stans own RNG functions then [read this note](reproducability.html) on the behaviour of these functions.
+
 Documentation
 -------------
 
-Further documentation still being written.
+Further information on the packages functions can be found at [its site reference](https://ewan-keith.github.io/rstansim/reference/index.html).

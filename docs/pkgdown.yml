@@ -4,6 +4,7 @@ urls:
 articles:
   managing-results: managing-results.html
   model-fitting: model-fitting.html
+  reproducability: reproducability.html
   simulating_data: simulating_data.html
   using-rstansim: using-rstansim.html
 

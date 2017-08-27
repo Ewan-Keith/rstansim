@@ -74,6 +74,9 @@
       <a href="../articles/model-fitting.html">Model fitting and capture of relevant data</a>
     </li>
     <li>
+      <a href="../articles/reproducability.html">A Note on Reproducability</a>
+    </li>
+    <li>
       <a href="../articles/simulating_data.html">Simulating data using rstansim</a>
     </li>
     <li>
@@ -123,7 +126,8 @@
 
     <pre class="usage"><span class='fu'>simulate_data</span>(<span class='no'>file</span>, <span class='kw'>data_name</span> <span class='kw'>=</span> <span class='fu'>paste0</span>(<span class='st'>"Simdata_"</span>, <span class='fu'>Sys.time</span>()),
   <span class='kw'>input_data</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>vars</span> <span class='kw'>=</span> <span class='st'>"all"</span>, <span class='kw'>param_values</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>nsim</span> <span class='kw'>=</span> <span class='fl'>1</span>,
-  <span class='kw'>path</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>return_object</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>use_cores</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>sim_drop</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
+  <span class='kw'>path</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>seed</span> <span class='kw'>=</span> <span class='fu'>floor</span>(<span class='kw pkg'>stats</span><span class='kw ns'>::</span><span class='fu'><a href='http://www.rdocumentation.org/packages/stats/topics/Uniform'>runif</a></span>(<span class='fl'>1</span>, <span class='fl'>1</span>, <span class='fl'>1e+05</span>)),
+  <span class='kw'>return_object</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>use_cores</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>sim_drop</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
   <span class='kw'>recursive</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
@@ -168,6 +172,10 @@ values.</p></td>
       <td><p>The name of the directory to save the simulated data to, if this
 doesn't exist it will be created. Defaults to NULL in which the datasets
 are saved to the working directory</p></td>
+    </tr>
+    <tr>
+      <th>seed</th>
+      <td><p>Set a seed for the function.</p></td>
     </tr>
     <tr>
       <th>return_object</th>
