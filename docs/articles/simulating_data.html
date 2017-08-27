@@ -105,6 +105,7 @@
 <li>Input values must be provided for any data arguments. Even if the data values are not relevant to the data you wish to extract, the model will not run if valid inputs are not provided for all data arguments.</li>
 <li>By deafult, any object in the stan code with a name begining with “sim_”, will have this removed from their name when returned, so “sim_x” would be returned as “x”. This can be useful if you wish to feed the simulated data back in to the same model, to prevent name clashes between the input and simulated output variables.</li>
 <li>The stan model specifies how values should be estimated for a single dataset, the number of datasets to return is managed by the <code>nsim</code> argument. So when specifying the stan model only consider how you wish a single dataset to look.</li>
+<li>At least one model parameter must be specified in the stan code or the model will fail to sample.</li>
 </ol>
 </div>
 <div id="data_name" class="section level3">
@@ -133,6 +134,53 @@
 <p>The main arguments for the function are covered above, further detail can be found in the <code><a href="../reference/simulate_data.html">simulate_data()</a></code> function documentation.</p>
 </div>
 </div>
+<div id="simple-example" class="section level2">
+<h2 class="hasAnchor">
+<a href="#simple-example" class="anchor"></a>Simple example</h2>
+<p>Below is a very simple example, simulating 10 datasets with 2 perfectly correlated variables, x and y, where y is double of x. First off, the stan model is defined.</p>
+<pre class="stan"><code>// saved as basic_sim.stan
+parameters {
+  real scale;
+}
+generated quantities {
+  vector[100] x; 
+  vector[100] y; 
+
+  for(i in 1:100) x[i] = normal_rng(100, 15);
+  for(i in 1:100) y[i] = scale * x[i];
+}</code></pre>
+<p>This file is then fed to the <code><a href="../reference/simulate_data.html">simulate_data()</a></code> function.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(rstansim)
+
+small_simulation &lt;-<span class="st"> </span><span class="kw"><a href="../reference/simulate_data.html">simulate_data</a></span>(
+  <span class="dt">file =</span> <span class="st">"basic_sim.stan"</span>, 
+  <span class="dt">param_values =</span> <span class="kw">list</span>(<span class="st">"scale"</span> =<span class="st"> </span><span class="dv">2</span>),
+  <span class="dt">vars =</span> <span class="kw">c</span>(<span class="st">"x"</span>, <span class="st">"y"</span>),
+  <span class="dt">data_name =</span> <span class="st">"small_sim_example"</span>,
+  <span class="dt">nsim =</span> <span class="dv">10</span>,
+  <span class="dt">path =</span> <span class="st">"sim_data/"</span>
+  )</code></pre></div>
+<p>We can check the data now.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># is the data saved?</span>
+<span class="kw">dir</span>(<span class="st">"sim_data"</span>)
+##  [1] "small_sim_example_10.rds" "small_sim_example_1.rds" 
+##  [3] "small_sim_example_2.rds"  "small_sim_example_3.rds" 
+##  [5] "small_sim_example_4.rds"  "small_sim_example_5.rds" 
+##  [7] "small_sim_example_6.rds"  "small_sim_example_7.rds" 
+##  [9] "small_sim_example_8.rds"  "small_sim_example_9.rds"
+
+<span class="co"># is the data of the correct format?</span>
+example_data &lt;-<span class="st"> </span><span class="kw">readRDS</span>(<span class="st">"sim_data/small_sim_example_1.rds"</span>)
+<span class="kw">str</span>(example_data)
+## List of 2
+##  $ x: num [1:100(1d)] 81 126.6 94.8 90.5 119.6 ...
+##  $ y: num [1:100(1d)] 162 253 190 181 239 ...
+
+<span class="kw">library</span>(ggplot2)
+<span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/ggplot">ggplot</a></span>(<span class="kw">as.data.frame</span>(example_data), <span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/aes">aes</a></span>(<span class="dt">x =</span> x, <span class="dt">y =</span> y)) <span class="op">+</span><span class="st"> </span>
+<span class="st">  </span><span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/geom_point">geom_point</a></span>()</code></pre></div>
+<p><img src="simulating_data_files/figure-html/unnamed-chunk-4-1.png" width="672"></p>
+</div>
 </div>
   </div>
 
@@ -143,6 +191,7 @@
       <ul class="nav nav-pills nav-stacked">
 <li><a href="#the-simulate_data-function">The simulate_data() function</a></li>
       <li><a href="#arguments">Arguments</a></li>
+      <li><a href="#simple-example">Simple example</a></li>
       </ul>
 </div>
       </div>

@@ -8,6 +8,9 @@ vignette: >
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
+```{r,echo=FALSE,results='asis'}
+knitr::opts_chunk$set(collapse = T)
+```
 
 The flexibility of the stan modelling language makes it an attractive option for simulating data, whether to be used in a simulation study or for other uses. In order to use data simulated from stan as input to a stan model it needs to be reshaped and properly configured, the rstansim function `simulate_data()` is designed to make this process as simple as possibe.
 
@@ -67,7 +70,9 @@ generated quantities {
 
 This file is then fed to the `simulate_data()` function.
 
-```{R}
+```{R, results = "hide", message = F, warning = F}
+library(rstansim)
+
 small_simulation <- simulate_data(
   file = "basic_sim.stan", 
   param_values = list("scale" = 2),
