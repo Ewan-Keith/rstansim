@@ -181,3 +181,61 @@ test_that(
       caught_print[31]))
 
     })
+
+test_that(paste(
+  "print.stansim_collection function should print",
+  "expected output"), {
+
+    ## read in test stansim obj to extract from
+    extract_test_data <-
+      readRDS("objects/collection_for_method_tests.rds")
+
+    caught_print <- utils::capture.output(print(extract_test_data))
+
+    expect_true(grepl("Stansim Collection Title: .*", caught_print[1]))
+
+    expect_true(grepl("", caught_print[2]))
+
+    expect_true(grepl("Simulations Collected: \\d*", caught_print[3]))
+
+    expect_true(grepl("  Stansim_.*", caught_print[4]))
+
+    expect_true(grepl("  refitted test sim", caught_print[5]))
+
+    expect_true(grepl("", caught_print[6]))
+
+    expect_true(grepl("Datasets Refitted: \\d*", caught_print[7]))
+
+    expect_true(grepl(" *sim_name *dataset", caught_print[8]))
+
+    expect_true(grepl(" refitted test sim data-raw/data/schoolsdat1.rds", caught_print[9]))
+
+    expect_true(grepl(" refitted test sim data-raw/data/schoolsdat3.rds", caught_print[10]))
+
+})
+
+
+test_that(paste(
+  "print.stansim_data function should print",
+  "expected output"), {
+
+    ## read in test stansim obj to extract from
+    extract_test_data <-
+      readRDS("objects/stansim_data_for_method_tests.rds")
+
+    caught_print <- utils::capture.output(print(extract_test_data))
+
+    expect_true(grepl("Stansim Data Title: .*", caught_print[1]))
+
+    expect_true(grepl("Number of datasets simulated: \\d*", caught_print[2]))
+
+    expect_true(grepl("", caught_print[3]))
+
+    expect_true(grepl("Simulated from model: .*", caught_print[4]))
+
+  })
+
+
+
+
+

@@ -174,20 +174,11 @@ print.stansim_data <- function(x, ...){
   cat(paste0("Number of datasets simulated: ", length(x$datasets), "\n\n"))
 
   # model simulated from
-  cat(paste0("Simulated from model: ", x$model_name, "\n\n"))
+  cat(paste0("Simulated from model: ", x$model_name))
 
-  # variables recorded
-  if (length(x$data[[1]]) > 50) {
-    cat(paste0("Variables Recorded: ",
-               length(x$data[[1]]),
-               " (first 50 shown)\n"))
-  } else {
-    cat(paste0("Variables Recorded: ",
-               length(x$data[[1]]),
-               "\n"))
-  }
+  # data saved to path [TO ADD]
 
-  variables <- names(x$data[[1]])
+  ## consider other options to add down the line,
+  # will need to change the base object to implement
 
-  print_tidy_matrix(matrix(variables[1:50], ncol = 5, byrow = TRUE))
 }
