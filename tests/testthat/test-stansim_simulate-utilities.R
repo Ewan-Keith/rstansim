@@ -21,7 +21,8 @@ test_that("simulate_internal returns correctly formatted output (sim_drop = T)",
         test_vals,
         use_cores = 1,
         nsim = 1,
-        sim_drop = T
+        sim_drop = T,
+        seed = 1234
       )
     )
 
@@ -69,7 +70,8 @@ test_that("simulate_internal returns correctly formatted output (sim_drop = F)",
         test_vals,
         use_cores = 1,
         nsim = 1,
-        sim_drop = FALSE
+        sim_drop = FALSE,
+        seed = 1234
       )
     )
 
