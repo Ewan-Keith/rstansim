@@ -71,4 +71,8 @@ With valid `sim_data` and `stan_arg` arguments the other `fit_models()` argument
 
 Other arguments exist but these a less likely to be of interest. See the documentation for `fit_models()` for more information.
 
+## refitting specific models
 
+In some cases you might want to only refit a small number of models within a simulation (e.g. because of randomly set initial values it's possible that a small set of models failed to converge whilst most converged without issues). In this case the `refit()` function can be used to solve the problem. Calling `refit()` on a simulation result object will return an object of the same class, with the specified datasets refit, but the others unchanged.
+
+Given the computational resources required to run some simulations this function allows for minor adjustments without having to rerun the entire model fit stage. However, it should be noted that this complicates reproducability and must not be used as an alternative to well defined stan models with good convegence behaviour

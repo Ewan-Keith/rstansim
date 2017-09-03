@@ -61,6 +61,9 @@
     </li>
   </ul>
 </li>
+<li>
+  <a href="../news/index.html">News</a>
+</li>
       </ul>
 <ul class="nav navbar-nav navbar-right">
 <li>
@@ -84,7 +87,7 @@
       <h1>Model fitting and capture of relevant data</h1>
                         <h4 class="author">Ewan Keith</h4>
             
-            <h4 class="date">2017-08-27</h4>
+            <h4 class="date">2017-09-03</h4>
           </div>
 
     
@@ -155,6 +158,12 @@
 <p>Other arguments exist but these a less likely to be of interest. See the documentation for <code><a href="../reference/fit_models.html">fit_models()</a></code> for more information.</p>
 </div>
 </div>
+<div id="refitting-specific-models" class="section level2">
+<h2 class="hasAnchor">
+<a href="#refitting-specific-models" class="anchor"></a>refitting specific models</h2>
+<p>In some cases you might want to only refit a small number of models within a simulation (e.g. because of randomly set initial values it’s possible that a small set of models failed to converge whilst most converged without issues). In this case the <code><a href="../reference/refit.html">refit()</a></code> function can be used to solve the problem. Calling <code><a href="../reference/refit.html">refit()</a></code> on a simulation result object will return an object of the same class, with the specified datasets refit, but the others unchanged.</p>
+<p>Given the computational resources required to run some simulations this function allows for minor adjustments without having to rerun the entire model fit stage. However, it should be noted that this complicates reproducability and must not be used as an alternative to well defined stan models with good convegence behaviour</p>
+</div>
 </div>
   </div>
 
@@ -165,6 +174,7 @@
       <ul class="nav nav-pills nav-stacked">
 <li><a href="#the-fit_models-function">The fit_models() function</a></li>
       <li><a href="#arguments">Arguments</a></li>
+      <li><a href="#refitting-specific-models">refitting specific models</a></li>
       </ul>
 </div>
       </div>
