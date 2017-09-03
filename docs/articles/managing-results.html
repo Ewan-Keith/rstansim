@@ -112,6 +112,21 @@
 <div id="extracting-relevant-data" class="section level2">
 <h2 class="hasAnchor">
 <a href="#extracting-relevant-data" class="anchor"></a>Extracting relevant data</h2>
+<p>Once data is collected into a single object it is then best extracted using the packages built in functions, all prefixed with <code>extract_</code>. These functions currently include:</p>
+<ul>
+<li>
+<code><a href="../reference/extract_data.html">extract_data()</a></code>: Returns all parameter estimates from fitted models.</li>
+<li>
+<code><a href="../reference/extract_refitted.html">extract_refitted()</a></code>: Returns all models that have been refitted using the <code><a href="../reference/refit.html">refit()</a></code> function since the initial <code><a href="../reference/fit_models.html">fit_models()</a></code> call.</li>
+<li>
+<code><a href="../reference/extract_time_elapsed.html">extract_time_elapsed()</a></code>: Returns information on the time taken to fit all models.</li>
+</ul>
+<p>Any other stored data can be extracted manually, but this process can be quite involved due to the deep structure of the <code>stansim_simulation</code> and <code>stansim_collection</code> objects.</p>
+</div>
+<div id="renaming-objects" class="section level2">
+<h2 class="hasAnchor">
+<a href="#renaming-objects" class="anchor"></a>Renaming objects</h2>
+<p>In order that all simulation data is clear and understandable it’s important that informative object names are set. If for whatever reason they’re not set when initially constructed both <code>stansim_simulation</code> and <code>stansim_collection</code> objects can have their names reset by the <code><a href="../reference/rename.html">rename()</a></code> function.</p>
 </div>
 </div>
   </div>
@@ -123,6 +138,7 @@
       <ul class="nav nav-pills nav-stacked">
 <li><a href="#managing-multiple-simulation-objects">Managing multiple simulation objects</a></li>
       <li><a href="#extracting-relevant-data">Extracting relevant data</a></li>
+      <li><a href="#renaming-objects">Renaming objects</a></li>
       </ul>
 </div>
       </div>

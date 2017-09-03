@@ -22,4 +22,14 @@ See the [end to end example]() for an example of how to use the `collect()` func
 
 ## Extracting relevant data
 
+Once data is collected into a single object it is then best extracted using the packages built in functions, all prefixed with `extract_`. These functions currently include:
 
+* `extract_data()`: Returns all parameter estimates from fitted models.
+* `extract_refitted()`: Returns all models that have been refitted using the `refit()` function since the initial `fit_models()` call.
+* `extract_time_elapsed()`: Returns information on the time taken to fit all models.
+
+Any other stored data can be extracted manually, but this process can be quite involved due to the deep structure of the `stansim_simulation` and `stansim_collection` objects.
+
+## Renaming objects
+
+In order that all simulation data is clear and understandable it's important that informative object names are set. If for whatever reason they're not set when initially constructed both `stansim_simulation` and `stansim_collection` objects can have their names reset by the `rename()` function.
