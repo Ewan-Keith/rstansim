@@ -18,4 +18,8 @@ Once data has been simulated and models fit the next stage is to organise the re
 
 Any simulation study is likely to involve multiple stan models, and therefore likely to involve multiple calls to `fit_models()` and multiple output objects from these calls. Held seperately these increase the complexity of analysing the simulation results. For this reason, in cases where multiple simulation objects are being managed it is strongly recommended that the `collect()` function is used to group them into a single object of class `stansim_collection`.
 
-See the [end to end example]() for an example of how to use the `collect()` function to combine multiple `stansim_simulation` objects in to one. `collect()` can be 
+See the [end to end example]() for an example of how to use the `collect()` function to combine multiple `stansim_simulation` objects in to one. `collect()` can be used to combine both `stansim_simulation` and `stansim_collection` objects together. Once all results for a single simulation study have been combined further analysis and storage only needs to focus on a single R object.
+
+## Extracting relevant data
+
+

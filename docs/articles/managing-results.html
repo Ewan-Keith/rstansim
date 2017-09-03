@@ -29,47 +29,56 @@
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
 <li>
-  <a href="..//index.html">
-    <span class="fa fa-home fa-lg"></span>
+  <a href="../index.html">
+    <span class="fa fa-home"></span>
      
   </a>
 </li>
-<li>
-  <a href="../reference/index.html">Reference</a>
-</li>
 <li class="dropdown">
   <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-    Articles
+    How to
      
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu">
 <li>
-      <a href="../articles/managing-results.html">Managing simulation results with rstansim</a>
+      <a href="https://ewan-keith.github.io/rstansim/articles/using-rstansim.html">Example Study with rstansim</a>
     </li>
     <li>
-      <a href="../articles/model-fitting.html">Model fitting and capture of relevant data</a>
+      <a href="https://ewan-keith.github.io/rstansim/articles/simulating_data.html">Simulating data</a>
     </li>
     <li>
-      <a href="../articles/reproducability.html">A Note on Reproducability</a>
+      <a href="https://ewan-keith.github.io/rstansim/articles/model-fitting.html">Model fitting and capture of relevant data</a>
     </li>
     <li>
-      <a href="../articles/simulating_data.html">Simulating data using rstansim</a>
+      <a href="https://ewan-keith.github.io/rstansim/articles/managing-results.html">Managing simulation results</a>
     </li>
     <li>
-      <a href="../articles/using-rstansim.html">Using rstansim to run a simulation study</a>
+      <a href="https://ewan-keith.github.io/rstansim/articles/reproducability.html">A note on reproducability</a>
     </li>
   </ul>
-</li>
-<li>
-  <a href="../news/index.html">News</a>
 </li>
       </ul>
 <ul class="nav navbar-nav navbar-right">
 <li>
-  <a href="https://github.com/Ewan-Keith/rstansim#rstansim">
+  <a href="../news/index.html">
+    <span class="fa fa-newspaper-o"></span>
+     
+    news
+  </a>
+</li>
+<li>
+  <a href="../reference/index.html">
+    <span class="fa fa-file-code-o"></span>
+     
+    functions
+  </a>
+</li>
+<li>
+  <a href="https://github.com/Ewan-Keith/rstansim">
     <span class="fa fa-github fa-lg"></span>
      
+    github
   </a>
 </li>
       </ul>
@@ -98,7 +107,11 @@
 <h2 class="hasAnchor">
 <a href="#managing-multiple-simulation-objects" class="anchor"></a>Managing multiple simulation objects</h2>
 <p>Any simulation study is likely to involve multiple stan models, and therefore likely to involve multiple calls to <code><a href="../reference/fit_models.html">fit_models()</a></code> and multiple output objects from these calls. Held seperately these increase the complexity of analysing the simulation results. For this reason, in cases where multiple simulation objects are being managed it is strongly recommended that the <code>collect()</code> function is used to group them into a single object of class <code>stansim_collection</code>.</p>
-<p>See the <a href="">end to end example</a> for an example of how to use the <code>collect()</code> function to combine multiple <code>stansim_simulation</code> objects in to one. <code>collect()</code> can be</p>
+<p>See the <a href="">end to end example</a> for an example of how to use the <code>collect()</code> function to combine multiple <code>stansim_simulation</code> objects in to one. <code>collect()</code> can be used to combine both <code>stansim_simulation</code> and <code>stansim_collection</code> objects together. Once all results for a single simulation study have been combined further analysis and storage only needs to focus on a single R object.</p>
+</div>
+<div id="extracting-relevant-data" class="section level2">
+<h2 class="hasAnchor">
+<a href="#extracting-relevant-data" class="anchor"></a>Extracting relevant data</h2>
 </div>
 </div>
   </div>
@@ -109,6 +122,7 @@
 <a href="#tocnav" class="anchor"></a>Contents</h2>
       <ul class="nav nav-pills nav-stacked">
 <li><a href="#managing-multiple-simulation-objects">Managing multiple simulation objects</a></li>
+      <li><a href="#extracting-relevant-data">Extracting relevant data</a></li>
       </ul>
 </div>
       </div>

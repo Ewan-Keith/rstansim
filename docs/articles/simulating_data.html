@@ -29,47 +29,56 @@
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
 <li>
-  <a href="..//index.html">
-    <span class="fa fa-home fa-lg"></span>
+  <a href="../index.html">
+    <span class="fa fa-home"></span>
      
   </a>
 </li>
-<li>
-  <a href="../reference/index.html">Reference</a>
-</li>
 <li class="dropdown">
   <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-    Articles
+    How to
      
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu">
 <li>
-      <a href="../articles/managing-results.html">Managing simulation results with rstansim</a>
+      <a href="https://ewan-keith.github.io/rstansim/articles/using-rstansim.html">Example Study with rstansim</a>
     </li>
     <li>
-      <a href="../articles/model-fitting.html">Model fitting and capture of relevant data</a>
+      <a href="https://ewan-keith.github.io/rstansim/articles/simulating_data.html">Simulating data</a>
     </li>
     <li>
-      <a href="../articles/reproducability.html">A Note on Reproducability</a>
+      <a href="https://ewan-keith.github.io/rstansim/articles/model-fitting.html">Model fitting and capture of relevant data</a>
     </li>
     <li>
-      <a href="../articles/simulating_data.html">Simulating data using rstansim</a>
+      <a href="https://ewan-keith.github.io/rstansim/articles/managing-results.html">Managing simulation results</a>
     </li>
     <li>
-      <a href="../articles/using-rstansim.html">Using rstansim to run a simulation study</a>
+      <a href="https://ewan-keith.github.io/rstansim/articles/reproducability.html">A note on reproducability</a>
     </li>
   </ul>
-</li>
-<li>
-  <a href="../news/index.html">News</a>
 </li>
       </ul>
 <ul class="nav navbar-nav navbar-right">
 <li>
-  <a href="https://github.com/Ewan-Keith/rstansim#rstansim">
+  <a href="../news/index.html">
+    <span class="fa fa-newspaper-o"></span>
+     
+    news
+  </a>
+</li>
+<li>
+  <a href="../reference/index.html">
+    <span class="fa fa-file-code-o"></span>
+     
+    functions
+  </a>
+</li>
+<li>
+  <a href="https://github.com/Ewan-Keith/rstansim">
     <span class="fa fa-github fa-lg"></span>
      
+    github
   </a>
 </li>
       </ul>
@@ -179,8 +188,8 @@ small_simulation &lt;-<span class="st"> </span><span class="kw"><a href="../refe
 example_data &lt;-<span class="st"> </span><span class="kw">readRDS</span>(<span class="st">"sim_data/small_sim_example_1.rds"</span>)
 <span class="kw">str</span>(example_data)
 ## List of 2
-##  $ x: num [1:100(1d)] 101 89.7 66.5 86 78 ...
-##  $ y: num [1:100(1d)] 202 179 133 172 156 ...
+##  $ x: num [1:100(1d)] 96 98.2 81.7 112.2 127.7 ...
+##  $ y: num [1:100(1d)] 192 196 163 224 255 ...
 
 <span class="kw">library</span>(ggplot2)
 <span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/ggplot">ggplot</a></span>(<span class="kw">as.data.frame</span>(example_data), <span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/aes">aes</a></span>(<span class="dt">x =</span> x, <span class="dt">y =</span> y)) <span class="op">+</span><span class="st"> </span>

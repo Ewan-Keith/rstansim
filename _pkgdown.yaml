@@ -38,30 +38,29 @@ reference:
       - '`print.stansim_data`'
       - '`stansim_simulation`'
       - '`print.stansim_simulation`'
-left:
-  - icon: fa-home
-    href: index.html
-  - text: "How to"
-    menu:
-      -  text: Example Study with rstansim
-         href: https://ewan-keith.github.io/rstansim/articles/using-rstansim.html
-      -  text: Simulating data
-         href: https://ewan-keith.github.io/rstansim/articles/simulating_data.html
-      -  text: Model fitting and capture of relevant data
-         href: https://ewan-keith.github.io/rstansim/articles/model-fitting.html
-      -  text: Managing simulation results
-         href: https://ewan-keith.github.io/rstansim/articles/managing-results.html
-      -  text: A note on reproducability
-         href: https://ewan-keith.github.io/rstansim/articles/reproducability.html
-  - text: "Function reference"
-    href: https://ewan-keith.github.io/rstansim/reference/index.html
-right:
-    - icon: fa-newspaper-o
-      text: "news"
-      href: news/index.html
-    - icon: fa-file-code-o
-      text: "functions"
-      href: reference/index.html
-    - icon: fa-github fa-lg
-      text: "github"
-      href: https://github.com/Ewan-Keith/rstansim
+navbar:
+  left:
+    - icon: fa-home
+      href: index.html
+    - text: "How to"
+      menu:
+        -  text: Example Study with rstansim
+           href: https://ewan-keith.github.io/rstansim/articles/using-rstansim.html
+        -  text: Simulating data
+           href: https://ewan-keith.github.io/rstansim/articles/simulating_data.html
+        -  text: Model fitting and capture of relevant data
+           href: https://ewan-keith.github.io/rstansim/articles/model-fitting.html
+        -  text: Managing simulation results
+           href: https://ewan-keith.github.io/rstansim/articles/managing-results.html
+        -  text: A note on reproducability
+           href: https://ewan-keith.github.io/rstansim/articles/reproducability.html
+  right:
+      - icon: fa-newspaper-o
+        text: "news"
+        href: news/index.html
+      - icon: fa-file-code-o
+        text: "functions"
+        href: reference/index.html
+      - icon: fa-github fa-lg
+        text: "github"
+        href: https://github.com/Ewan-Keith/rstansim

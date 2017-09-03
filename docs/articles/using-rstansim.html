@@ -29,47 +29,56 @@
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
 <li>
-  <a href="..//index.html">
-    <span class="fa fa-home fa-lg"></span>
+  <a href="../index.html">
+    <span class="fa fa-home"></span>
      
   </a>
 </li>
-<li>
-  <a href="../reference/index.html">Reference</a>
-</li>
 <li class="dropdown">
   <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-    Articles
+    How to
      
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu">
 <li>
-      <a href="../articles/managing-results.html">Managing simulation results with rstansim</a>
+      <a href="https://ewan-keith.github.io/rstansim/articles/using-rstansim.html">Example Study with rstansim</a>
     </li>
     <li>
-      <a href="../articles/model-fitting.html">Model fitting and capture of relevant data</a>
+      <a href="https://ewan-keith.github.io/rstansim/articles/simulating_data.html">Simulating data</a>
     </li>
     <li>
-      <a href="../articles/reproducability.html">A Note on Reproducability</a>
+      <a href="https://ewan-keith.github.io/rstansim/articles/model-fitting.html">Model fitting and capture of relevant data</a>
     </li>
     <li>
-      <a href="../articles/simulating_data.html">Simulating data using rstansim</a>
+      <a href="https://ewan-keith.github.io/rstansim/articles/managing-results.html">Managing simulation results</a>
     </li>
     <li>
-      <a href="../articles/using-rstansim.html">Using rstansim to run a simulation study</a>
+      <a href="https://ewan-keith.github.io/rstansim/articles/reproducability.html">A note on reproducability</a>
     </li>
   </ul>
-</li>
-<li>
-  <a href="../news/index.html">News</a>
 </li>
       </ul>
 <ul class="nav navbar-nav navbar-right">
 <li>
-  <a href="https://github.com/Ewan-Keith/rstansim#rstansim">
+  <a href="../news/index.html">
+    <span class="fa fa-newspaper-o"></span>
+     
+    news
+  </a>
+</li>
+<li>
+  <a href="../reference/index.html">
+    <span class="fa fa-file-code-o"></span>
+     
+    functions
+  </a>
+</li>
+<li>
+  <a href="https://github.com/Ewan-Keith/rstansim">
     <span class="fa fa-github fa-lg"></span>
      
+    github
   </a>
 </li>
       </ul>
@@ -271,8 +280,8 @@ correlated_data &lt;-<span class="st"> </span><span class="kw"><a href="../refer
 ## List of 4
 ##  $ N: num 1000
 ##  $ K: num 5
-##  $ x: num [1:1000, 1:5] -0.0776 0.4594 1.4948 2.2083 -0.6137 ...
-##  $ y: num [1:1000(1d)] 4.77 6.13 4.97 6.25 4.48 ...</code></pre></div>
+##  $ x: num [1:1000, 1:5] 1.862 0.266 0.622 0.537 -1.712 ...
+##  $ y: num [1:1000(1d)] 4.02 3.75 7.41 5.63 7.62 ...</code></pre></div>
 </div>
 <div id="fitting-the-models" class="section level2">
 <h2 class="hasAnchor">
@@ -286,23 +295,23 @@ test_data &lt;-<span class="st"> </span><span class="kw">readRDS</span>(<span cl
 test_fit &lt;-<span class="st"> </span>rstan<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/rstan/topics/stan">stan</a></span>(<span class="dt">file =</span> <span class="st">"simple_reg_model.stan"</span>, <span class="dt">data =</span> test_data)</code></pre></div>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">rstan<span class="op">::</span><span class="kw">summary</span>(test_fit)<span class="op">$</span>summary
 ##                  mean      se_mean         sd          2.5%           25%
-## alpha      5.02515639 0.0005002693 0.03163981    4.96325110    5.00362500
-## beta[1]    0.04285527 0.0005157607 0.03261957   -0.02128646    0.02105509
-## beta[2]   -0.06502325 0.0005118405 0.03237163   -0.12843706   -0.08688157
-## beta[3]    0.85616805 0.0005019261 0.03174459    0.79489313    0.83507858
-## beta[4]    0.59701835 0.0005073852 0.03208986    0.53428667    0.57558062
-## beta[5]    0.41957216 0.0005073592 0.03208821    0.35386715    0.39769685
-## sigma      0.99453014 0.0003370555 0.02131726    0.95434481    0.97982262
-## lp__    -493.41740361 0.0431210513 1.89669825 -497.88921493 -494.44984063
+## alpha      4.99489977 0.0005395435 0.03412373    4.92920567  4.971334e+00
+## beta[1]   -0.01952893 0.0005124118 0.03240777   -0.08377418 -4.129069e-02
+## beta[2]    0.02026169 0.0004922474 0.03113246   -0.04135261 -6.590125e-04
+## beta[3]    0.81678169 0.0005248994 0.03319755    0.75154412  7.946678e-01
+## beta[4]    0.65404834 0.0005176178 0.03273702    0.58873181  6.324120e-01
+## beta[5]    0.33323066 0.0005242772 0.03315820    0.26927704  3.111978e-01
+## sigma      1.01571925 0.0003782558 0.02392300    0.97081393  9.987825e-01
+## lp__    -514.72602050 0.0430250965 1.97524670 -519.43564845 -5.158141e+02
 ##                   50%           75%         97.5%    n_eff      Rhat
-## alpha      5.02553957    5.04645590  5.087873e+00 4000.000 0.9994963
-## beta[1]    0.04330205    0.06514229  1.046681e-01 4000.000 0.9999013
-## beta[2]   -0.06472364   -0.04334272 -1.449205e-03 4000.000 0.9995671
-## beta[3]    0.85662761    0.87801713  9.195698e-01 4000.000 0.9996061
-## beta[4]    0.59676280    0.61819348  6.606817e-01 4000.000 0.9997261
-## beta[5]    0.41992763    0.44155533  4.810365e-01 4000.000 0.9999050
-## sigma      0.99404571    1.00910348  1.036365e+00 4000.000 0.9994915
-## lp__    -493.09932688 -492.05620632 -4.907573e+02 1934.719 1.0004726</code></pre></div>
+## alpha      4.99453158  5.018427e+00    5.06124332 4000.000 0.9996185
+## beta[1]   -0.01935526  1.831165e-03    0.04506135 4000.000 0.9997551
+## beta[2]    0.01971286  4.263707e-02    0.07910599 4000.000 0.9999570
+## beta[3]    0.81681151  8.390760e-01    0.88140469 4000.000 0.9996494
+## beta[4]    0.65417415  6.753296e-01    0.71971028 4000.000 0.9998779
+## beta[5]    0.33356382  3.559752e-01    0.39783862 4000.000 0.9996908
+## sigma      1.01532359  1.032192e+00    1.06288225 4000.000 0.9996206
+## lp__    -514.37873713 -5.132996e+02 -511.93078856 2107.652 1.0020570</code></pre></div>
 <p>These values are all in the region we’d expect. The <code><a href="../reference/fit_models.html">fit_models()</a></code> function is used to fit a given stan model to multiple datasets, we can use the <code>stansim_data</code> object produced above as input pointing to our simulated datasets. Our study questions has a 2x2 design so fit_models needs called 4 times.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">
 <span class="co"># fit simple model to uncorrelated data</span>
