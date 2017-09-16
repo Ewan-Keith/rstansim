@@ -5,10 +5,10 @@ Version: 0.1.1
 Date: 2017-09-16
 Authors@R: person("Ewan", "Keith", email = "ewan.keith100@gmail.com",
     role = c("aut", "cre"))
-Description: Provides a wrapper function for fitting a
-    stan model to multiple data sets, then extracting and
-    combining specified estimates from all models. Allows for
-    Nested parallelism across simulation runs and stan chains.
+Description: Provides a set of functions to facilitate and ease the
+    running of simulation studies of Bayesian models using stan. 
+    Provides functionality to simulate data, fit models, and manage
+    simulation results.
 License: GPL (>=3) | file LICENSE
 Encoding: UTF-8
 LazyData: true
