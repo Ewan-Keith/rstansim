@@ -31,5 +31,8 @@ script:
     travis_wait 40 R CMD build . --no-build-vignettes
     travis_wait 40 R CMD check rstansim*tar.gz --no-build-vignettes
 
+after_failure:
+  - cat rstansim.Rcheck/00*
+
 after_success:
   - Rscript -e 'covr::codecov()'
