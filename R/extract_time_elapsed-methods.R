@@ -141,7 +141,7 @@ extract_time_elapsed.stansim_simulation <-
     merged_time <- vector("list", length(object$instances))
 
     # merge data
-    for(i in seq(length(object$instances))){
+    for (i in seq(length(object$instances))){
       merged_time[[i]] <- cbind(dataset_list[[i]], long_ordered[[i]])
     }
 
@@ -187,11 +187,11 @@ extract_time_elapsed.stansim_simulation <-
         ))
       }}
     else {
-      named_time <- named_time[named_time$stage %in% stages,]
+      named_time <- named_time[named_time$stage %in% stages, ]
     }
 
     # filter on elapsed
-    if(!is.null(elapsed))
+    if (!is.null(elapsed))
       named_time <- named_time[elapsed(named_time$elapsed), ]
 
 
@@ -294,7 +294,8 @@ extract_time_elapsed.stansim_collection <-
 
     # loop over simulations and store times
     for (i in seq(length(object$simulations))) {
-      raw_times[[i]] <- lapply(object$simulations[[i]]$instances, "[", "elapsed_time")
+      raw_times[[i]] <-
+        lapply(object$simulations[[i]]$instances, "[", "elapsed_time")
     }
 
     ## convert to dataframes
@@ -364,7 +365,8 @@ extract_time_elapsed.stansim_collection <-
 
     # loop over simulations and extract dataset names
     for (i in seq(length(object$simulations))) {
-      dataset_list[[i]] <- lapply(object$simulations[[i]]$instances, "[", "data_name")
+      dataset_list[[i]] <-
+        lapply(object$simulations[[i]]$instances, "[", "data_name")
     }
 
     ## merge dataset name to time data
@@ -412,8 +414,10 @@ extract_time_elapsed.stansim_collection <-
     single_time_data <- do.call("rbind", collapsed_data)
 
     ## rename columns
-    named_time <- stats::setNames(single_time_data, c("sim_name", "dataset", "chain",
-                                                      "stage", "elapsed"))
+    named_time <-
+      stats::setNames(single_time_data,
+                      c("sim_name", "dataset", "chain",
+                        "stage", "elapsed"))
 
     ## -------------------------------------------------
     # carry out filtering from input
@@ -461,11 +465,11 @@ extract_time_elapsed.stansim_collection <-
         ))
       }}
     else {
-      named_time <- named_time[named_time$stage %in% stages,]
+      named_time <- named_time[named_time$stage %in% stages, ]
     }
 
     # filter on elapsed
-    if(!is.null(elapsed))
+    if (!is.null(elapsed))
       named_time <- named_time[elapsed(named_time$elapsed), ]
 
     # convert dataset to character from factor

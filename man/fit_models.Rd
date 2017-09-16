@@ -13,7 +13,7 @@ fit_models(sim_name = paste0("Stansim_", Sys.time()), sim_data = NULL,
 }
 \arguments{
 \item{sim_name}{A name attached to the \code{stansim_simulation} object to
-help identify it. It is strongly recomended that an informative name is
+help identify it. It is strongly recommended that an informative name is
 assigned, especially if \code{stansim_simulation} objects are to be
 combined in to a \code{stansim_collection} object for management of
 results.}
@@ -27,7 +27,7 @@ formatting of these datasets.}
 \code{rstan::sampling()} function when fitting the models. If not specified
 then the \code{rstan::sampling()} function defaults are used.}
 
-\item{calc_loo}{If \code{TRUE} then model fit statisics will be calculated
+\item{calc_loo}{If \code{TRUE} then model fit statistics will be calculated
 using the \code{loo} package. If \code{TRUE} there must be a valid log_lik
 quantity specified in the generated quantities section of the provided stan
 model.}
@@ -53,7 +53,7 @@ character vector.}
 instances should be handled. \code{"catch"} records all warnings in the
 returned object alongside other instance level data, \code{"print"} simply
 prints warnings to the console as the models are fit (default \code{stan}
-behaviour), and \code{"suppress"} suppressess all warnings without
+behaviour), and \code{"suppress"} suppresses all warnings without
 recording them.}
 
 \item{cache}{If \code{TRUE} then the results for each instance are written to
@@ -74,7 +74,7 @@ An S3 object of class \code{stansim_simulation} recording relevant
 \code{fit_models()} fits a stan model across multiple datasets,
   collates, and returns summary information and data for all fitted models as
   a \code{stansim_simulation} object. All fitted models have basic
-  reproducability information recorded; such as parameter inits and seeds,
+  reproducibility information recorded; such as parameter inits and seeds,
   along with parameter estimates, and simulation information such as time and
   date ran.
 

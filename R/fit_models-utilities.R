@@ -237,7 +237,10 @@ fit_models_checker <- function(sim_data, calc_loo, use_cores,
 
   if (typeof(sim_data) != "character" &
       class(sim_data) != "stansim_data")
-    stop("sim_data must be an object of class stansim_data or of type character")
+    stop(paste(
+      "sim_data must be an object of class",
+      "stansim_data or of type character"
+    ))
 
   if (class(sim_data) != "stansim_data") {
     if (length(sim_data) < 1)
@@ -389,4 +392,3 @@ stansim_uni <- function(fit, data_name, ran_at, long_data, stan_warnings,
   )
 
 }
-

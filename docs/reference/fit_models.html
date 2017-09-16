@@ -123,7 +123,7 @@
     <p><code>fit_models()</code> fits a stan model across multiple datasets,
   collates, and returns summary information and data for all fitted models as
   a <code>stansim_simulation</code> object. All fitted models have basic
-  reproducability information recorded; such as parameter inits and seeds,
+  reproducibility information recorded; such as parameter inits and seeds,
   along with parameter estimates, and simulation information such as time and
   date ran.</p>
 <p>Raw stan posterior samples are not returned, rather the user specifies the
@@ -151,7 +151,7 @@
     <tr>
       <th>sim_name</th>
       <td><p>A name attached to the <code>stansim_simulation</code> object to
-help identify it. It is strongly recomended that an informative name is
+help identify it. It is strongly recommended that an informative name is
 assigned, especially if <code>stansim_simulation</code> objects are to be
 combined in to a <code>stansim_collection</code> object for management of
 results.</p></td>
@@ -171,7 +171,7 @@ then the <code><a href='http://www.rdocumentation.org/packages/rstan/topics/stan
     </tr>
     <tr>
       <th>calc_loo</th>
-      <td><p>If <code>TRUE</code> then model fit statisics will be calculated
+      <td><p>If <code>TRUE</code> then model fit statistics will be calculated
 using the <code>loo</code> package. If <code>TRUE</code> there must be a valid log_lik
 quantity specified in the generated quantities section of the provided stan
 model.</p></td>
@@ -207,7 +207,7 @@ character vector.</p></td>
 instances should be handled. <code>"catch"</code> records all warnings in the
 returned object alongside other instance level data, <code>"print"</code> simply
 prints warnings to the console as the models are fit (default <code>stan</code>
-behaviour), and <code>"suppress"</code> suppressess all warnings without
+behaviour), and <code>"suppress"</code> suppresses all warnings without
 recording them.</p></td>
     </tr>
     <tr>

@@ -8,7 +8,7 @@ stansim_collection(collection_name, data, refitted, simulations)
 }
 \arguments{
 \item{collection_name}{A name attached to the \code{stansim_collection}
-object to help identify it. It is strongly recomended that an informative
+object to help identify it. It is strongly recommended that an informative
 name is assigned.}
 
 \item{data}{The tidy dataframe containing data from all grouped simulations.}

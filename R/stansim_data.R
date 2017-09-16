@@ -9,7 +9,7 @@
 #'
 #' @param data_name A name attached to the \code{stansim_data} object to help
 #'   identify it. This also forms the stem of the individual .rds file names
-#'   after a call to \code{write_data()}. It is strongly recomended that an
+#'   after a call to \code{write_data()}. It is strongly recommended that an
 #'   informative name is assigned.
 #' @param datasets A vector of names of simulated datasets.
 #' @param compiled_model An object of S4 class \code{stanmodel}, this should be

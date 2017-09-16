@@ -66,7 +66,7 @@ refit <-
   if (class(object) != "stansim_simulation")
     stop("object must be of class stansim_simulation")
 
-  if(typeof(datasets) != "character")
+  if (typeof(datasets) != "character")
     stop("datasets argument must be of type character")
 
   # check all dataset args exist and can be found
@@ -80,7 +80,7 @@ refit <-
 
   # check all dataset args are in the stansim_simulation object
   data_exists <- function(dataset, object_data){
-    if(!(dataset %in% object_data$dataset))
+    if (!(dataset %in% object_data$dataset))
       stop(paste0(
         "datasets argument \"",
         dataset,
@@ -119,12 +119,12 @@ refit <-
 
   ## update the instances entries
   # loop over the current instances
-  for(i in 1:length(new_object$instances)){
+  for (i in seq(length(new_object$instances))){
     # store current instance name
     data_name <- new_object$instances[[i]]$data_name
 
     # if instance name is one to be replaced
-    if(data_name %in% datasets){
+    if (data_name %in% datasets){
 
       # find the matching instance data_name in the new stansim obj
       new_instance_index <- which(sapply(

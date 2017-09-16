@@ -22,7 +22,7 @@ Using the `rstansim` package, the above steps are all handled using the `fit_mod
 
 ## The fit_models() function
 
-The `fit_models()` function takes a list of datasets (stored as .RDS files; see vignette on data simulation [NOT WRITTEN YET]), a single stan model to fit to these datasets. It then fits the model to each dataset, recording requested/relevant data for each, and returning an S3 object of class `stansim_simulation` that holds all outcome data.
+The `fit_models()` function takes a list of datasets (stored as .RDS files; see [vignette on data simulation](https://ewan-keith.github.io/rstansim/articles/simulating_data.html)), a single stan model to fit to these datasets. It then fits the model to each dataset, recording requested/relevant data for each, and returning an S3 object of class `stansim_simulation` that holds all outcome data.
 
 ## Arguments
 
@@ -59,11 +59,11 @@ use_stan_args <- list("chains" = 4, "iter" = 2000, "warmup" = 1000, "thin" = 1)
 
 Any other parameters used by the `rstan` `sampling()` function can also be provided, with the exceptions of `data`, `pars`, `sample_file`, and `diagnostic_file` as the first two are overruled by `fit_models()` arguments, and the last two raise the risk of write conflicts when fitting models in parallel
 
-### other arguments
+### Other arguments
 
 With valid `sim_data` and `stan_arg` arguments the other `fit_models()` arguments all have defaults that should return reasonable results. However, you are likely to want to tweak some other arguments to match your unique case. These arguments are:
 
-* `calc_loo`: If `TRUE` then [LOO fit statistics](https://cran.r-project.org/web/packages/loo/index.html) are calculated for all models and stored within the returned data.
+* `calc_loo`: If `TRUE` then [LOO fit statistics](https://CRAN.R-project.org/package=loo) are calculated for all models and stored within the returned data.
 * `use_cores`: The number of parallel cores to use. Each model is assigned a single core, rather than each chain.
 * `parameters`: The names of the parameters you wish to store results for, defaults to all. You cannot select subsets of the parameter (e.g. must request theta rather than theta[1]).
 * `probs`: Quantiles to record for each parameter, defaults to `c(.025, .25, .5, .75, .975)`.
@@ -71,7 +71,7 @@ With valid `sim_data` and `stan_arg` arguments the other `fit_models()` argument
 
 Other arguments exist but these a less likely to be of interest. See the documentation for `fit_models()` for more information.
 
-## refitting specific models
+## Refitting specific models
 
 In some cases you might want to only refit a small number of models within a simulation (e.g. because of randomly set initial values it's possible that a small set of models failed to converge whilst most converged without issues). In this case the `refit()` function can be used to solve the problem. Calling `refit()` on a simulation result object will return an object of the same class, with the specified datasets refit, but the others unchanged. Any models refitted in this manner will overwrite the previous data and will be marked within the object as refitted.
 

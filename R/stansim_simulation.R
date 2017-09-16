@@ -69,6 +69,3 @@ stansim_simulation <-
       class = "stansim_simulation"
     )
   }
-
-
-

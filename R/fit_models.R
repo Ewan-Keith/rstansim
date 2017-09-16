@@ -5,7 +5,7 @@
 #' @description \code{fit_models()} fits a stan model across multiple datasets,
 #'   collates, and returns summary information and data for all fitted models as
 #'   a \code{stansim_simulation} object. All fitted models have basic
-#'   reproducability information recorded; such as parameter inits and seeds,
+#'   reproducibility information recorded; such as parameter inits and seeds,
 #'   along with parameter estimates, and simulation information such as time and
 #'   date ran.
 #'
@@ -22,7 +22,7 @@
 #'   removed.
 #'
 #' @param sim_name A name attached to the \code{stansim_simulation} object to
-#'   help identify it. It is strongly recomended that an informative name is
+#'   help identify it. It is strongly recommended that an informative name is
 #'   assigned, especially if \code{stansim_simulation} objects are to be
 #'   combined in to a \code{stansim_collection} object for management of
 #'   results.
@@ -33,7 +33,7 @@
 #' @param stan_args A list of function arguments to be used by the internal
 #'   \code{rstan::sampling()} function when fitting the models. If not specified
 #'   then the \code{rstan::sampling()} function defaults are used.
-#' @param calc_loo If \code{TRUE} then model fit statisics will be calculated
+#' @param calc_loo If \code{TRUE} then model fit statistics will be calculated
 #'   using the \code{loo} package. If \code{TRUE} there must be a valid log_lik
 #'   quantity specified in the generated quantities section of the provided stan
 #'   model.
@@ -54,7 +54,7 @@
 #'   instances should be handled. \code{"catch"} records all warnings in the
 #'   returned object alongside other instance level data, \code{"print"} simply
 #'   prints warnings to the console as the models are fit (default \code{stan}
-#'   behaviour), and \code{"suppress"} suppressess all warnings without
+#'   behaviour), and \code{"suppress"} suppresses all warnings without
 #'   recording them.
 #' @param cache If \code{TRUE} then the results for each instance are written to
 #'   a local, temporary file so that data is not lost should the function not
@@ -129,12 +129,11 @@ fit_models <- function(sim_name = paste0("Stansim_", Sys.time()),
 
   ##-------------------------------------------------
   ## pre-compile stan model
-  #compiled_model <- rstan::stan_model(file = stan_args$file)
 
   file <- stan_args$file
 
   # if file ends in '.stan' assume it's a file connection
-  if(grepl("\\.stan$", file)){
+  if (grepl("\\.stan$", file)){
     compiled_model <- rstan::stan_model(file = file)
   } else {
     compiled_model <- rstan::stan_model(model_code = file)
@@ -171,6 +170,7 @@ fit_models <- function(sim_name = paste0("Stansim_", Sys.time()),
   doSNOW::registerDoSNOW(cl)
 
   # define %dopar% alias
+  # tests get angry if this is not defined, not sure why so it stays for now
   `%dopar%` <- foreach::`%dopar%`
 
   # define %dorng% alias
@@ -190,7 +190,9 @@ fit_models <- function(sim_name = paste0("Stansim_", Sys.time()),
 
     # set up progress bar items
     pb <- utils::txtProgressBar(max = length(sim_data), style = 3)
-    progress <- function(n){ utils::setTxtProgressBar(pb, n) }
+    progress <- function(n) {
+      utils::setTxtProgressBar(pb, n)
+    }
     opts <- list(progress = progress)
 
     # parallel loop over datasets, default list combine used

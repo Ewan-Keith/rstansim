@@ -11,5 +11,3 @@ for (i in 1:5){
 
   write.csv(data, eval(file_name), row.names = F)
 }
-
-

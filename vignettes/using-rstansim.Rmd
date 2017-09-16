@@ -18,11 +18,11 @@ This document gives an end to end example of using the rstansim package to carry
 
 After reading through this example, the below documents can provide further detailed documentation on specific elements:
 
-* Simulating data using rstansim. [ADD LINK]
-* [Fitting models using rstansim](model-fitting.html).
-* Managing results using rstansim. [ADD LINK]
+* [Simulating data using rstansim](https://ewan-keith.github.io/rstansim/articles/simulating_data.html).
+* [Fitting models using rstansim](https://ewan-keith.github.io/rstansim/articles/model-fitting.html).
+* [Managing results using rstansim](https://ewan-keith.github.io/rstansim/articles/managing-results.html)
 
-Beyond that function documentation can be found here. [ADD LINK]
+Beyond that function documentation can be found [here](https://ewan-keith.github.io/rstansim/reference/index.html).
 
 ### The study question
 
@@ -167,7 +167,8 @@ uncorrelated_data <- simulate_data(
   param_values = regression_uncorr_params,
   vars = c("N", "K", "sim_x", "sim_y"),
   nsim = 50,
-  path = "reg_data/uncorrelated"
+  path = "reg_data/uncorrelated", 
+  seed = 1234
   )
 
 # simulate data with correlated predictors
@@ -178,7 +179,8 @@ correlated_data <- simulate_data(
   param_values = regression_corr_params, 
   vars = c("N", "K", "sim_x", "sim_y"),
   nsim = 50,
-  path = "reg_data/correlated"
+  path = "reg_data/correlated", 
+  seed = 1234
   )
 
 ```
@@ -220,27 +222,37 @@ rstan::summary(test_fit)$summary
 
 These values are all in the region we'd expect. The `fit_models()` function is used to fit a given stan model to multiple datasets, we can use the `stansim_data` object produced above as input pointing to our simulated datasets. Our study questions has a 2x2 design so fit_models needs called 4 times.
 
-```{R, results = "hide", message = F, warning = F}
+```{R, echo=FALSE, results='asis'}
+stansim_output1 <- readRDS("stansim_output1.rds")
+stansim_output2 <- readRDS("stansim_output2.rds")
+stansim_output3 <- readRDS("stansim_output3.rds")
+stansim_output4 <- readRDS("stansim_output4.rds")
+```
 
+```{R, eval = F}
 # fit simple model to uncorrelated data
 stansim_output1 <- fit_models(sim_name = "simple - uncorrelated simulation",
                               sim_data = uncorrelated_data,
-                              stan_args = list(file = "simple_reg_model.stan"))
+                              stan_args = list(file = "simple_reg_model.stan"), 
+                              seed = 1234)
 
 # fit simple model to correlated data
 stansim_output2 <- fit_models(sim_name = "simple - correlated simulation",
                               sim_data = correlated_data,
-                              stan_args = list(file = "simple_reg_model.stan"))
+                              stan_args = list(file = "simple_reg_model.stan"), 
+                              seed = 1234)
 
 # fit QR model to uncorrelated data
 stansim_output3 <- fit_models(sim_name = "QR - uncorrelated simulation",
                               sim_data = uncorrelated_data,
-                              stan_args = list(file = "qr_reg_model.stan"))
+                              stan_args = list(file = "qr_reg_model.stan"),
+                              seed = 1234)
 
 # fit QR model to correlated data
 stansim_output4 <- fit_models(sim_name = "QR - correlated simulation",
                               sim_data = correlated_data,
-                              stan_args = list(file = "qr_reg_model.stan"))
+                              stan_args = list(file = "qr_reg_model.stan"),
+                              seed = 1234)
 
 ```
 
@@ -364,7 +376,7 @@ The results are close to identical for both models, with all shared parameters s
 
 ## Conclusions
 
-The data and models used here are intended primarily as an example of rstansim functionality, not as a rigourous exploration of the QR decomposition approach to Bayesian regression. Such a study would explore a wider range of conditions, especially higher correlations between predictor variable [where the difference between the straightforward and QR models becomes very apparent](http://mc-stan.org/users/documentation/case-studies/qr_regression.html). But at a minimum these results show that the QR regression is not necessary for good sampling behaviour when the sample size is high (N = 1000) and the predictor correlations small (< .4).
+The data and models used here are intended primarily as an example of rstansim functionality, not as a rigourous exploration of the QR decomposition approach to Bayesian regression. Such a study would explore a wider range of conditions, especially higher correlations between predictor variable [where the difference between the straightforward and QR models becomes very apparent](http://mc-stan.org/users/documentation/case-studies/qr_regression.html). But at a minimum these results show that the QR regression is not a requirement for good sampling behaviour when the sample size is high (N = 1000) and the predictor correlations small (< .4).
 
 ```{r, echo=FALSE, results='asis'}
 ## clean up all created files from vignetes/

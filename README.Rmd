@@ -21,7 +21,7 @@ rstansim provides a set of helper and utility functions to simplify running simu
 
 A small end to end example is demonstrated [here](https://ewan-keith.github.io/rstansim/articles/using-rstansim.html).
 
-All simulation data is output in a [tidy](https://cran.r-project.org/web/packages/tidyr/vignettes/tidy-data.html) format, for ease of interaction with [tidyverse](https://www.tidyverse.org/) packages for analysis and visualisation. Additionally reproducability information such as seeds, initial values, and data used, are stored alongside the data. 
+All simulation data is output in a [tidy](https://CRAN.R-project.org/package=tidyr/vignettes/tidy-data.html) format, for ease of interaction with [tidyverse](https://www.tidyverse.org/) packages for analysis and visualisation. Additionally reproducability information such as seeds, initial values, and data used, are stored alongside the data. 
 
 
 Installation

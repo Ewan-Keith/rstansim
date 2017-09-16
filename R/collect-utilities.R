@@ -58,14 +58,14 @@ collect_simulations_internal <- function(collection_name, sim1, sim2){
 
   # get names vector
   names_vect <- vector(length = 2)
-  for(i in 1:2)
+  for (i in 1:2)
     names_vect[i] <- merged_list[[i]]$sim_name
 
   # rename merged list
   names(merged_list) <- names_vect
 
   # remove original names
-  for(i in 1:2)
+  for (i in 1:2)
     merged_list[[i]]$sim_name <- NULL
 
   #### call stansim_collector constructor and return ####

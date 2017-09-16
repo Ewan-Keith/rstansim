@@ -127,7 +127,9 @@ print.stansim_collection <- function(x, ...){
   }
 
   if (nrow(x$refitted) > 0) {
-    print.data.frame(x$refitted[1:min(c(nrow(x$refitted), 5)),], row.names = FALSE)
+    print.data.frame(
+      x$refitted[1:min(c(nrow(x$refitted), 5)), ], row.names = FALSE
+      )
   }
 
 }

@@ -141,7 +141,7 @@ saveRDS(single_out,
 
 #-----------------------------------------------------------------
 #### object of type stanmodel to avoid compile time in tests ####
-testpc <- stan_model(file = 'data-raw/8schools.stan')
+testpc <- stan_model(file = "data-raw/8schools.stan")
 
 saveRDS(testpc,
         "objects/test_stanmodel.rds")
@@ -152,10 +152,13 @@ saveRDS(testpc,
 test_stan_args_refit <- list(file = "data-raw/8schools.stan",
                        iter = 1000, chains = 4, seed = 12345)
 
-test_stansim_refit <- stansim(stan_args = test_stan_args_refit,
-                        sim_data = dir("data-raw/data",
-                                       full.names = TRUE)[c(1, 3)], use_cores = 4,
-                        stansim_seed = 12345)
+test_stansim_refit <- stansim(
+  stan_args = test_stan_args_refit,
+  sim_data = dir("data-raw/data",
+                 full.names = TRUE)[c(1, 3)],
+  use_cores = 4,
+  stansim_seed = 12345
+)
 
 saveRDS(test_stansim_refit, "objects/test_stansim_refit.rds")
 
@@ -197,7 +200,7 @@ reg_data <- reg_sim(100)
 
 test_vals <- list("alpha" = 100, "beta" = -5, "sigma" = 20)
 
-file <- 'data-raw/simtestreg.stan'
+file <- "data-raw/simtestreg.stan"
 
 fit <- simulate_data(file = file,
                         data_name = "saved stansim_data",
@@ -211,8 +214,7 @@ saveRDS(fit, "objects/stansim_data_for_method_tests.rds")
 
 #-----------------------------------------------------------------
 #### object of type stanmodel for data simulation use ####
-sim_compiled <- stan_model(file = 'data-raw/simtestreg.stan')
+sim_compiled <- stan_model(file = "data-raw/simtestreg.stan")
 
 saveRDS(sim_compiled,
         "objects/sim_compiled.rds")
-

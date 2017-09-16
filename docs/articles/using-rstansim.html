@@ -96,7 +96,7 @@
       <h1>Using rstansim to run a simulation study</h1>
                         <h4 class="author">Ewan Keith</h4>
             
-            <h4 class="date">2017-09-03</h4>
+            <h4 class="date">2017-09-16</h4>
           </div>
 
     
@@ -108,12 +108,13 @@
 <p>This document gives an end to end example of using the rstansim package to carry out a small simulation study using stan. It’s recommended as a first point of call to understand how the package works, but does not provided detailed documentation of all functionality.</p>
 <p>After reading through this example, the below documents can provide further detailed documentation on specific elements:</p>
 <ul>
-<li>Simulating data using rstansim. [ADD LINK]</li>
 <li>
-<a href="model-fitting.html">Fitting models using rstansim</a>.</li>
-<li>Managing results using rstansim. [ADD LINK]</li>
+<a href="https://ewan-keith.github.io/rstansim/articles/simulating_data.html">Simulating data using rstansim</a>.</li>
+<li>
+<a href="https://ewan-keith.github.io/rstansim/articles/model-fitting.html">Fitting models using rstansim</a>.</li>
+<li><a href="https://ewan-keith.github.io/rstansim/articles/managing-results.html">Managing results using rstansim</a></li>
 </ul>
-<p>Beyond that function documentation can be found here. [ADD LINK]</p>
+<p>Beyond that function documentation can be found <a href="https://ewan-keith.github.io/rstansim/reference/index.html">here</a>.</p>
 <div id="the-study-question" class="section level3">
 <h3 class="hasAnchor">
 <a href="#the-study-question" class="anchor"></a>The study question</h3>
@@ -250,7 +251,8 @@ uncorrelated_data &lt;-<span class="st"> </span><span class="kw"><a href="../ref
   <span class="dt">param_values =</span> regression_uncorr_params,
   <span class="dt">vars =</span> <span class="kw">c</span>(<span class="st">"N"</span>, <span class="st">"K"</span>, <span class="st">"sim_x"</span>, <span class="st">"sim_y"</span>),
   <span class="dt">nsim =</span> <span class="dv">50</span>,
-  <span class="dt">path =</span> <span class="st">"reg_data/uncorrelated"</span>
+  <span class="dt">path =</span> <span class="st">"reg_data/uncorrelated"</span>, 
+  <span class="dt">seed =</span> <span class="dv">1234</span>
   )
 
 <span class="co"># simulate data with correlated predictors</span>
@@ -261,7 +263,8 @@ correlated_data &lt;-<span class="st"> </span><span class="kw"><a href="../refer
   <span class="dt">param_values =</span> regression_corr_params, 
   <span class="dt">vars =</span> <span class="kw">c</span>(<span class="st">"N"</span>, <span class="st">"K"</span>, <span class="st">"sim_x"</span>, <span class="st">"sim_y"</span>),
   <span class="dt">nsim =</span> <span class="dv">50</span>,
-  <span class="dt">path =</span> <span class="st">"reg_data/correlated"</span>
+  <span class="dt">path =</span> <span class="st">"reg_data/correlated"</span>, 
+  <span class="dt">seed =</span> <span class="dv">1234</span>
   )</code></pre></div>
 <p>Looking in our working directory shows that the specified folders have been created and filled with our simulated datasets.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># see folders inside reg_data/</span>
@@ -280,8 +283,8 @@ correlated_data &lt;-<span class="st"> </span><span class="kw"><a href="../refer
 ## List of 4
 ##  $ N: num 1000
 ##  $ K: num 5
-##  $ x: num [1:1000, 1:5] -1.389 -0.526 2.204 -0.6 -0.492 ...
-##  $ y: num [1:1000(1d)] 6.42 3.85 7.21 2.33 2.22 ...</code></pre></div>
+##  $ x: num [1:1000, 1:5] 0.25 1.407 -1.312 -0.932 0.972 ...
+##  $ y: num [1:1000(1d)] 6.89 6.92 4.35 3.12 4.97 ...</code></pre></div>
 </div>
 <div id="fitting-the-models" class="section level2">
 <h2 class="hasAnchor">
@@ -295,44 +298,47 @@ test_data &lt;-<span class="st"> </span><span class="kw">readRDS</span>(<span cl
 test_fit &lt;-<span class="st"> </span>rstan<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/rstan/topics/stan">stan</a></span>(<span class="dt">file =</span> <span class="st">"simple_reg_model.stan"</span>, <span class="dt">data =</span> test_data)</code></pre></div>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">rstan<span class="op">::</span><span class="kw">summary</span>(test_fit)<span class="op">$</span>summary
 ##                  mean      se_mean         sd          2.5%           25%
-## alpha      5.00601434 0.0005282804 0.03341139    4.94020981    4.98385816
-## beta[1]   -0.03888132 0.0005270244 0.03333195   -0.10369519   -0.06090930
-## beta[2]    0.03296958 0.0005469483 0.03459205   -0.03515237    0.01045293
-## beta[3]    0.76936161 0.0005343863 0.03379756    0.70333149    0.74654366
-## beta[4]    0.62802669 0.0005306335 0.03356021    0.56237368    0.60510948
-## beta[5]    0.37201540 0.0004953638 0.03132956    0.31096595    0.35097621
-## sigma      1.03995493 0.0003764898 0.02381131    0.99421059    1.02415660
-## lp__    -538.31700544 0.0443023507 1.90832524 -542.89533579 -539.37013689
+## alpha      4.98518376 0.0004802989 0.03037677    4.92602168  4.964702e+00
+## beta[1]    0.01061412 0.0004900096 0.03099093   -0.04963408 -9.978178e-03
+## beta[2]    0.03851371 0.0004537592 0.02869825   -0.01787489  1.942948e-02
+## beta[3]    0.83413068 0.0004610101 0.02915684    0.77637546  8.147580e-01
+## beta[4]    0.61359935 0.0004787320 0.03027767    0.55508553  5.931988e-01
+## beta[5]    0.40143310 0.0004706945 0.02976933    0.34237404  3.809262e-01
+## sigma      0.94724227 0.0003381208 0.02138464    0.90637439  9.326378e-01
+## lp__    -444.65920995 0.0463514750 1.86973414 -449.19978855 -4.456487e+02
 ##                   50%           75%         97.5%    n_eff      Rhat
-## alpha      5.00601500    5.02810297    5.07198972 4000.000 1.0006579
-## beta[1]   -0.03887950   -0.01637562    0.02730051 4000.000 0.9997743
-## beta[2]    0.03273199    0.05595503    0.10210900 4000.000 0.9997182
-## beta[3]    0.76937357    0.79307286    0.83420816 4000.000 0.9995712
-## beta[4]    0.62768280    0.65067931    0.69484337 4000.000 0.9995181
-## beta[5]    0.37232879    0.39283894    0.43330737 4000.000 0.9997796
-## sigma      1.03950051    1.05526633    1.08835623 4000.000 0.9993036
-## lp__    -537.99069651 -536.88020622 -535.55828379 1855.459 1.0023033</code></pre></div>
+## alpha      4.98490408    5.00534779    5.04552500 4000.000 1.0002050
+## beta[1]    0.01072903    0.03158199    0.06991954 4000.000 0.9996973
+## beta[2]    0.03852837    0.05789847    0.09391784 4000.000 1.0002482
+## beta[3]    0.83405206    0.85388417    0.89006696 4000.000 0.9994006
+## beta[4]    0.61378255    0.63406607    0.67151427 4000.000 0.9995173
+## beta[5]    0.40138676    0.42163047    0.45960915 4000.000 0.9995445
+## sigma      0.94680322    0.96183021    0.99017322 4000.000 1.0001671
+## lp__    -444.34247959 -443.29405177 -442.00615538 1627.169 1.0011248</code></pre></div>
 <p>These values are all in the region we’d expect. The <code><a href="../reference/fit_models.html">fit_models()</a></code> function is used to fit a given stan model to multiple datasets, we can use the <code>stansim_data</code> object produced above as input pointing to our simulated datasets. Our study questions has a 2x2 design so fit_models needs called 4 times.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">
-<span class="co"># fit simple model to uncorrelated data</span>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># fit simple model to uncorrelated data</span>
 stansim_output1 &lt;-<span class="st"> </span><span class="kw"><a href="../reference/fit_models.html">fit_models</a></span>(<span class="dt">sim_name =</span> <span class="st">"simple - uncorrelated simulation"</span>,
                               <span class="dt">sim_data =</span> uncorrelated_data,
-                              <span class="dt">stan_args =</span> <span class="kw">list</span>(<span class="dt">file =</span> <span class="st">"simple_reg_model.stan"</span>))
+                              <span class="dt">stan_args =</span> <span class="kw">list</span>(<span class="dt">file =</span> <span class="st">"simple_reg_model.stan"</span>), 
+                              <span class="dt">seed =</span> <span class="dv">1234</span>)
 
 <span class="co"># fit simple model to correlated data</span>
 stansim_output2 &lt;-<span class="st"> </span><span class="kw"><a href="../reference/fit_models.html">fit_models</a></span>(<span class="dt">sim_name =</span> <span class="st">"simple - correlated simulation"</span>,
                               <span class="dt">sim_data =</span> correlated_data,
-                              <span class="dt">stan_args =</span> <span class="kw">list</span>(<span class="dt">file =</span> <span class="st">"simple_reg_model.stan"</span>))
+                              <span class="dt">stan_args =</span> <span class="kw">list</span>(<span class="dt">file =</span> <span class="st">"simple_reg_model.stan"</span>), 
+                              <span class="dt">seed =</span> <span class="dv">1234</span>)
 
 <span class="co"># fit QR model to uncorrelated data</span>
 stansim_output3 &lt;-<span class="st"> </span><span class="kw"><a href="../reference/fit_models.html">fit_models</a></span>(<span class="dt">sim_name =</span> <span class="st">"QR - uncorrelated simulation"</span>,
                               <span class="dt">sim_data =</span> uncorrelated_data,
-                              <span class="dt">stan_args =</span> <span class="kw">list</span>(<span class="dt">file =</span> <span class="st">"qr_reg_model.stan"</span>))
+                              <span class="dt">stan_args =</span> <span class="kw">list</span>(<span class="dt">file =</span> <span class="st">"qr_reg_model.stan"</span>),
+                              <span class="dt">seed =</span> <span class="dv">1234</span>)
 
 <span class="co"># fit QR model to correlated data</span>
 stansim_output4 &lt;-<span class="st"> </span><span class="kw"><a href="../reference/fit_models.html">fit_models</a></span>(<span class="dt">sim_name =</span> <span class="st">"QR - correlated simulation"</span>,
                               <span class="dt">sim_data =</span> correlated_data,
-                              <span class="dt">stan_args =</span> <span class="kw">list</span>(<span class="dt">file =</span> <span class="st">"qr_reg_model.stan"</span>))</code></pre></div>
+                              <span class="dt">stan_args =</span> <span class="kw">list</span>(<span class="dt">file =</span> <span class="st">"qr_reg_model.stan"</span>),
+                              <span class="dt">seed =</span> <span class="dv">1234</span>)</code></pre></div>
 </div>
 <div id="collecting-the-results" class="section level2">
 <h2 class="hasAnchor">
@@ -380,13 +386,13 @@ uncorrelated_beta_estimates &lt;-<span class="st"> </span><span class="kw"><a hr
 <span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/ggplot">ggplot</a></span>(correlated_beta_estimates, <span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/aes">aes</a></span>(<span class="dt">x=</span>value, <span class="dt">y =</span> parameter)) <span class="op">+</span><span class="st"> </span>
 <span class="st">  </span><span class="kw"><a href="http://www.rdocumentation.org/packages/ggjoy/topics/geom_joy">geom_joy</a></span>() <span class="op">+</span><span class="st"> </span>
 <span class="st">  </span><span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/facet_wrap">facet_wrap</a></span>(<span class="op">~</span>sim_name)</code></pre></div>
-<p><img src="using-rstansim_files/figure-html/unnamed-chunk-14-1.png" width="672"></p>
+<p><img src="using-rstansim_files/figure-html/unnamed-chunk-15-1.png" width="672"></p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">
 <span class="co"># plot beta estimates for uncorrelated datasets</span>
 <span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/ggplot">ggplot</a></span>(uncorrelated_beta_estimates, <span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/aes">aes</a></span>(<span class="dt">x=</span>value, <span class="dt">y =</span> parameter)) <span class="op">+</span><span class="st"> </span>
 <span class="st">  </span><span class="kw"><a href="http://www.rdocumentation.org/packages/ggjoy/topics/geom_joy">geom_joy</a></span>() <span class="op">+</span><span class="st"> </span>
 <span class="st">  </span><span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/facet_wrap">facet_wrap</a></span>(<span class="op">~</span>sim_name)</code></pre></div>
-<p><img src="using-rstansim_files/figure-html/unnamed-chunk-14-2.png" width="672"></p>
+<p><img src="using-rstansim_files/figure-html/unnamed-chunk-15-2.png" width="672"></p>
 <p>We can see that the mean beta estimates are essentially identical over the two models, for both correlated values predictor variables and uncorrelated. In practice, you would want to run similar analysis across all parameters and estimates of relevance. Tail quantiles for example are less robust than mean estimates and so might show differences in chain behaviour that the above charts do not.</p>
 <p>The second hypothesis concerned the total time taken to fit a model, at a very high level we can check this by extracting the total time taken to carry out each <code><a href="../reference/fit_models.html">fit_models()</a></code> call. Elapsed run times can be extracted from simulation or collection objects with <code><a href="../reference/extract_time_elapsed.html">extract_time_elapsed()</a></code>.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># extract total times (warmup and sampling) for correlated datasets</span>
@@ -407,11 +413,11 @@ uncorrelated_time &lt;-<span class="st"> </span><span class="kw"><a href="../ref
 
 <span class="co"># plot total elapsed time for correlated datasets</span>
 <span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/ggplot">ggplot</a></span>(correlated_time, <span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/aes">aes</a></span>(<span class="dt">x=</span>elapsed, <span class="dt">y =</span> sim_name)) <span class="op">+</span><span class="st"> </span><span class="kw"><a href="http://www.rdocumentation.org/packages/ggjoy/topics/geom_joy">geom_joy</a></span>()</code></pre></div>
-<p><img src="using-rstansim_files/figure-html/unnamed-chunk-15-1.png" width="672"></p>
+<p><img src="using-rstansim_files/figure-html/unnamed-chunk-16-1.png" width="672"></p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">
 <span class="co"># plot total elapsed time for uncorrelated datasets</span>
 <span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/ggplot">ggplot</a></span>(uncorrelated_time, <span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/aes">aes</a></span>(<span class="dt">x=</span>elapsed, <span class="dt">y =</span> sim_name)) <span class="op">+</span><span class="st"> </span><span class="kw"><a href="http://www.rdocumentation.org/packages/ggjoy/topics/geom_joy">geom_joy</a></span>()</code></pre></div>
-<p><img src="using-rstansim_files/figure-html/unnamed-chunk-15-2.png" width="672"></p>
+<p><img src="using-rstansim_files/figure-html/unnamed-chunk-16-2.png" width="672"></p>
 <p>When concerned with total run time, QR models tended to perform slightly quicker than the simple model when predictor variables were correlated, and slightly slower in cases where the predictors were uncorrelated. In both cases the QR model had a longer right tail, showing slightly less stability in the total time taken to fit the models.</p>
 <p>Total time taken can be misleading when dealing with MCMC samples as it doesn’t capture the amount of sampling information captured, which can vary a lot from model to model. It’s easy to extract the number of effective samples for all four fitted models and compare them by parameter.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># extract the effective number of parameters samples for correlated datasets</span>
@@ -430,19 +436,19 @@ n_eff_uncorrelated &lt;-<span class="st"> </span><span class="kw"><a href="../re
 <span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/ggplot">ggplot</a></span>(n_eff_correlated, <span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/aes">aes</a></span>(<span class="dt">x =</span> value, <span class="dt">y =</span> sim_name)) <span class="op">+</span><span class="st"> </span>
 <span class="st">  </span><span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/geom_jitter">geom_jitter</a></span>() <span class="op">+</span><span class="st"> </span>
 <span class="st">  </span><span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/facet_wrap">facet_wrap</a></span>(<span class="op">~</span>parameter)</code></pre></div>
-<p><img src="using-rstansim_files/figure-html/unnamed-chunk-16-1.png" width="672"></p>
+<p><img src="using-rstansim_files/figure-html/unnamed-chunk-17-1.png" width="672"></p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">
 <span class="co"># plot uncorrelated datasets effective samples by parameter</span>
 <span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/ggplot">ggplot</a></span>(n_eff_uncorrelated, <span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/aes">aes</a></span>(<span class="dt">x =</span> value, <span class="dt">y =</span> sim_name)) <span class="op">+</span><span class="st"> </span>
 <span class="st">  </span><span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/geom_jitter">geom_jitter</a></span>() <span class="op">+</span><span class="st"> </span>
 <span class="st">  </span><span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/facet_wrap">facet_wrap</a></span>(<span class="op">~</span>parameter)</code></pre></div>
-<p><img src="using-rstansim_files/figure-html/unnamed-chunk-16-2.png" width="672"></p>
+<p><img src="using-rstansim_files/figure-html/unnamed-chunk-17-2.png" width="672"></p>
 <p>The results are close to identical for both models, with all shared parameters showing a near perfect 4000 effective samples per model (4 chains * 1000 samples) with the exception of the log posterior. The only noticable difference between models is a very slightly higher number of effective samples of the log posterior for the QR model when fitting to datasets with correlated predictor variables.</p>
 </div>
 <div id="conclusions" class="section level2">
 <h2 class="hasAnchor">
 <a href="#conclusions" class="anchor"></a>Conclusions</h2>
-<p>The data and models used here are intended primarily as an example of rstansim functionality, not as a rigourous exploration of the QR decomposition approach to Bayesian regression. Such a study would explore a wider range of conditions, especially higher correlations between predictor variable <a href="http://mc-stan.org/users/documentation/case-studies/qr_regression.html">where the difference between the straightforward and QR models becomes very apparent</a>. But at a minimum these results show that the QR regression is not necessary for good sampling behaviour when the sample size is high (N = 1000) and the predictor correlations small (&lt; .4).</p>
+<p>The data and models used here are intended primarily as an example of rstansim functionality, not as a rigourous exploration of the QR decomposition approach to Bayesian regression. Such a study would explore a wider range of conditions, especially higher correlations between predictor variable <a href="http://mc-stan.org/users/documentation/case-studies/qr_regression.html">where the difference between the straightforward and QR models becomes very apparent</a>. But at a minimum these results show that the QR regression is not a requirement for good sampling behaviour when the sample size is high (N = 1000) and the predictor correlations small (&lt; .4).</p>
 </div>
 </div>
   </div>

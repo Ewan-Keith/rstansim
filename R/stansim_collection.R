@@ -8,7 +8,7 @@
 #'   simulations ran using \code{stansim()}.
 #'
 #' @param collection_name A name attached to the \code{stansim_collection}
-#'   object to help identify it. It is strongly recomended that an informative
+#'   object to help identify it. It is strongly recommended that an informative
 #'   name is assigned.
 #' @param data The tidy dataframe containing data from all grouped simulations.
 #' @param refitted A dataframe containing a row for every refitted dataset,

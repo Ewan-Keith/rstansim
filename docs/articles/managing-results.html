@@ -96,7 +96,7 @@
       <h1>Managing simulation results with rstansim</h1>
                         <h4 class="author">Ewan Keith</h4>
             
-            <h4 class="date">2017-09-03</h4>
+            <h4 class="date">2017-09-16</h4>
           </div>
 
     
@@ -107,7 +107,7 @@
 <h2 class="hasAnchor">
 <a href="#managing-multiple-simulation-objects" class="anchor"></a>Managing multiple simulation objects</h2>
 <p>Any simulation study is likely to involve multiple stan models, and therefore likely to involve multiple calls to <code><a href="../reference/fit_models.html">fit_models()</a></code> and multiple output objects from these calls. Held seperately these increase the complexity of analysing the simulation results. For this reason, in cases where multiple simulation objects are being managed it is strongly recommended that the <code>collect()</code> function is used to group them into a single object of class <code>stansim_collection</code>.</p>
-<p>See the <a href="">end to end example</a> for an example of how to use the <code>collect()</code> function to combine multiple <code>stansim_simulation</code> objects in to one. <code>collect()</code> can be used to combine both <code>stansim_simulation</code> and <code>stansim_collection</code> objects together. Once all results for a single simulation study have been combined further analysis and storage only needs to focus on a single R object.</p>
+<p>See the <a href="https://ewan-keith.github.io/rstansim/articles/using-rstansim.html">end to end example</a> for an example of how to use the <code>collect()</code> function to combine multiple <code>stansim_simulation</code> objects in to one. <code>collect()</code> can be used to combine both <code>stansim_simulation</code> and <code>stansim_collection</code> objects together. Once all results for a single simulation study have been combined further analysis and storage only needs to focus on a single R object.</p>
 </div>
 <div id="extracting-relevant-data" class="section level2">
 <h2 class="hasAnchor">

@@ -34,7 +34,7 @@ rename <- function (object, new_name) {
 #' @export
 rename.stansim_simulation <- function(object, new_name){
 
-  if(typeof(new_name) != "character")
+  if (typeof(new_name) != "character")
     stop("new_name must be of type character")
 
   object$sim_name <- new_name
@@ -63,11 +63,10 @@ rename.stansim_simulation <- function(object, new_name){
 #' @export
 rename.stansim_collection <- function(object, new_name){
 
-  if(typeof(new_name) != "character")
+  if (typeof(new_name) != "character")
     stop("new_name must be of type character")
 
   object$collection_name <- new_name
 
   object
 }
-

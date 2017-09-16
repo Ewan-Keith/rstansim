@@ -15,7 +15,7 @@
 #'   To allow for simulated data to be directly fed into stan model that
 #'   simulated them as input data, the sim_drop argument is provided. If
 #'   \code{sim_drop} is true then any stan data object with a name beginning
-#'   with "sim_" wil have this string removed from it's name. For example, the
+#'   with "sim_" will have this string removed from it's name. For example, the
 #'   simulated data "sim_x" would be returned simply as "x". This helps avoid
 #'   the issue of overlapping data names for both input and output
 #'
@@ -23,7 +23,7 @@
 #'   model code (ending in ".stan"), a character string containing the model
 #'   specification or the name of a character string object in the workspace.
 #' @param data_name A name attached to the \code{stansim_data} object to help
-#'   identify it. It is strongly recomended that an informative name is
+#'   identify it. It is strongly recommended that an informative name is
 #'   assigned. This will also be the name stem for the saved .rds files.
 #' @param input_data Values for the data field in the provided stan model.
 #'   Values must be provided for all entries even if they are not used in the
@@ -66,7 +66,7 @@ simulate_data <-
   #-----------------------------------------------------------------
   #### input checks ####
   # file must be character
-  if(typeof(file) != "character")
+  if (typeof(file) != "character")
     stop("file must be of type character")
 
   # data_name must be character
@@ -74,11 +74,11 @@ simulate_data <-
     stop("data_name must be of type character")
 
   # path must be character or NULL
-  if(typeof(path) != "character" & !(is.null(path)))
+  if (typeof(path) != "character" & !(is.null(path)))
     stop("path must be NULL or of type character")
 
   # input_data must be NULL or list
-  if(!(is.null(input_data) | typeof(input_data) == "list"))
+  if (!(is.null(input_data) | typeof(input_data) == "list"))
     stop("input_data must be NULL or of type list")
 
   # vars must be character
@@ -90,29 +90,29 @@ simulate_data <-
     stop("if vars argument contains \"all\", length(vars) must be 1")
 
   # param values must be NULL or list
-  if(!(is.null(param_values) | typeof(param_values) == "list"))
+  if (!(is.null(param_values) | typeof(param_values) == "list"))
     stop("param_values must be NULL or of type list")
 
   # nsim must be a positive integer
-  if(nsim < 1 | nsim %% 1 != 0)
+  if (nsim < 1 | nsim %% 1 != 0)
     stop("nsim must be a positive integer")
 
   # use_cores must be a positive integer
-  if(use_cores < 1 | use_cores %% 1 != 0)
+  if (use_cores < 1 | use_cores %% 1 != 0)
     stop("use_cores must be a positive integer")
 
   # return_object must be logical
-  if(typeof(return_object) != "logical")
+  if (typeof(return_object) != "logical")
     stop("return_object must be of type logical")
 
   # sim_drop must be logical
-  if(typeof(sim_drop) != "logical")
+  if (typeof(sim_drop) != "logical")
     stop("sim_drop must be of type logical")
 
   # -----------------------------------------------------------------
   ## pre-compile stan model
   # if file ends in '.stan' assume it's a file connection
-  if(grepl("\\.stan$", file)){
+  if (grepl("\\.stan$", file)){
     compiled_model <- rstan::stan_model(file = file)
   } else {
     compiled_model <- rstan::stan_model(model_code = file)

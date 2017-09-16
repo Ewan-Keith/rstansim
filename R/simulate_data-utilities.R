@@ -1,5 +1,14 @@
 # simulate_internal
-simulate_internal <- function(cmodel, input_data, vars, param_values, nsim, use_cores, sim_drop, seed) {
+simulate_internal <-
+  function(cmodel,
+           input_data,
+           vars,
+           param_values,
+           nsim,
+           use_cores,
+           sim_drop,
+           seed) {
+
 
   fitted <-
     rstan::sampling(
@@ -25,7 +34,7 @@ simulate_internal <- function(cmodel, input_data, vars, param_values, nsim, use_
   arranged_list <- vector("list", nsim)
 
   # extract and re-order
-  for(i in 1:nsim){
+  for (i in 1:nsim){
     arranged_list[[i]] <- lapply(split_p_and_g, `[[`, i)
   }
 
@@ -103,4 +112,3 @@ split_along_dim <- function(stan_array, split_dim) {
   ),
   dimnames(stan_array)[[split_dim]])
 }
-

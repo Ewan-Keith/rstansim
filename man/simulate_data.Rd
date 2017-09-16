@@ -16,7 +16,7 @@ model code (ending in ".stan"), a character string containing the model
 specification or the name of a character string object in the workspace.}
 
 \item{data_name}{A name attached to the \code{stansim_data} object to help
-identify it. It is strongly recomended that an informative name is
+identify it. It is strongly recommended that an informative name is
 assigned. This will also be the name stem for the saved .rds files.}
 
 \item{input_data}{Values for the data field in the provided stan model.
@@ -66,7 +66,7 @@ An object of S3 class stansim_data or NULL.
   To allow for simulated data to be directly fed into stan model that
   simulated them as input data, the sim_drop argument is provided. If
   \code{sim_drop} is true then any stan data object with a name beginning
-  with "sim_" wil have this string removed from it's name. For example, the
+  with "sim_" will have this string removed from it's name. For example, the
   simulated data "sim_x" would be returned simply as "x". This helps avoid
   the issue of overlapping data names for both input and output
 }
