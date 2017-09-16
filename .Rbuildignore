@@ -6,5 +6,4 @@
 ^README-.*\.png$
 ^docs$
 ^_pkgdown\.yaml$
-^NEWS\.md$
 ^cran-comments\.md$
