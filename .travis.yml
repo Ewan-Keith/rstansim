@@ -32,8 +32,8 @@ before_install:
 
 script:
   - |
-    travis_wait 40 R CMD build . --no-build-vignettes
-    travis_wait 40 R CMD check rstansim*tar.gz --no-build-vignettes
+    travis_wait 40 R CMD build .
+    travis_wait 40 R CMD check rstansim*tar.gz
 
 after_failure:
   - cat rstansim.Rcheck/00*
