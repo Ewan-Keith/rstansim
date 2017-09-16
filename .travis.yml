@@ -15,7 +15,7 @@ r:
 
 env:
   matrix:
-    - CXX_OLEVEL=2 CXX=clang++
+    - CXX_OLEVEL=2 RCPP_VER=cran CXX=clang++
 
 before_install:
   - mkdir -p ~/.R/
@@ -25,6 +25,10 @@ before_install:
   - if [[ $CXX = "clang++" ]] ;  then export CLANG_EXTRA_ARG=" -Qunused-arguments -fcolor-diagnostics " ; fi
   - sed -i.bak "s/ g++/ ${CXX}${CLANG_EXTRA_ARG}/" ~/.R/Makevars
   - sed -i.bak "s/O[0-3]/O$CXX_OLEVEL/" ~/.R/Makevars
+
+before_script:
+  - Rscript -e "install.packages('Rcpp'), repos='http://cran.rstudio.com')"
+
 
 script:
   - |
