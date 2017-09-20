@@ -25,6 +25,8 @@ environment:
   
   - R_VERSION: release
 
+  - R_VERSION: devel
+  
 test_script:
   - travis-tool.sh run_tests
 
