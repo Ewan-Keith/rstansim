@@ -1,12 +1,12 @@
 Package: rstansim
 Type: Package
-Title: Tools for Running Simulation Studies with Stan and R
+Title: Simulation Studies with Stan
 Version: 0.1.1
 Date: 2017-09-16
 Authors@R: person("Ewan", "Keith", email = "ewan.keith100@gmail.com",
     role = c("aut", "cre"))
 Description: Provides a set of functions to facilitate and ease the
-    running of simulation studies of Bayesian models using stan. 
+    running of simulation studies of Bayesian models using 'stan'. 
     Provides functionality to simulate data, fit models, and manage
     simulation results.
 License: GPL (>=3) | file LICENSE
