@@ -22,7 +22,10 @@ Installation
 ------------
 
 ``` r
-# Package not yet on CRAN, needs installed from Github:
+# Install latest version from cran
+install.packages("rstansim")
+
+# Or the the development version from GitHub:
 # install.packages("devtools")
 devtools::install_github("ewan-keith/rstansim")
 ```

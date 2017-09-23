@@ -6,7 +6,7 @@ Date: 2017-09-16
 Authors@R: person("Ewan", "Keith", email = "ewan.keith100@gmail.com",
     role = c("aut", "cre"))
 Description: Provides a set of functions to facilitate and ease the
-    running of simulation studies of Bayesian models using 'stan'. 
+    running of simulation studies of Bayesian models using 'stan'.
     Provides functionality to simulate data, fit models, and manage
     simulation results.
 License: GPL (>=3) | file LICENSE
@@ -26,5 +26,5 @@ Suggests: testthat,
     ggplot2,
     ggjoy
 VignetteBuilder: knitr
-URL: https://github.com/Ewan-Keith/rstansim#rstansim
+URL: https://ewan-keith.github.io/rstansim, https://github.com/Ewan-Keith/rstansim 
 BugReports: https://github.com/Ewan-Keith/rstansim/issues
