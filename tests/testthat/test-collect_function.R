@@ -63,12 +63,5 @@ test_that("collect_simulations function fails correctly", {
     "The collection_name and simulation_name values of all arguments must be unique"
   )
 
-  ## error if only 1 stansim_simulation is provided
-  expect_error(
-    collect_simulations(collection_name = "test",
-            object = stansim_obj),
-    "A single simulation cannot be used to make a collection."
-  )
-
 })
 

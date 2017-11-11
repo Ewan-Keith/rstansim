@@ -68,16 +68,19 @@ collect_simulations <- function(collection_name, object, ...) {
 
   ## -------------------------------------------------
   ## base condition (length of groups = 1)
-
   if (length(collect_args) == 1){
 
-    # error if only one stansim_simulation is provided
-    if (class(object) == "stansim_simulation")
-      stop("A single simulation cannot be used to make a collection.")
+    # if only one stansim_simulation is provided
+    if (class(object) == "stansim_simulation"){
+      # if single simulation, convert to collection
+      collect_single_sim_internal(collection_name,
+                                  object)
 
-    # return renamed collection
-    object$collection_name <- collection_name
-    object
+    } else {
+      # return renamed collection if one collection provided
+      object$collection_name <- collection_name
+      object
+    }
 
   } else {
 

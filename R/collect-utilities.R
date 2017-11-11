@@ -182,3 +182,51 @@ collect_mixed <- function(collection_name, sim1, coll1){
                      refitted = merged_refitted,
                      simulations = merged_list)
 }
+
+#-----------------------------------------------------------------
+#### collect_single_sim_internal ####
+collect_single_sim_internal <- function(collection_name, object){
+
+  #extract data with sim_name added to tidy data
+  sim_to_coll_data <-
+    cbind.data.frame("sim_name" = object$sim_name,
+                     extract_data(object),
+                     stringsAsFactors = FALSE)
+
+  # extract and reconstruct refitted records(with specific NULL handling)
+  if (length(extract_refitted(object)) == 0) {
+    sim_to_coll_refitted <- NULL
+  } else {
+    sim_to_coll_refitted <- cbind.data.frame(
+      "sim_name" = object$sim_name,
+      "dataset" = extract_refitted(object),
+      stringsAsFactors = FALSE
+    )
+  }
+
+  # extract all other simulation data
+  # remove data
+  object$data <- NULL
+
+  # remove refitted
+  object$refitted <- NULL
+
+  # remove stansim_simulation class
+  attributes(object)$class <- NULL
+
+  # list the remaining object
+  sim_list <- list(object)
+
+  # name single list entry
+  names(sim_list) <- object$sim_name
+
+  # remove original name
+  sim_list[[1]]$sim_name <- NULL
+
+  # call stansim_collector constructor and return
+  stansim_collection(collection_name = collection_name,
+                     data = sim_to_coll_data,
+                     refitted = sim_to_coll_refitted,
+                     simulations = sim_list)
+
+}
