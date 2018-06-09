@@ -5,6 +5,8 @@ rstansim: An R package for running simulation studies using stan
 
 [![Travis Build Status](https://travis-ci.org/Ewan-Keith/rstansim.svg?branch=master)](https://travis-ci.org/Ewan-Keith/rstansim) [![AppVeyor Build Status](https://ci.appveyor.com/api/projects/status/github/Ewan-Keith/rstansim?branch=master&svg=true)](https://ci.appveyor.com/project/Ewan-Keith/rstansim) [![codecov](https://codecov.io/gh/Ewan-Keith/rstansim/branch/master/graph/badge.svg)](https://codecov.io/gh/Ewan-Keith/rstansim)
 
+**Currently unmanaged and likely not up to date with modern stan and loo interfaces. Not recomended for current use.**
+
 Overview
 --------
 
